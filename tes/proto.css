@@ -137,7 +137,7 @@ nav {
 /* Booking Section Styles */
 .booking__container {
   position: absolute;
-  bottom: -14rem;
+  bottom: -8rem;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 6rem);
@@ -179,11 +179,9 @@ nav {
 /* Booking Form Styles */
 .booking__container form {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 2 rows, 3 columns */
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
-  position: relative; /* Keep the form content within its container */
-  z-index: 20;
 }
 
 .booking__container .input__group {
@@ -427,20 +425,6 @@ select option:hover {
   position: relative;
 }
 
-.ticket-type .ticket-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ticket-type input[type="radio"] {
-  margin-left: auto;
-  flex-shrink: 0;
-  position: relative;
-  transform: translateX(0);
-}
-
 .ticket-info {
   display: flex;
   gap: 24px;
@@ -568,7 +552,7 @@ select option:hover {
 
 .auth-left {
   flex: 1;
-  background: url('assets/Kapal1.jpg') no-repeat center center/cover;
+  background: url('/assets/Kapal1.jpg') no-repeat center center/cover;
   color: white;
   padding: 4rem;
   display: flex;
@@ -663,89 +647,4 @@ select option:hover {
 
 .auth-switch a:hover {
   text-decoration: underline;
-}
-
-/*profil*/
-.profile__container {
-  margin: 2rem auto;
-  padding: 2rem;
-  background: var(--extra-light);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.profile__container h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: var(--text-dark);
-}
-
-.profile__details {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.profile__info, .profile__tickets {
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.profile__info h2, .profile__tickets h2 {
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-
-.profile__info p, .profile__tickets ul {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--text-light);
-}
-
-.profile__tickets ul {
-  list-style: none;
-  padding: 0;
-}
-
-.profile__tickets li {
-  margin-bottom: 0.5rem;
-}
-
-.profile-icon {
-  font-size: 1.8rem;
-  color: var(--primary-color);
-  cursor: pointer;
-}
-
-.profile-icon:hover {
-  color: var(--primary-color-dark);
-}
-
-.logout-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10;
-}
-
-.logout-btn {
-  padding: 0.8rem 1.5rem;
-  background: var(--primary-color);
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease;
-}
-
-.logout-btn:hover {
-  background: var(--primary-color-dark);
 }

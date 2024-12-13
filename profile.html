@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+  <title>Profile</title>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav__logo">NauticaBook</div>
+    <ul class="nav__links">
+      <li class="link"><a href="index.html">Home</a></li>
+      <li class="link"><a href="#">Jadwal</a></li>
+      <li class="link"><a href="#">Offers</a></li>
+      <li class="link"><a href="#">Seats</a></li>
+      <li class="link"><a href="#">Destinations</a></li>
+    </ul>
+    <div class="profile-icon">
+      <i class="ri-user-3-line"></i>
+    </div>
+  </nav>
+
+  <!-- Profile Section -->
+  <section class="section__container profile__container">
+    <h1>Profil Pengguna</h1>
+    <div class="profile__details">
+      <div class="profile__info">
+        <h2>Informasi Pengguna</h2>
+        <p><strong>Nama:</strong> John Doe</p>
+        <p><strong>Email:</strong> johndoe@example.com</p>
+        <p><strong>Referral Code:</strong> REF12345</p>
+      </div>
+
+      <div class="profile__tickets">
+        <h2>Active Tickets</h2>
+        <ul>
+          <li>Tiket Ferry Merak - Bakauheni (12 Dec 2024, 08:00)</li>
+          <li>Tiket Ferry Bakauheni - Merak (15 Dec 2024, 14:00)</li>
+        </ul>
+        <h2>History Tickets</h2>
+        <ul>
+          <li>Tiket Ferry Ketapang - Gilimanuk (10 Nov 2024, 12:00)</li>
+          <li>Tiket Ferry Gilimanuk - Ketapang (12 Nov 2024, 10:00)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logout Button -->
+  <div class="logout-container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    function logout() {
+      alert("Logout berhasil! Anda akan diarahkan ke halaman login.");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
