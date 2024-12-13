@@ -179,8 +179,11 @@ nav {
 /* Booking Form Styles */
 .booking__container form {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  grid-template-rows: repeat(2, auto); 
+  gap: 20px; 
+  margin: 20px 0;
   gap: 1rem;
 }
 
@@ -423,6 +426,20 @@ select option:hover {
   padding: 20px;
   border-bottom: 1px solid #eee;
   position: relative;
+}
+
+.ticket-type .ticket-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ticket-type input[type="radio"] {
+  margin-left: auto;
+  flex-shrink: 0;
+  position: relative;
+  transform: translateX(0);
 }
 
 .ticket-info {
