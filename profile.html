@@ -27,19 +27,24 @@
   <section class="section__container profile__container">
     <h1>Profil Pengguna</h1>
     <div class="profile__details">
+      <!-- Informasi Pengguna -->
       <div class="profile__info">
         <h2>Informasi Pengguna</h2>
         <p><strong>Nama:</strong> John Doe</p>
         <p><strong>Email:</strong> johndoe@example.com</p>
         <p><strong>Referral Code:</strong> REF12345</p>
+        <button class="edit-btn" onclick="openEditModal()">Edit Profil</button>
+        <button class="password-btn" onclick="openPasswordModal()">Ubah Password</button>
       </div>
 
+      <!-- Active Tickets -->
       <div class="profile__tickets">
         <h2>Active Tickets</h2>
         <ul>
           <li>Tiket Ferry Merak - Bakauheni (12 Dec 2024, 08:00)</li>
           <li>Tiket Ferry Bakauheni - Merak (15 Dec 2024, 14:00)</li>
         </ul>
+        <!-- History Tickets -->
         <h2>History Tickets</h2>
         <ul>
           <li>Tiket Ferry Ketapang - Gilimanuk (10 Nov 2024, 12:00)</li>
@@ -49,12 +54,85 @@
     </div>
   </section>
 
+  <!-- Modal Edit Profil -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeEditModal()">&times;</span>
+      <h2>Edit Profil</h2>
+      <form id="editProfileForm">
+        <div class="form-group">
+          <label for="editName">Nama</label>
+          <input type="text" id="editName" value="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label for="editEmail">Email</label>
+          <input type="email" id="editEmail" value="johndoe@example.com" required>
+        </div>
+        <button type="submit" class="btn">Simpan Perubahan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Ubah Password -->
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closePasswordModal()">&times;</span>
+      <h2>Ubah Password</h2>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label for="currentPassword">Password Lama</label>
+          <input type="password" id="currentPassword" placeholder="Masukkan password lama" required>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Password Baru</label>
+          <input type="password" id="newPassword" placeholder="Masukkan password baru" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Konfirmasi Password Baru</label>
+          <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru" required>
+        </div>
+        <button type="submit" class="btn">Ubah Password</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Logout Button -->
   <div class="logout-container">
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <script>
+    // Edit Profil Modal
+    function openEditModal() {
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("Profil berhasil diperbarui!");
+      closeEditModal();
+    });
+
+    // Password Modal
+    function openPasswordModal() {
+      document.getElementById('passwordModal').style.display = 'block';
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').style.display = 'none';
+    }
+
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("Password berhasil diubah!");
+      closePasswordModal();
+    });
+
+    // Logout
     function logout() {
       alert("Logout berhasil! Anda akan diarahkan ke halaman login.");
       window.location.href = "login.html";
