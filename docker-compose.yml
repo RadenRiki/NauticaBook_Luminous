@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  web:
+    image: php:apache
+    container_name: nauticabook_web
+    volumes:
+      - .:/var/www/html  # Arahkan ke root folder proyek
+    ports:
+      - "8080:80"
+    networks:
+      - nauticabook_network
+
+  db:
+    image: mysql:5.7
+    container_name: nauticabook_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nauticabook_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    networks:
+      - nauticabook_network
+
+networks:
+  nauticabook_network:
