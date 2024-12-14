@@ -41,7 +41,7 @@
           </div>
 
           <!-- Booking Form -->
-          <form>
+          <form id="formPenumpang">
             <!-- Pelabuhan Asal -->
             <div class="form__group">
               <span><i class="ri-ship-line"></i></span>
@@ -269,6 +269,81 @@
               </button>
             </div>
           </form>
+
+          <!-- Booking Form Cargo -->
+<form id="formCargo" style="display: none;">
+  <!-- Jenis Barang -->
+  <div class="form__group">
+    <span><i class="ri-box-line"></i></span>
+    <div class="input__content">
+      <div class="input__group">
+        <select id="jenisBarang" required>
+          <option value="" disabled selected>Pilih Jenis Barang</option>
+          <option value="umum">Umum</option>
+          <option value="berat">Berat</option>
+          <option value="kendaraan">Kendaraan</option>
+        </select>
+      </div>
+      <p>Pilih jenis barang untuk pengiriman</p>
+    </div>
+  </div>
+
+  <!-- Berat Barang -->
+  <div class="form__group">
+    <span><i class="ri-scale-line"></i></span>
+    <div class="input__content">
+      <div class="input__group">
+        <input type="number" id="beratBarang" placeholder="Berat Barang (Kg)" required />
+      </div>
+      <p>Masukkan berat barang dalam kilogram</p>
+    </div>
+  </div>
+
+  <!-- Pelabuhan Asal dan Tujuan -->
+  <div class="form__group">
+    <span><i class="ri-ship-line"></i></span>
+    <div class="input__content">
+      <div class="input__group">
+        <select id="pelabuhanAsalCargo" required>
+          <option value="" disabled selected>Pilih Pelabuhan Asal</option>
+          <option value="merak">Merak</option>
+          <option value="bakauheni">Bakauheni</option>
+        </select>
+      </div>
+      <p>Pilih lokasi keberangkatan</p>
+    </div>
+  </div>
+
+  <div class="form__group">
+    <span><i class="ri-ship-line"></i></span>
+    <div class="input__content">
+      <div class="input__group">
+        <select id="pelabuhanTujuanCargo" required>
+          <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
+          <option value="gilimanuk">Gilimanuk</option>
+          <option value="ketapang">Ketapang</option>
+        </select>
+      </div>
+      <p>Pilih lokasi tujuan</p>
+    </div>
+  </div>
+
+  <!-- Estimasi Jadwal -->
+  <div class="form__group">
+    <span><i class="ri-calendar-line"></i></span>
+    <div class="input__content">
+      <div class="input__group date-time">
+        <input type="date" id="tanggalCargo" required />
+      </div>
+      <p>Pilih estimasi tanggal pengiriman</p>
+    </div>
+  </div>
+  <!-- Tombol Submit -->
+  <div class="form__submit">
+    <button type="submit" id="pesanCargoBtn" disabled>Pesan Cargo</button>
+  </div>
+</form>
+
         </section>
       </div>
     </header>

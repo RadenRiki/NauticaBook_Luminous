@@ -859,6 +859,27 @@ select option:hover {
   background-color: #e0a800;
 }
 
+/* Untuk tombol Pesan Cargo */
+.form__submit {
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#pesanCargoBtn {
+  width: auto;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+#pesanCargoBtn:not(:disabled) {
+  cursor: pointer;
+}
 
 /* Footer Section */
 .footer {

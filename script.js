@@ -79,14 +79,26 @@ document.querySelector('.ticket-dropdown').addEventListener('click', (e) => {
 });
 
 function switchBookingType(type) {
-  const buttons = document.querySelectorAll('.booking-type-btn');
-  buttons.forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.textContent.toLowerCase() === type) {
-      btn.classList.add('active');
-    }
-  });
-  
-  // Tambahan logika untuk mengganti form jika diperlukan
-  // Misalnya menampilkan/menyembunyikan field tertentu
+  const formPenumpang = document.getElementById('formPenumpang');
+  const formCargo = document.getElementById('formCargo');
+  const btnPenumpang = document.querySelector('.booking-type-btn:nth-child(1)');
+  const btnCargo = document.querySelector('.booking-type-btn:nth-child(2)');
+
+  if (type === 'penumpang') {
+    formPenumpang.style.display = 'block';
+    formCargo.style.display = 'none';
+    btnPenumpang.classList.add('active');
+    btnCargo.classList.remove('active');
+  } else if (type === 'cargo') {
+    formPenumpang.style.display = 'none';
+    formCargo.style.display = 'block';
+    btnPenumpang.classList.remove('active');
+    btnCargo.classList.add('active');
+  }
 }
+
+// Tambahkan handler submit untuk formCargo
+document.getElementById('formCargo').addEventListener('submit', (event) => {
+  event.preventDefault(); // Mencegah refresh halaman
+  alert('Form Cargo berhasil dikirim!');
+});
