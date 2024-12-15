@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+  <title>Home - NauticaBook</title>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav__logo">NauticaBook</div>
+    <ul class="nav__links">
+      <li class="link"><a href="home.html">Home</a></li>
+      <li class="link"><a href="#">Jadwal</a></li>
+      <li class="link"><a href="#">Offers</a></li>
+      <li class="link"><a href="#">Seats</a></li>
+      <li class="link"><a href="#">Destinations</a></li>
+    </ul>
+    <div class="profile-icon" onclick="window.location.href='profile.html'">
+      <i class="ri-user-3-line"></i>
+    </div>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="section__container header__container">
+    <div class="header__image__container">
+      <div class="header__content">
+        <h1>Enjoy Your Dream Vacation</h1>
+        <p>Book Ferry, Cargo and stay packages at lowest price.</p>
+      </div>
+
+      <!-- Booking Section -->
+      <section class="section__container booking__container">
+        <!-- Booking Type Selection -->
+        <div class="booking-type">
+          <button class="booking-type-btn active" onclick="switchBookingType('penumpang')">Penumpang</button>
+          <button class="booking-type-btn" onclick="switchBookingType('cargo')">Cargo</button>
+        </div>
+
+        <!-- Booking Form -->
+        <form id="formPenumpang">
+          <!-- Pelabuhan Asal -->
+          <div class="form__group">
+            <span><i class="ri-ship-line"></i></span>
+            <div class="input__content">
+              <div class="input__group">
+                <select id="pelabuhanAsal" required>
+                  <option value="" disabled selected>Pilih Pelabuhan Asal</option>
+                  <option value="merak">Merak</option>
+                  <option value="bakauheni">Bakauheni</option>
+                  <option value="ketapang">Ketapang</option>
+                  <!-- Tambahkan opsi pelabuhan lainnya -->
+                </select>
+              </div>
+              <p>Pilih lokasi keberangkatan</p>
+            </div>
+          </div>
+
+          <!-- Pelabuhan Tujuan -->
+          <div class="form__group">
+            <span><i class="ri-ship-line"></i></span>
+            <div class="input__content">
+              <div class="input__group">
+                <select id="pelabuhanTujuan" required>
+                  <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
+                  <option value="bakauheni">Bakauheni</option>
+                  <option value="merak">Merak</option>
+                  <option value="gilimanuk">Gilimanuk</option>
+                  <!-- Tambahkan opsi pelabuhan lainnya -->
+                </select>
+              </div>
+              <p>Pilih lokasi tujuan</p>
+            </div>
+          </div>
+
+          <!-- Jadwal Masuk -->
+          <div class="form__group">
+            <span><i class="ri-calendar-line"></i></span>
+            <div class="input__content">
+              <div class="input__group date-time">
+                <input type="date" id="tanggal" required />
+                <select id="jamMasuk" required>
+                  <option value="" disabled selected>Pilih Jam</option>
+                  <option value="06:00">06:00</option>
+                  <option value="08:00">08:00</option>
+                  <option value="10:00">10:00</option>
+                  <!-- Tambahkan opsi jam lainnya -->
+                </select>
+              </div>
+              <p>Pilih jadwal keberangkatan</p>
+            </div>
+          </div>
+
+          <!-- Layanan -->
+          <div class="form__group">
+            <span><i class="ri-service-line"></i></span>
+            <div class="input__content">
+              <div class="input__group">
+                <select id="layanan" required>
+                  <option value="" disabled selected>Pilih Layanan</option>
+                  <option value="express">Express</option>
+                  <option value="regular">Regular</option>
+                  <option value="ekonomi">Ekonomi</option>
+                </select>
+              </div>
+              <p>Pilih jenis layanan</p>
+            </div>
+          </div>
+
+          <!-- Penumpang -->
+          <div class="form__group">
+            <span><i class="ri-user-3-line"></i></span>
+            <div class="input__content">
+              <div class="input__group passenger-select">
+                <div class="passenger-header" onclick="togglePassengerDropdown()">
+                  <span>Jumlah Penumpang</span>
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="passenger-dropdown">
+                  <div class="passenger-type">
+                    <div class="passenger-info">
+                      <h4>Dewasa (5 - 59 tahun)</h4>
+                    </div>
+                    <div class="passenger-count">
+                      <button type="button" onclick="decreaseCount('dewasa')">-</button>
+                      <span id="dewasa-count">1</span>
+                      <button type="button" onclick="increaseCount('dewasa')">+</button>
+                    </div>
+                  </div>
+                  
+                  <div class="passenger-type">
+                    <div class="passenger-info">
+                      <h4>Anak (2-4 tahun)</h4>
+                    </div>
+                    <div class="passenger-count">
+                      <button type="button" onclick="decreaseCount('anak')">-</button>
+                      <span id="anak-count">0</span>
+                      <button type="button" onclick="increaseCount('anak')">+</button>
+                    </div>
+                  </div>
+
+                  <div class="passenger-type">
+                    <div class="passenger-info">
+                      <h4>Bayi (di bawah 2 tahun)</h4>
+                    </div>
+                    <div class="passenger-count">
+                      <button type="button" onclick="decreaseCount('bayi')">-</button>
+                      <span id="bayi-count">0</span>
+                      <button type="button" onclick="increaseCount('bayi')">+</button>
+                    </div>
+                  </div>
+
+                  <div class="passenger-type">
+                    <div class="passenger-info">
+                      <h4>Lansia (60 tahun ke atas)</h4>
+                    </div>
+                    <div class="passenger-count">
+                      <button type="button" onclick="decreaseCount('lansia')">-</button>
+                      <span id="lansia-count">0</span>
+                      <button type="button" onclick="increaseCount('lansia')">+</button>
+                    </div>
+                  </div>
+
+                  <button type="button" class="simpan-btn" onclick="savePassengers()">Simpan</button>
+                </div>
+              </div>
+              <p>Pilih jumlah penumpang</p>
+            </div>
+          </div>
+
+          <!-- Tipe Tiket -->
+          <div class="form__group">
+            <span><i class="ri-car-line"></i></span>
+            <div class="input__content">
+              <div class="input__group ticket-select">
+                <div class="ticket-header" onclick="toggleTicketDropdown()">
+                  <span>Pilih Tipe Tiket</span>
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="ticket-dropdown">
+                  <button class="close-btn" onclick="toggleTicketDropdown()">×</button>
+                  <h2 class="modal-title">Pilih Tipe Tiket</h2>
+                  
+                  <div class="ticket-type">
+                    <div class="ticket-content">
+                      <div class="ticket-info">
+                        <img src="path/to/pedestrian-icon.png" alt="Pejalan Kaki">
+                        <div class="ticket-details">
+                          <h4>Pejalan Kaki</h4>
+                          <p class = "description">Tanpa berkendara</p>
+                        </div>
+                      </div>
+                      <input type="radio" name="ticket-type" value="pejalan-kaki">
+                    </div>
+                  </div>
+
+                  <div class="ticket-type">
+                    <div class="ticket-content">
+                      <div class="ticket-info">
+                        <img src="path/to/bicycle-icon.png" alt="Sepeda">
+                        <div class="ticket-details">
+                          <h4>Sepeda</h4>
+                          <p class="golongan">Golongan I (Maks. 3 penumpang)</p>
+                          <p class="description">Sepeda biasa</p>
+                        </div>
+                      </div>
+                      <input type="radio" name="ticket-type" value="sepeda">
+                    </div>
+                  </div>
+
+                  <div class="ticket-type">
+                    <div class="ticket-content">
+                      <div class="ticket-info">
+                        <img src="path/to/motorcycle-small.png" alt="Motor Kecil">
+                        <div class="ticket-details">
+                          <h4>Sepeda Motor (&lt;500cc)</h4>
+                          <p class="golongan">Golongan II (Maks. 3 penumpang)</p>
+                          <p class="description">Sepeda motor dibawah 500cc dan gerobak dorong.</p>
+                        </div>
+                      </div>
+                      <input type="radio" name="ticket-type" value="motor-kecil">
+                    </div>
+                  </div>
+
+                  <div class="ticket-type">
+                    <div class="ticket-content">
+                      <div class="ticket-info">
+                        <img src="path/to/motorcycle-big.png" alt="Motor Besar">
+                        <div class="ticket-details">
+                          <h4>Sepeda Motor (>500cc)</h4>
+                          <p class="golongan">Golongan III (Maks. 3 penumpang)</p>
+                          <p class="description">Sepeda motor di atas 500cc dan kendaraan roda tiga.</p>
+                        </div>
+                      </div>
+                      <input type="radio" name="ticket-type" value="motor-besar">
+                    </div>
+                  </div>
+
+                  <div class="ticket-type">
+                    <div class="ticket-content">
+                      <div class="ticket-info">
+                        <img src="path/to/car.png" alt="Mobil">
+                        <div class="ticket-details">
+                          <h4>Mobil Penumpang</h4>
+                          <p class="golongan">Golongan IVA (Maks. 10 penumpang)</p>
+                          <p class="description">Panjang kendaraan maksimum 5 meter (mobil, jeep, sedan, minicab, minibus, mikrolet, station wagon, dsb.)</p>
+                        </div>
+                      </div>
+                      <input type="radio" name="ticket-type" value="mobil">
+                    </div>
+                  </div>
+
+                  <!-- Tambahkan ticket-type lainnya dengan format yang sama -->
+
+                  <button type="button" class="simpan-btn" onclick="saveTicketType()">Simpan</button>
+                </div>
+              </div>
+              <p>Pilih tipe kendaraan Anda</p>
+            </div>
+          </div>
+
+          <!-- Search Button Container -->
+          <div class="search-container">
+            <button type="submit" class="search-btn">
+              Cari Tiket <i class="ri-search-line"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Booking Form Cargo -->
+<form id="formCargo" style="display: none;">
+<!-- Jenis Barang -->
+<div class="form__group">
+  <span><i class="ri-box-line"></i></span>
+  <div class="input__content">
+    <div class="input__group">
+      <select id="jenisBarang" required>
+        <option value="" disabled selected>Pilih Jenis Barang</option>
+        <option value="umum">Umum</option>
+        <option value="berat">Berat</option>
+        <option value="kendaraan">Kendaraan</option>
+      </select>
+    </div>
+    <p>Pilih jenis barang untuk pengiriman</p>
+  </div>
+</div>
+
+<!-- Berat Barang -->
+<div class="form__group">
+  <span><i class="ri-scale-line"></i></span>
+  <div class="input__content">
+    <div class="input__group">
+      <input type="number" id="beratBarang" placeholder="Berat Barang (Kg)" required />
+    </div>
+    <p>Masukkan berat barang dalam kilogram</p>
+  </div>
+</div>
+
+<!-- Pelabuhan Asal dan Tujuan -->
+<div class="form__group">
+  <span><i class="ri-ship-line"></i></span>
+  <div class="input__content">
+    <div class="input__group">
+      <select id="pelabuhanAsalCargo" required>
+        <option value="" disabled selected>Pilih Pelabuhan Asal</option>
+        <option value="merak">Merak</option>
+        <option value="bakauheni">Bakauheni</option>
+      </select>
+    </div>
+    <p>Pilih lokasi keberangkatan</p>
+  </div>
+</div>
+
+<div class="form__group">
+  <span><i class="ri-ship-line"></i></span>
+  <div class="input__content">
+    <div class="input__group">
+      <select id="pelabuhanTujuanCargo" required>
+        <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
+        <option value="gilimanuk">Gilimanuk</option>
+        <option value="ketapang">Ketapang</option>
+      </select>
+    </div>
+    <p>Pilih lokasi tujuan</p>
+  </div>
+</div>
+
+<!-- Estimasi Jadwal -->
+<div class="form__group">
+  <span><i class="ri-calendar-line"></i></span>
+  <div class="input__content">
+    <div class="input__group date-time">
+      <input type="date" id="tanggalCargo" required />
+    </div>
+    <p>Pilih estimasi tanggal pengiriman</p>
+  </div>
+</div>
+<!-- Tombol Submit -->
+<div class="form__submit">
+  <button type="submit" id="pesanCargoBtn" disabled>Pesan Cargo</button>
+</div>
+</form>
+
+      </section>
+    </div>
+  </header>
+
+  <footer class="footer">
+    <div class="section__container footer__container">
+      <div class="footer__col">
+        <h3>WDM&Co</h3>
+        <p>
+          WDM&Co is a premier hotel booking website that offers a seamless and
+          convenient way to find and book accommodations worldwide.
+        </p>
+        <p>
+          With a user-friendly interface and a vast selection of hotels,
+          WDM&Co aims to provide a stress-free experience for travelers
+          seeking the perfect stay.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <p>About Us</p>
+        <p>Our Team</p>
+        <p>Blog</p>
+        <p>Book</p>
+        <p>Contact Us</p>
+      </div>
+      <div class="footer__col">
+        <h4>Legal</h4>
+        <p>FAQs</p>
+        <p>Terms & Conditions</p>
+        <p>Privacy Policy</p>
+      </div>
+      <div class="footer__col">
+        <h4>Resources</h4>
+        <p>Social Media</p>
+        <p>Help Center</p>
+        <p>Partnerships</p>
+      </div>
+    </div>
+    <div class="footer__bar">
+      Copyright © 2024 Apps by Luminous. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
