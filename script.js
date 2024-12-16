@@ -85,13 +85,13 @@ function switchBookingType(type) {
   const btnCargo = document.querySelector('.booking-type-btn:nth-child(2)');
 
   if (type === 'penumpang') {
-    formPenumpang.style.display = 'block';
+    formPenumpang.style.display = 'grid';
     formCargo.style.display = 'none';
     btnPenumpang.classList.add('active');
     btnCargo.classList.remove('active');
   } else if (type === 'cargo') {
     formPenumpang.style.display = 'none';
-    formCargo.style.display = 'block';
+    formCargo.style.display = 'grid';
     btnPenumpang.classList.remove('active');
     btnCargo.classList.add('active');
   }
@@ -102,3 +102,27 @@ document.getElementById('formCargo').addEventListener('submit', (event) => {
   event.preventDefault(); // Mencegah refresh halaman
   alert('Form Cargo berhasil dikirim!');
 });
+
+// Generate random 16-digit bank account number starting with 777
+function generateBankAccount() {
+  const randomNumbers = Math.floor(Math.random() * 10000000000000).toString().padStart(13, '0');
+  return `777${randomNumbers}`;
+}
+
+// Toggle dropdown visibility
+function togglePayDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  const isVisible = dropdown.style.display === 'block';
+  dropdown.style.display = isVisible ? 'none' : 'block';
+
+  // Generate bank account number when the bank dropdown is opened
+  if (dropdownId === 'bankDropdown' && !isVisible) {
+    document.getElementById('bankAccount').textContent = generateBankAccount();
+  }
+}
+
+// Test Proceed Button
+function proceedToNextStep() {
+  alert('Proceeding to the next step...');
+  window.location.href = "confirmation.html"; // Redirect to the next page (placeholder URL)
+}

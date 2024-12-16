@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles2.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+  <title>Payment Verification</title>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav__logo">NauticaBook</div>
+    <ul class="nav__links">
+      <li class="link"><a href="index.html">Home</a></li>
+      <li class="link"><a href="#">Jadwal</a></li>
+      <li class="link"><a href="#">Offers</a></li>
+      <li class="link"><a href="#">Seats</a></li>
+      <li class="link"><a href="#">Destinations</a></li>
+    </ul>
+    <div class="profile-icon">
+      <i class="ri-user-3-line"></i>
+    </div>
+  </nav>
+
+  <!-- Payment Verification Section -->
+  <section class="section__container payment__container">
+    <h1>Verifikasi Pembayaran</h1>
+    <div class="payment__details">
+      <!-- Confirmation Message -->
+      <div class="confirmation__message">
+        <p><strong>Selamat!</strong><br> Anda telah menyelesaikan Identifikasi diri. Tolong bayar Tiket sesuai instruksi berikut</p>
+      </div>
+      <!-- Payment Instructions -->
+      <div class="payment__instruction">
+        <h2>Metode Pembayaran</h2>
+
+        <!-- Bank Transfer Dropdown -->
+        <div class="dropdown">
+          <div class="dropdown-header" onclick="togglePayDropdown('bankDropdown')">
+            <span>Bank Transfer</span>
+            <i class="ri-arrow-down-s-line"></i>
+          </div>
+          <div id="bankDropdown" class="dropdown-content" style="display: none;">
+            <p><strong>Instruksi Bank Transfer:</strong></p>
+            <p>- Login ke Bank yang dipilih</p>
+            <p>- Pilih opsi 'Transfer'</p>
+            <p>- Transfer menuju ke nomor akun berikut: <strong id="bankAccount">Generating...</strong></p>
+            <p>- Input Pin untuk menyetujui transfer</p>
+            <p>- Tiket telah selesai dibayar</p>
+          </div>
+        </div>
+
+        <!-- Minimart Dropdown -->
+        <div class="dropdown">
+          <div class="dropdown-header" onclick="togglePayDropdown('minimartDropdown')">
+            <span>Pembayaran Minimarket</span>
+            <i class="ri-arrow-down-s-line"></i>
+          </div>
+          <div id="minimartDropdown" class="dropdown-content" style="display: none;">
+            <p><strong>Instruksi Pembayaran melalui Minimarket:</strong></p>
+            <p>- Kunjungi Minimarket terdekat</p>
+            <p>- Datangi kasir dan katakan niatmu</p>
+            <p>- Tunjukkan kode pembayaranmu dan bayar tiket sesuai harga </p>
+            <p>- Tiket telah selesai dibayar</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proceed Button -->
+      <div class="proceed-container">
+        <button class="btn proceed-btn">Berikutnya</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

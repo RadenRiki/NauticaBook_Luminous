@@ -1,0 +1,31 @@
+/* Dropdown Styling */
+.dropdown {
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--extra-light);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-dark);
+    transition: background 0.3s ease;
+  }
+  
+  .dropdown-header:hover {
+    background: #f0f4f8;
+  }
+  
+  .dropdown-content {
+    padding: 1rem;
+    background: var(--white);
+    color: var(--text-dark);
+    border-top: 1px solid #ddd;
+  }
+  

@@ -135,6 +135,14 @@ nav {
 }
 
 /* Booking Section Styles */
+#formCargo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: -1rem;
+  width: 100%;
+}
+
 .booking__container {
   position: absolute;
   bottom: -14rem;
@@ -884,6 +892,7 @@ select option:hover {
 /* Footer Section */
 .footer {
   background-color: var(--primary-color);
+  margin-top: 10rem;
 }
 
 .footer__container {
