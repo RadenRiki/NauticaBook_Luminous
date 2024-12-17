@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles2.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+  <title>Offers</title>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav__logo">NauticaBook</div>
+    <ul class="nav__links">
+        <li class="link"><a href="home.html">Home</a></li>
+        <li class="link"><a href="#">MyTickets</a></li>
+        <li class="link"><a href="offers.html">Offers</a></li>
+    </ul>
+    <div class="profile-icon">
+      <i class="ri-user-3-line"></i>
+    </div>
+  </nav>
+
+  <!-- Offers Section -->
+  <section class="section__container offers__container">
+    <h1>Best Offers</h1>
+    <div class="offers__grid">
+      <!-- Offer 1 -->
+      <div class="offer__card" onclick="openOfferDetails('Offer 1')">
+        <img src="assets/offer1.jpg" alt="Offer 1" class="offer__image">
+        <div class="offer__content">
+          <h2 class="offer__title">Diskon Spesial menuju Bali</h2>
+          <p class="offer__description">Dapatkan diskon sebanyak 20% jika membeli tiket menuju bali minggu ini!</p>
+        </div>
+      </div>
+
+      <!-- Offer 2 -->
+      <div class="offer__card" onclick="openOfferDetails('Offer 2')">
+        <img src="assets/offer2.jpg" alt="Offer 2" class="offer__image">
+        <div class="offer__content">
+          <h2 class="offer__title">Diskon Early Bird</h2>
+          <p class="offer__description">Bangun pagi-pagi, eh malah dapat Diskon gede nih.</p>
+        </div>
+      </div>
+
+      <!-- Offer 3 -->
+      <div class="offer__card" onclick="openOfferDetails('Offer 3')">
+        <img src="assets/offer3.jpg" alt="Offer 3" class="offer__image">
+        <div class="offer__content">
+          <h2 class="offer__title">Paket Keluarga</h2>
+          <p class="offer__description">Jalan-jalan keluarga spesial dengan harga spesial yuk!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="script.js"></script>
+</body>
+</html>
