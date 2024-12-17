@@ -99,7 +99,7 @@ function switchBookingType(type) {
 
 // Tambahkan handler submit untuk formCargo
 document.getElementById('formCargo').addEventListener('submit', (event) => {
-  event.preventDefault(); // Mencegah refresh halaman
+  event.preventDefault();
   alert('Form Cargo berhasil dikirim!');
 });
 
@@ -124,5 +124,10 @@ function togglePayDropdown(dropdownId) {
 // Test Proceed Button
 function proceedToNextStep() {
   alert('Proceeding to the next step...');
-  window.location.href = "confirmation.html"; // Redirect to the next page (placeholder URL)
+  window.location.href = "confirmation.html";
+}
+
+// Handle offer card click events
+function openOfferDetails(offerTitle) {
+  alert(`You selected: ${offerTitle}. For more details, contact us!`);
 }
