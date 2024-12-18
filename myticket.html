@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tickets</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles2.css">
+  <!-- Icon CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+</head>
+<body>
+    <!-- Navigation -->
+  <nav>
+    <div class="nav__logo">NauticaBook</div>
+    <ul class="nav__links">
+      <li class="link"><a href="home.html">Home</a></li>
+      <li class="link"><a href="myticket.html">MyTickets</a></li>
+      <li class="link"><a href="offers.html">Offers</a></li>
+    </ul>
+    <div class="profile-icon" onclick="window.location.href='profile.html'">
+      <i class="ri-user-3-line"></i>
+    </div>
+  </nav>
+  <div class="container-ticket">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2 class="username">Someone</h2>
+      <p class="email">someone@gmail.com</p>
+      <nav>
+        <ul>
+            <li class="active"><i class="ri-file-list-2-line"></i>Pesanan saya</li>
+            <li><i class="ri-recycle-line"></i>Daftar Pembatalan Tiket</li>
+            <li><i class="ri-lock-line"></i>Ubah kata sandi</li>
+            <li><i class="ri-logout-box-line"></i>Keluar</li>
+          </ul>
+      </nav>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-ticket">
+      <!-- Navigation Tabs -->
+      <div class="tabs-tic">
+        <span class="tab-tic active">Aktif</span>
+        <span class="tab-tic">Menunggu</span>
+        <span class="tab-tic">Gagal</span>
+        <span class="tab-tic">Refund</span>
+        <!-- <button class="tab-tic active" onclick="openTab(event, 'empty-state')">Aktif</button>
+        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Menunggu</button>
+        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Gagal</button>
+        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Refund</button> -->
+      </div> 
+
+      <!-- No Tickets Message -->
+      <div class="empty-state">
+        <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
+        <h3>Tidak ada pesanan!</h3>
+        <p>Anda belum memiliki pesanan sama sekali</p>
+        <div class="buttons">
+            <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
+            <a href="#" class="secondary-btn">LIHAT RIWAYAT</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

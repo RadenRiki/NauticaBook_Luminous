@@ -83,5 +83,134 @@
     color: var(--text-light);
     line-height: 1.4;
   }
+
+/* Container Layout */
+.container-ticket {
+  display: flex;
+  height: 100vh;
+  background-color: var(--extra-light);
+  justify-content: center;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  background-color: var(--white);
+  padding: 20px;
   
+  border-radius: 10px; /* Membuat sidebar berbentuk kotak */
+}
+
+.sidebar h2 {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.sidebar p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.sidebar nav ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  color: var(--text-light);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sidebar nav ul li i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.sidebar nav ul .active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Content Area */
+.content-ticket {
+  flex: 1;
+  padding: 40px;
+  background-color: var(--white);
+}
+
+/* Tabs */
+.tabs-tic {
+  display: flex;
+  border-bottom: 2px solid var(--extra-light);
+  justify-content: center;
+}
+
+.tab-tic {
+  padding: 10px 20px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+}
+
+.tab-tic.active {
+  border-bottom: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+    flex-direction: column;
+    justify-content: center; /* Posisi vertikal di tengah */
+    align-items: center; /* Posisi horizontal di tengah */
+    height: 100%; /* Atau gunakan min-height jika perlu */
+}
+
+.empty-state img {
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+.empty-state .buttons {
+  margin-top: 20px;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.secondary-btn {
+  background-color: var(--extra-light);
+  color: var(--text-dark);
+  margin-left: 10px;
+}
+
   
