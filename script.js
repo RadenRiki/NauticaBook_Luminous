@@ -131,3 +131,19 @@ function proceedToNextStep() {
 function openOfferDetails(offerTitle) {
   alert(`You selected: ${offerTitle}. For more details, contact us!`);
 }
+
+// Fungsi untuk membuka tab yang aktif
+function openTab(evt, tabName) {
+  const tabContents = document.querySelectorAll(".tab-content");
+  const tabLinks = document.querySelectorAll(".tab-link");
+
+  // Sembunyikan semua tab
+  tabContents.forEach((content) => content.classList.remove("active"));
+
+  // Hapus status aktif dari semua tombol
+  tabLinks.forEach((link) => link.classList.remove("active"));
+
+  // Tampilkan tab yang dipilih
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
