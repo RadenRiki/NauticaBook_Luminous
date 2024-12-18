@@ -8,26 +8,44 @@ function togglePassengerDropdown() {
 
 function increaseCount(type) {
   const countElement = document.getElementById(`${type}-count`);
-  let count = parseInt(countElement.textContent);
-  countElement.textContent = count + 1;
+  let count = parseInt(countElement.textContent, 10);
+  count++;
+  countElement.textContent = count;
+  updatePassengerDetails();
 }
 
 function decreaseCount(type) {
   const countElement = document.getElementById(`${type}-count`);
-  let count = parseInt(countElement.textContent);
+  let count = parseInt(countElement.textContent, 10);
   if (count > 0) {
-    countElement.textContent = count - 1;
+    count--;
+    countElement.textContent = count;
+    updatePassengerDetails();
   }
 }
 
-function savePassengers() {
-  const dewasa = document.getElementById('dewasa-count').textContent;
-  const anak = document.getElementById('anak-count').textContent;
-  const bayi = document.getElementById('bayi-count').textContent;
-  const lansia = document.getElementById('lansia-count').textContent;
-  
-  // Tutup dropdown setelah menyimpan
-  togglePassengerDropdown();
+function updatePassengerDetails() {
+  const dewasa = parseInt(document.getElementById('dewasa-count').textContent, 10);
+  const anak = parseInt(document.getElementById('anak-count').textContent, 10);
+  const bayi = parseInt(document.getElementById('bayi-count').textContent, 10);
+  const lansia = parseInt(document.getElementById('lansia-count').textContent, 10);
+
+  // Build the display text dynamically
+  let passengerText = [];
+  if (dewasa > 0) passengerText.push(`Dewasa: ${dewasa}`);
+  if (anak > 0) passengerText.push(`Anak: ${anak}`);
+  if (bayi > 0) passengerText.push(`Bayi: ${bayi}`);
+  if (lansia > 0) passengerText.push(`Lansia: ${lansia}`);
+
+  // Update the header display
+  const passengerHeader = document.getElementById('passengerHeader');
+  passengerHeader.textContent = passengerText.length > 0 ? passengerText.join(', ') : 'Jumlah Penumpang';
+
+  // Update hidden inputs for form submission
+  document.getElementById('dewasaCount').value = dewasa;
+  document.getElementById('anakCount').value = anak;
+  document.getElementById('bayiCount').value = bayi;
+  document.getElementById('lansiaCount').value = lansia;
 }
 
 // Menutup dropdown ketika mengklik di luar
@@ -51,14 +69,10 @@ function toggleTicketDropdown() {
   }
 }
 
-function saveTicketType() {
-  const selectedTicket = document.querySelector('input[name="ticket-type"]:checked');
-  if (selectedTicket) {
-    // Simpan nilai yang dipilih
-    const ticketValue = selectedTicket.value;
-    // Tutup dropdown
-    toggleTicketDropdown();
-  }
+function selectTicketType(ticketType) {
+  document.getElementById('selectedTicketType').value = ticketType;
+  const ticketHeader = document.getElementById('ticketHeader');
+  ticketHeader.textContent = `${ticketType}`;
 }
 
 // Close modal when clicking outside
@@ -130,20 +144,4 @@ function proceedToNextStep() {
 // Handle offer card click events
 function openOfferDetails(offerTitle) {
   alert(`You selected: ${offerTitle}. For more details, contact us!`);
-}
-
-// Fungsi untuk membuka tab yang aktif
-function openTab(evt, tabName) {
-  const tabContents = document.querySelectorAll(".tab-content");
-  const tabLinks = document.querySelectorAll(".tab-link");
-
-  // Sembunyikan semua tab
-  tabContents.forEach((content) => content.classList.remove("active"));
-
-  // Hapus status aktif dari semua tombol
-  tabLinks.forEach((link) => link.classList.remove("active"));
-
-  // Tampilkan tab yang dipilih
-  document.getElementById(tabName).classList.add("active");
-  evt.currentTarget.classList.add("active");
 }
