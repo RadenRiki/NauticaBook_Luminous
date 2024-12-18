@@ -113,7 +113,7 @@
             <div class="input__content">
               <div class="input__group passenger-select">
                 <div class="passenger-header" onclick="togglePassengerDropdown()">
-                  <span>Jumlah Penumpang</span>
+                  <span id="passengerHeader">Jumlah Penumpang</span>
                   <i class="ri-arrow-down-s-line"></i>
                 </div>
                 <div class="passenger-dropdown">
@@ -123,7 +123,7 @@
                     </div>
                     <div class="passenger-count">
                       <button type="button" onclick="decreaseCount('dewasa')">-</button>
-                      <span id="dewasa-count">1</span>
+                      <span id="dewasa-count">0</span>
                       <button type="button" onclick="increaseCount('dewasa')">+</button>
                     </div>
                   </div>
@@ -161,11 +161,15 @@
                     </div>
                   </div>
 
-                  <button type="button" class="simpan-btn" onclick="savePassengers()">Simpan</button>
+                  <button type="button" class="simpan-btn" onclick="togglePassengerDropdown()">Simpan</button>
                 </div>
               </div>
               <p>Pilih jumlah penumpang</p>
             </div>
+            <input type="hidden" id="dewasaCount" name="dewasaCount" value="0" />
+            <input type="hidden" id="anakCount" name="anakCount" value="0" />
+            <input type="hidden" id="bayiCount" name="bayiCount" value="0" />
+            <input type="hidden" id="lansiaCount" name="lansiaCount" value="0" />
           </div>
 
           <!-- Tipe Tiket -->
@@ -174,7 +178,7 @@
             <div class="input__content">
               <div class="input__group ticket-select">
                 <div class="ticket-header" onclick="toggleTicketDropdown()">
-                  <span>Pilih Tipe Tiket</span>
+                  <span id="ticketHeader">Pilih Tipe Tiket</span>
                   <i class="ri-arrow-down-s-line"></i>
                 </div>
                 <div class="ticket-dropdown">
@@ -184,79 +188,78 @@
                   <div class="ticket-type">
                     <div class="ticket-content">
                       <div class="ticket-info">
-                        <img src="path/to/pedestrian-icon.png" alt="Pejalan Kaki">
+                        <img src="assets/pejalankaki.png" alt="Pejalan Kaki">
                         <div class="ticket-details">
                           <h4>Pejalan Kaki</h4>
                           <p class = "description">Tanpa berkendara</p>
                         </div>
                       </div>
-                      <input type="radio" name="ticket-type" value="pejalan-kaki">
+                      <input type="radio" name="ticket-type" value="pejalan-kaki" onclick="selectTicketType('Pejalan Kaki')">
                     </div>
                   </div>
 
                   <div class="ticket-type">
                     <div class="ticket-content">
                       <div class="ticket-info">
-                        <img src="path/to/bicycle-icon.png" alt="Sepeda">
+                        <img src="assets/sepeda.png" alt="Sepeda">
                         <div class="ticket-details">
                           <h4>Sepeda</h4>
                           <p class="golongan">Golongan I (Maks. 3 penumpang)</p>
                           <p class="description">Sepeda biasa</p>
                         </div>
                       </div>
-                      <input type="radio" name="ticket-type" value="sepeda">
+                      <input type="radio" name="ticket-type" value="sepeda" onclick="selectTicketType('Sepeda')">
                     </div>
                   </div>
 
                   <div class="ticket-type">
                     <div class="ticket-content">
                       <div class="ticket-info">
-                        <img src="path/to/motorcycle-small.png" alt="Motor Kecil">
+                        <img src="assets/motorkecil.png" alt="Motor Kecil">
                         <div class="ticket-details">
                           <h4>Sepeda Motor (&lt;500cc)</h4>
                           <p class="golongan">Golongan II (Maks. 3 penumpang)</p>
                           <p class="description">Sepeda motor dibawah 500cc dan gerobak dorong.</p>
                         </div>
                       </div>
-                      <input type="radio" name="ticket-type" value="motor-kecil">
+                      <input type="radio" name="ticket-type" value="motor-kecil" onclick="selectTicketType('Motor Kecil')">
                     </div>
                   </div>
 
                   <div class="ticket-type">
                     <div class="ticket-content">
                       <div class="ticket-info">
-                        <img src="path/to/motorcycle-big.png" alt="Motor Besar">
+                        <img src="assets/motorbesar.png" alt="Motor Besar">
                         <div class="ticket-details">
                           <h4>Sepeda Motor (>500cc)</h4>
                           <p class="golongan">Golongan III (Maks. 3 penumpang)</p>
                           <p class="description">Sepeda motor di atas 500cc dan kendaraan roda tiga.</p>
                         </div>
                       </div>
-                      <input type="radio" name="ticket-type" value="motor-besar">
+                      <input type="radio" name="ticket-type" value="motor-besar" onclick="selectTicketType('Motor Besar')">
                     </div>
                   </div>
 
                   <div class="ticket-type">
                     <div class="ticket-content">
                       <div class="ticket-info">
-                        <img src="path/to/car.png" alt="Mobil">
+                        <img src="assets/mobil.png" alt="Mobil">
                         <div class="ticket-details">
                           <h4>Mobil Penumpang</h4>
                           <p class="golongan">Golongan IVA (Maks. 10 penumpang)</p>
                           <p class="description">Panjang kendaraan maksimum 5 meter (mobil, jeep, sedan, minicab, minibus, mikrolet, station wagon, dsb.)</p>
                         </div>
                       </div>
-                      <input type="radio" name="ticket-type" value="mobil">
+                      <input type="radio" name="ticket-type" value="mobil" onclick="selectTicketType('Mobil')">
                     </div>
                   </div>
 
-                  <!-- Tambahkan ticket-type lainnya dengan format yang sama -->
-
-                  <button type="button" class="simpan-btn" onclick="saveTicketType()">Simpan</button>
+                  <button type="button" class="simpan-btn" onclick="toggleTicketDropdown()">Simpan</button>
                 </div>
               </div>
               <p>Pilih tipe kendaraan Anda</p>
             </div>
+            <input type="hidden" id="selectedTicketType" name="selectedTicketType" value="" />
           </div>
 
           <!-- Search Button Container -->
@@ -350,34 +353,24 @@
       <div class="footer__col">
         <h3>NauticaBook</h3>
         <p>
-          WDM&Co is a premier hotel booking website that offers a seamless and
-          convenient way to find and book accommodations worldwide.
+          NauticaBook adalah website yang menyediakan layanan booking ferry dan cargo 
+          secara mudah, cepat, dan terpercaya. Melalui platform ini, pengguna dapat mencari 
+          jadwal keberangkatan, membandingkan harga, dan memesan tiket ferry serta layanan 
+          pengiriman kargo hanya dalam beberapa langkah. 
         </p>
         <p>
-          With a user-friendly interface and a vast selection of hotels,
-          WDM&Co aims to provide a stress-free experience for travelers
-          seeking the perfect stay.
+          Dengan antarmuka yang ramah pengguna, NauticaBook memastikan pengalaman pemesanan 
+          yang nyaman, baik untuk perjalanan pribadi, perjalanan bisnis, maupun kebutuhan logistik. 
+          Didukung oleh jaringan mitra terpercaya, NauticaBook hadir untuk memenuhi kebutuhan 
+          transportasi laut Anda dengan layanan pelanggan yang responsif dan sistem pembayaran yang aman.
         </p>
       </div>
       <div class="footer__col">
-        <h4>Company</h4>
-        <p>About Us</p>
-        <p>Our Team</p>
-        <p>Blog</p>
-        <p>Book</p>
-        <p>Contact Us</p>
-      </div>
-      <div class="footer__col">
-        <h4>Legal</h4>
-        <p>FAQs</p>
-        <p>Terms & Conditions</p>
-        <p>Privacy Policy</p>
-      </div>
-      <div class="footer__col">
-        <h4>Resources</h4>
-        <p>Social Media</p>
-        <p>Help Center</p>
-        <p>Partnerships</p>
+        <h4>Tim Luminous</h4>
+        <p>-</p>
+        <p>Arvindra Ahmad Ramadhan (23523128)</p>
+        <p>-</p>
+        <p>-</p>
       </div>
     </div>
     <div class="footer__bar">
