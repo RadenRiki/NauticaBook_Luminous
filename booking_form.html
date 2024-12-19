@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NauticaBook - Booking Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="styles3.css">
+    <style>
+        /* Inline styling tambahan jika diperlukan */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container-ticket {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1100px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .content-ticket {
+            flex: 2;
+            padding-right: 20px;
+        }
+
+        .sidebar {
+            flex: 1;
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            margin-top: 0;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-pesan {
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .policy {
+            background-color: #fff3cd;
+            padding: 10px;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="header-section">
+        <div class="nav__logo">NauticaBook</div>
+    </header>
+
+    <!-- Container -->
+    <div class="container-ticket">
+        <!-- Main Content -->
+        <div class="content-ticket">
+            <h2>Detail Pemesanan</h2>
+            <form action="process_booking.php" method="POST">
+                <!-- Informasi Pemesan -->
+                <div class="details">
+                    <h3>Informasi Pemesan</h3>
+                    <label for="namaPemesan">Nama Pemesan *</label>
+                    <input type="text" id="namaPemesan" name="namaPemesan" required>
+
+                    <label for="noTelepon">Nomor Telepon *</label>
+                    <input type="tel" id="noTelepon" name="noTelepon" required>
+
+                    <label for="email">Alamat Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <!-- Detail Penumpang -->
+                <div class="details">
+                    <h3>Detail Penumpang</h3>
+                    <label for="title">Title *</label>
+                    <select id="title" name="title" required>
+                        <option value="Tuan">Tuan</option>
+                        <option value="Nyonya">Nyonya</option>
+                        <option value="Nona">Nona</option>
+                    </select>
+
+                    <label for="namaLengkap">Nama Lengkap *</label>
+                    <input type="text" id="namaLengkap" name="namaLengkap" required>
+
+                    <label for="jenisId">Jenis ID *</label>
+                    <select id="jenisId" name="jenisId" required>
+                        <option value="KTP">KTP</option>
+                        <option value="SIM">SIM</option>
+                        <option value="Paspor">Paspor</option>
+                    </select>
+
+                    <label for="nomorIdentitas">Nomor Identitas *</label>
+                    <input type="text" id="nomorIdentitas" name="nomorIdentitas" required>
+
+                    <label for="usia">Usia *</label>
+                    <input type="number" id="usia" name="usia" required>
+                </div>
+
+                <!-- Catatan Penting -->
+                <div class="policy">
+                    <p>Pastikan data Anda sesuai dengan identitas resmi. Kesalahan data dapat menyebabkan tiket tidak valid.</p>
+                </div>
+
+                <!-- Tombol Lanjutkan -->
+                <button type="submit" class="btn-pesan">Lanjutkan</button>
+            </form>
+        </div>
+
+        <!-- Sidebar Rincian Harga -->
+        <aside class="sidebar">
+            <h2>Rincian Harga</h2>
+            <p>Keberangkatan: <strong>Gilimanuk → Ketapang</strong></p>
+            <p>Jadwal: <strong>Jum'at, 20 Desember 2024</strong></p>
+            <p>Layanan: <strong>Reguler</strong></p>
+            <p>Harga Tiket Pergi: <strong>Rp10.600</strong></p>
+            <p>Total: <strong style="color: #0056b3;">Rp10.600</strong></p>
+        </aside>
+    </div>
+</body>
+</html>
