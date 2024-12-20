@@ -151,7 +151,7 @@
 }
 
 .tab-tic {
-  padding: 10px 20px;
+  padding: 10px 70px;
   font-weight: 500;
   color: var(--text-light);
   cursor: pointer;
@@ -172,7 +172,7 @@
 }
 
 .empty-state img {
-  width: 200px;
+  width: 300px;
   margin-bottom: 20px;
 }
 
