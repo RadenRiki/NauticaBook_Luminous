@@ -44,7 +44,7 @@
             <span><i class="ri-ship-line"></i></span>
             <div class="input__content">
               <div class="input__group">
-                <select id="pelabuhanAsal" required>
+                <select id="pelabuhanAsal" onchange="updateAsal()" required>
                   <option value="" disabled selected>Pilih Pelabuhan Asal</option>
                   <option value="merak">Merak</option>
                   <option value="bakauheni">Bakauheni</option>
@@ -54,6 +54,7 @@
               </div>
               <p>Pilih lokasi keberangkatan</p>
             </div>
+            <input type="hidden" id="AsalInput" name="AsalInput" value="" />
           </div>
 
           <!-- Pelabuhan Tujuan -->
@@ -61,7 +62,7 @@
             <span><i class="ri-ship-line"></i></span>
             <div class="input__content">
               <div class="input__group">
-                <select id="pelabuhanTujuan" required>
+                <select id="pelabuhanTujuan" onchange="updateTujuan()" required>
                   <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
                   <option value="bakauheni">Bakauheni</option>
                   <option value="merak">Merak</option>
@@ -71,6 +72,7 @@
               </div>
               <p>Pilih lokasi tujuan</p>
             </div>
+            <input type="hidden" id="TujuanInput" name="TujuanInput" value="" />
           </div>
 
           <!-- Jadwal Masuk -->
@@ -78,8 +80,8 @@
             <span><i class="ri-calendar-line"></i></span>
             <div class="input__content">
               <div class="input__group date-time">
-                <input type="date" id="tanggal" required />
-                <select id="jamMasuk" required>
+                <input type="date" id="tanggal" name="tanggal" required />
+                <select id="jamMasuk" onchange="updateJam()" required>
                   <option value="" disabled selected>Pilih Jam</option>
                   <option value="06:00">06:00</option>
                   <option value="08:00">08:00</option>
@@ -89,6 +91,7 @@
               </div>
               <p>Pilih jadwal keberangkatan</p>
             </div>
+            <input type="hidden" id="JamInput" name="JamInput" value="" />
           </div>
 
           <!-- Layanan -->
@@ -96,7 +99,7 @@
             <span><i class="ri-service-line"></i></span>
             <div class="input__content">
               <div class="input__group">
-                <select id="layanan" required>
+                <select id="layanan" onchange="updateLayanan()" required>
                   <option value="" disabled selected>Pilih Layanan</option>
                   <option value="express">Express</option>
                   <option value="regular">Regular</option>
@@ -105,6 +108,7 @@
               </div>
               <p>Pilih jenis layanan</p>
             </div>
+            <input type="hidden" id="LayananInput" name="LayananInput" value="" />
           </div>
 
           <!-- Penumpang -->
@@ -264,7 +268,7 @@
 
           <!-- Search Button Container -->
           <div class="search-container">
-            <button type="submit" class="search-btn">
+            <button type="submit" class="search-btn" onclick="handlePassengerSubmit()">
               Cari Tiket <i class="ri-search-line"></i>
             </button>
           </div>
@@ -277,7 +281,7 @@
   <span><i class="ri-box-line"></i></span>
   <div class="input__content">
     <div class="input__group">
-      <select id="jenisBarang" required>
+      <select id="jenisBarang" onchange="updateBarang()" required>
         <option value="" disabled selected>Pilih Jenis Barang</option>
         <option value="umum">Umum</option>
         <option value="berat">Berat</option>
@@ -286,6 +290,7 @@
     </div>
     <p>Pilih jenis barang untuk pengiriman</p>
   </div>
+  <input type="hidden" id="BarangInput" name="BarangInput" value="" />
 </div>
 
 <!-- Berat Barang -->
@@ -293,7 +298,7 @@
   <span><i class="ri-scale-line"></i></span>
   <div class="input__content">
     <div class="input__group">
-      <input type="number" id="beratBarang" placeholder="Berat Barang (Kg)" required />
+      <input type="number" id="beratBarang" name="beratBarang" placeholder="Berat Barang (Kg)" required />
     </div>
     <p>Masukkan berat barang dalam kilogram</p>
   </div>
@@ -304,7 +309,7 @@
   <span><i class="ri-ship-line"></i></span>
   <div class="input__content">
     <div class="input__group">
-      <select id="pelabuhanAsalCargo" required>
+      <select id="pelabuhanAsalCargo" onchange="updateCargoAsal()" required>
         <option value="" disabled selected>Pilih Pelabuhan Asal</option>
         <option value="merak">Merak</option>
         <option value="bakauheni">Bakauheni</option>
@@ -312,13 +317,14 @@
     </div>
     <p>Pilih lokasi keberangkatan</p>
   </div>
+  <input type="hidden" id="CargoAsal" name="CargoAsal" value="" />
 </div>
 
 <div class="form__group">
   <span><i class="ri-ship-line"></i></span>
   <div class="input__content">
     <div class="input__group">
-      <select id="pelabuhanTujuanCargo" required>
+      <select id="pelabuhanTujuanCargo" onchange="updateCargoTujuan()" required>
         <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
         <option value="gilimanuk">Gilimanuk</option>
         <option value="ketapang">Ketapang</option>
@@ -326,6 +332,7 @@
     </div>
     <p>Pilih lokasi tujuan</p>
   </div>
+  <input type="hidden" id="CargoTujuan" name="CargoTujuan" value="" />
 </div>
 
 <!-- Estimasi Jadwal -->
@@ -333,14 +340,14 @@
   <span><i class="ri-calendar-line"></i></span>
   <div class="input__content">
     <div class="input__group date-time">
-      <input type="date" id="tanggalCargo" required />
+      <input type="date" id="tanggalCargo" name="tanggalCargo" required />
     </div>
     <p>Pilih estimasi tanggal pengiriman</p>
   </div>
 </div>
 <!-- Tombol Submit -->
 <div class="form__submit">
-  <button type="submit" id="pesanCargoBtn" disabled>Pesan Cargo</button>
+  <button type="submit" id="pesanCargoBtn" onclick="handleCargoSubmit()" >Pesan Cargo</button>
 </div>
 </form>
 

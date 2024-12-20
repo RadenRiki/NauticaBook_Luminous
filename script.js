@@ -6,6 +6,45 @@ function togglePassengerDropdown() {
   dropdown.classList.toggle('active', isDropdownOpen);
 }
 
+function perluAkun() {
+  alert("Anda perlu membuat akun terlebih dahulu.");
+}
+
+function updateLayanan() {
+  var selectValue = document.getElementById("layanan").value;
+  document.getElementById("LayananInput").value = selectValue;
+}
+
+function updateJam() {
+  var selectValue = document.getElementById("jamMasuk").value;
+  document.getElementById("JamInput").value = selectValue;
+}
+
+function updateTujuan() {
+  var selectValue = document.getElementById("pelabuhanAsal").value;
+  document.getElementById("AsalInput").value = selectValue;
+}
+
+function updateAsal() {
+  var selectValue = document.getElementById("pelabuhanTujuan").value;
+  document.getElementById("TujuanInput").value = selectValue;
+}
+
+function updateBarang() {
+  var selectValue = document.getElementById("jenisBarang").value;
+  document.getElementById("BarangInput").value = selectValue;
+}
+
+function updateCargoAsal() {
+  var selectValue = document.getElementById("pelabuhanAsalCargo").value;
+  document.getElementById("CargoAsal").value = selectValue;
+}
+
+function updateCargoTujuan() {
+  var selectValue = document.getElementById("pelabuhanTujuanCargo").value;
+  document.getElementById("CargoTujuan").value = selectValue;
+}
+
 function increaseCount(type) {
   const countElement = document.getElementById(`${type}-count`);
   let count = parseInt(countElement.textContent, 10);
@@ -111,11 +150,56 @@ function switchBookingType(type) {
   }
 }
 
-// Tambahkan handler submit untuk formCargo
-document.getElementById('formCargo').addEventListener('submit', (event) => {
-  event.preventDefault();
-  alert('Form Cargo berhasil dikirim!');
-});
+// Function to handle Passenger Form Submission
+function handlePassengerSubmit() {
+  // Collect Passenger Form Data
+  const asal = document.getElementById('pelabuhanAsal').value;
+  const tujuan = document.getElementById('pelabuhanTujuan').value;
+  const tanggal = document.getElementById('tanggal').value;
+  const jam = document.getElementById('jamMasuk').value;
+  const layanan = document.getElementById('layanan').value;
+  const dewasa = document.getElementById('dewasaCount').value;
+  const anak = document.getElementById('anakCount').value;
+  const bayi = document.getElementById('bayiCount').value;
+  const lansia = document.getElementById('lansiaCount').value;
+  const tipeTiket = document.getElementById('selectedTicketType').value;
+
+  // Save Passenger Data to Session Storage
+  sessionStorage.setItem('asal', asal);
+  sessionStorage.setItem('tujuan', tujuan);
+  sessionStorage.setItem('tanggal', tanggal);
+  sessionStorage.setItem('jam', jam);
+  sessionStorage.setItem('layanan', layanan);
+  sessionStorage.setItem('dewasa', dewasa);
+  sessionStorage.setItem('anak', anak);
+  sessionStorage.setItem('bayi', bayi);
+  sessionStorage.setItem('lansia', lansia);
+  sessionStorage.setItem('tipeTiket', tipeTiket);
+
+  // Redirect to ticketdetail.html
+  window.location.href = 'ticketdetail.html';
+}
+
+// Function to handle Cargo Form Submission
+function handleCargoSubmit() {
+  // Collect Cargo Form Data
+  const jenisBarang = document.getElementById('jenisBarang').value;
+  const beratBarang = document.getElementById('beratBarang').value;
+  const asalCargo = document.getElementById('pelabuhanAsalCargo').value;
+  const tujuanCargo = document.getElementById('pelabuhanTujuanCargo').value;
+  const tanggalCargo = document.getElementById('tanggalCargo').value;
+
+  // Save Cargo Data to Session Storage
+  sessionStorage.setItem('jenisBarang', jenisBarang);
+  sessionStorage.setItem('beratBarang', beratBarang);
+  sessionStorage.setItem('asalCargo', asalCargo);
+  sessionStorage.setItem('tujuanCargo', tujuanCargo);
+  sessionStorage.setItem('tanggalCargo', tanggalCargo);
+
+  // Redirect to ticketdetail.html
+  window.location.href = 'ticketdetail.html';
+}
+
 
 // Generate random 16-digit bank account number starting with 777
 function generateBankAccount() {
@@ -144,4 +228,33 @@ function proceedToNextStep() {
 // Handle offer card click events
 function openOfferDetails(offerTitle) {
   alert(`You selected: ${offerTitle}. For more details, contact us!`);
+}
+
+function checkPasswords() {
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+
+  if (password !== confirmPassword) {
+    document.getElementById('confirm-password').setCustomValidity('Passwords do not match');
+  } else {
+    document.getElementById('confirm-password').setCustomValidity('');
+  }
+}
+
+function openTab(event, tabName) {
+  // Get all elements with class="tab-content" and hide them
+  var tabContents = document.getElementsByClassName("tab-content");
+  for (var i = 0; i < tabContents.length; i++) {
+    tabContents[i].style.display = "none";
+  }
+
+  // Get all elements with class="tab-link" and remove the class "active"
+  var tabLinks = document.getElementsByClassName("tab-link");
+  for (var i = 0; i < tabLinks.length; i++) {
+    tabLinks[i].classList.remove("active");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(tabName).style.display = "block";
+  event.currentTarget.classList.add("active");
 }
