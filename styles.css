@@ -994,3 +994,50 @@ select option:hover {
 .profile-icon:hover {
   color: var(--primary-color-dark);
 }
+
+.booking-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* 3 bagian untuk konten, 1 bagian untuk sidebar */
+  gap: 20px;
+  margin: 20px;
+}
+
+.main-content {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.sidebar-content p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.sidebar-content span {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .booking-container {
+    grid-template-columns: 1fr; /* Stack main content and sidebar vertically */
+  }
+
+  .sidebar {
+    margin-top: 20px;
+  }
+}

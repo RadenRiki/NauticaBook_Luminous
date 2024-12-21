@@ -303,15 +303,19 @@
                     });
                     document.getElementById('submitBooking').addEventListener('click', function(event) {
                         event.preventDefault();
+                        // Ambil semua jumlah penumpang yang sudah ada
                         const jumlahDewasa = parseInt(document.getElementById('dewasa-count').textContent, 10);
                         const jumlahAnak = parseInt(document.getElementById('anak-count').textContent, 10);
                         const jumlahBayi = parseInt(document.getElementById('bayi-count').textContent, 10);
                         const jumlahLansia = parseInt(document.getElementById('lansia-count').textContent, 10);
-                    
+                        // Ambil value jamMasuk dari select
+                        const jamSelected = document.getElementById('jamMasuk').value;
+                        // Buat data object untuk disimpan
                         const data = {
                             pelabuhanAsal: document.getElementById('pelabuhanAsal').value,
                             pelabuhanTujuan: document.getElementById('pelabuhanTujuan').value,
                             tanggal: document.getElementById('tanggal').value,
+                            jamMasuk: jamSelected, // <-- tambahkan ini
                             layanan: document.getElementById('layanan').value,
                             tipeTiket: document.getElementById('selectedTicketType').value,
                             jumlahPenumpang: {
@@ -322,10 +326,9 @@
                                 total: jumlahDewasa + jumlahAnak + jumlahBayi + jumlahLansia
                             }
                         };
-                    
                         sessionStorage.setItem('bookingData', JSON.stringify(data));
                         window.location.href = 'ticketdetail.html';
-                    });                    
+                    });
                 </script>
 
                 <!-- Search Button Container -->
@@ -423,13 +426,15 @@
             <div class="footer__col">
                 <h3>NauticaBook</h3>
                 <p>
-                    NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya. 
-                    Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa langkah.
+                    NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
+                    Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
+                    langkah.
                 </p>
                 <p>
-                    NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman pemesanan nyaman, 
-                    baik untuk perjalanan pribadi, bisnis, maupun logistik. Dengan mitra terpercaya, 
-                    layanan pelanggan responsif, dan sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi laut Anda.
+                    NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman pemesanan nyaman,
+                    baik untuk perjalanan pribadi, bisnis, maupun logistik. Dengan mitra terpercaya,
+                    layanan pelanggan responsif, dan sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
+                    laut Anda.
                 </p>
             </div>
             <div class="footer__col">
@@ -444,14 +449,14 @@
                 <p>FAQs</p>
                 <p>Terms & Conditions</p>
                 <p>Privacy Policy</p>
-              </div>
-              <div class="footer__col">
+            </div>
+            <div class="footer__col">
                 <h4>Resources</h4>
                 <p>Social Media</p>
                 <p>Help Center</p>
                 <p>Partnerships</p>
-              </div>
             </div>
+        </div>
         </div>
         <div class="footer__bar">
             Copyright © 2024 Webs by Luminous. All rights reserved.

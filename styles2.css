@@ -169,4 +169,34 @@
   margin-left: 10px;
 }
 
-  
+.ticket-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ticket-status {
+  background: #4CAF50;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+}
+
+.ticket-details {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.ticket-details p {
+  margin: 0.5rem 0;
+}

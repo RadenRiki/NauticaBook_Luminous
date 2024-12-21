@@ -277,6 +277,19 @@
             day: 'numeric' 
         })}`;
 
+        let formatedDate = new Date(bookingData.tanggal).toLocaleDateString('id-ID', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        let jam = bookingData.jamMasuk; // jam "06:00" misalnya
+        
+        document.getElementById("schedule").textContent =
+          `${formatedDate} | Jam Masuk: ${jam} WIB`;
+        
+
     document.getElementById("priceDetails").innerHTML = priceDetails.join('');
     document.getElementById("totalPrice").textContent = `Rp${totalHarga.toLocaleString()}`;
 

@@ -1,51 +1,127 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Tickets</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="styles2.css">
-  <!-- Icon CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tickets</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles2.css" />
+    <!-- Icon CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+    />
+  </head>
+  <body>
     <!-- Navigation -->
-  <nav>
-    <div class="nav__logo">NauticaBook</div>
-    <ul class="nav__links">
-      <li class="link"><a href="home.html">Home</a></li>
-      <li class="link"><a href="myticket.html">MyTickets</a></li>
-      <li class="link"><a href="offers.html">Offers</a></li>
-    </ul>
-    <div class="profile-icon" onclick="window.location.href='profile.html'">
-      <i class="ri-user-3-line"></i>
-    </div>
-  </nav>
-  <div class="container-ticket">
-
-    <!-- Content Area -->
-    <div class="content-ticket">
-      <!-- Navigation Tabs -->
-      <div class="tabs-tic">
-        <span class="tab-tic active">Aktif</span>
-        <span class="tab-tic">Riwayat</span>
-        <!-- <button class="tab-tic active" onclick="openTab(event, 'empty-state')">Aktif</button>
+    <nav>
+      <div class="nav__logo">NauticaBook</div>
+      <ul class="nav__links">
+        <li class="link"><a href="home.html">Home</a></li>
+        <li class="link"><a href="myticket.html">MyTickets</a></li>
+        <li class="link"><a href="offers.html">Offers</a></li>
+      </ul>
+      <div class="profile-icon" onclick="window.location.href='profile.html'">
+        <i class="ri-user-3-line"></i>
+      </div>
+    </nav>
+    <div class="container-ticket">
+      <!-- Content Area -->
+      <div class="content-ticket">
+        <!-- Navigation Tabs -->
+        <div class="tabs-tic">
+          <span class="tab-tic active">Aktif</span>
+          <span class="tab-tic">Riwayat</span>
+          <!-- <button class="tab-tic active" onclick="openTab(event, 'empty-state')">Aktif</button>
         <button class="tab-tic" onclick="openTab(event, 'empty-state')">Menunggu</button>
         <button class="tab-tic" onclick="openTab(event, 'empty-state')">Gagal</button>
         <button class="tab-tic" onclick="openTab(event, 'empty-state')">Refund</button> -->
-      </div> 
+        </div>
 
-      <!-- No Tickets Message -->
-      <div class="empty-state">
-        <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
-        <h3>Tidak ada pesanan!</h3>
-        <p>Anda belum memiliki pesanan sama sekali</p>
-        <div class="buttons">
+        <!-- No Tickets Message -->
+        <div class="empty-state">
+          <img
+            src="assets/pngtree-ferry-boat-vector-png-image_11244663.png"
+            alt="Ferry Illustration"
+          />
+          <h3>Tidak ada pesanan!</h3>
+          <p>Anda belum memiliki pesanan sama sekali</p>
+          <div class="buttons">
             <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</body>
+    <script>
+      // Tambahkan script ini di myticket.html
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {
+          // Cek apakah user sudah login
+          const userData = JSON.parse(sessionStorage.getItem("user"));
+          if (!userData?.id) {
+            alert("Silakan login terlebih dahulu");
+            window.location.href = "login.html";
+            return;
+          }
+
+          // Fetch tiket berdasarkan user_id
+          const response = await fetch(`/api/tickets/${userData.id}`);
+          const tickets = await response.json();
+
+          // Container untuk tiket
+          const contentTicket = document.querySelector(".content-ticket");
+
+          if (tickets.length === 0) {
+            // Tampilkan empty state jika tidak ada tiket
+            contentTicket.innerHTML = `
+        <div class="empty-state">
+          <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
+          <h3>Tidak ada pesanan!</h3>
+          <p>Anda belum memiliki pesanan sama sekali</p>
+          <div class="buttons">
+            <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
+          </div>
+        </div>
+      `;
+          } else {
+            // Tampilkan daftar tiket
+            const ticketList = tickets
+              .map(
+                (ticket) => `
+        <div class="ticket-card">
+          <div class="ticket-header">
+            <h3>${ticket.asal} → ${ticket.tujuan}</h3>
+            <span class="ticket-status">Aktif</span>
+          </div>
+          <div class="ticket-details">
+            <p>Tanggal: ${new Date(ticket.tanggal).toLocaleDateString(
+              "id-ID"
+            )}</p>
+            <p>Jam: ${ticket.jam}</p>
+            <p>Layanan: ${ticket.layanan}</p>
+            <p>Tipe: ${ticket.tipe}</p>
+            <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
+          </div>
+        </div>
+      `
+              )
+              .join("");
+
+            contentTicket.innerHTML = `
+        <div class="tabs-tic">
+          <span class="tab-tic active">Aktif</span>
+          <span class="tab-tic">Riwayat</span>
+        </div>
+        <div class="tickets-container">
+          ${ticketList}
+        </div>
+      `;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Gagal memuat data tiket");
+        }
+      });
+    </script>
+  </body>
 </html>

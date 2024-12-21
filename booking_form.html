@@ -1,416 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles4.css" />
     <link rel="stylesheet" href="styles.css" />
     <title>Booking Form - NauticaBook</title>
     <script defer src="script.js"></script>
-  </head>
-  <body>
+    <style>
+        /* Jika Anda perlu menyesuaikan jarak sticky sidebar, 
+         silakan atur top di sini (opsional). */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            /* Contoh jarak */
+            align-self: start;
+        }
+    </style>
+</head>
+
+<body>
     <!-- Header Section -->
     <div class="header-section">
-      <nav>
-        <div class="nav__logo" style="color: white">NauticaBook</div>
-        <div>
-          <h5>DETAIL PEMESANAN</h5>
-        </div>
-        <div class="profile-icon" onclick="window.location.href='profile.html'">
-          <i class="ri-user-3-line"></i>
-        </div>
-      </nav>
+        <nav>
+            <div class="nav__logo" style="color: white">NauticaBook</div>
+            <div>
+                <h5>DETAIL PEMESANAN</h5>
+            </div>
+            <div class="profile-icon" onclick="window.location.href='profile.html'">
+                <i class="ri-user-3-line"></i>
+            </div>
+        </nav>
     </div>
 
     <!-- Main Container -->
     <div class="container">
-      <!-- Informasi Pemesan -->
-      <div class="section">
-        <h2>Informasi Pemesan</h2>
-        <div class="form-group">
-          <label for="namaPemesan">Nama Pemesan *</label>
-          <input
-            type="text"
-            id="namaPemesan"
-            name="namaPemesan"
-            placeholder="Masukkan nama sesuai KTP"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="nomorHandphone">Nomor Handphone *</label>
-          <input
-            type="text"
-            id="nomorHandphone"
-            name="nomorHandphone"
-            placeholder="081234567890"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="email">Alamat Email *</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="example@email.com"
-            required
-          />
-        </div>
-      </div>
+        <div class="booking-container">
 
-      <!-- Detail Kendaraan -->
-      <div id="detailKendaraan" class="section" style="display: none">
-        <h2>Detail Kendaraan</h2>
-        <div class="form-group">
-          <label for="nopol">Nomor Polisi *</label>
-          <input
-            type="text"
-            id="nopol"
-            name="nopol"
-            placeholder="B1234AB"
-            required
-          />
-        </div>
-      </div>
+            <!-- Konten Form Utama -->
+            <div class="main-content">
+                <!-- Informasi Pemesan -->
+                <div class="section">
+                    <h2>Informasi Pemesan</h2>
+                    <div class="form-group">
+                        <label for="namaPemesan">Nama Pemesan *</label>
+                        <input type="text" id="namaPemesan" name="namaPemesan" placeholder="Masukkan nama sesuai KTP"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="nomorHandphone">Nomor Handphone *</label>
+                        <input type="text" id="nomorHandphone" name="nomorHandphone" placeholder="081234567890"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Alamat Email *</label>
+                        <input type="email" id="email" name="email" placeholder="example@email.com" required />
+                    </div>
+                </div>
 
-      <!-- Detail Penumpang -->
-      <div class="section">
-        <h2>Detail Penumpang</h2>
-        <div id="penumpangContainer">
-          <!-- Penumpang templates will be dynamically inserted here -->
-        </div>
-      </div>
+                <!-- Detail Kendaraan (Hidden by default) -->
+                <div id="detailKendaraan" class="section" style="display: none">
+                    <h2>Detail Kendaraan</h2>
+                    <div class="form-group">
+                        <label for="nopol">Nomor Polisi *</label>
+                        <input type="text" id="nopol" name="nopol" placeholder="B1234AB" required />
+                    </div>
+                </div>
 
-      <!-- Detail Harga -->
-      <div class="section">
-        <h2>Detail Harga</h2>
-        <div id="detailHarga">
-          <!-- Harga akan ditampilkan sesuai data -->
-        </div>
-      </div>
+                <!-- Detail Penumpang -->
+                <div class="section">
+                    <h2>Detail Penumpang</h2>
+                    <div id="penumpangContainer">
+                        <!-- Penumpang templates will be dynamically inserted here -->
+                    </div>
+                </div>
 
-      <!-- Informasi Penting -->
-      <div class="section info-section">
-        <h2>Informasi Penting</h2>
-        <p>1. Tiket akan hangus jika melewati waktu check-in.</p>
-        <p>2. Data identitas harus sesuai dengan KTP/Paspor.</p>
-      </div>
+                <!-- Informasi Penting -->
+                <div class="section info-section">
+                    <h2>Informasi Penting</h2>
+                    <p>1. Tiket akan hangus jika melewati waktu check-in.</p>
+                    <p>2. Data identitas harus sesuai dengan KTP/Paspor.</p>
+                </div>
 
-      <!-- Submit Button -->
-      <div class="section-btn">
-        <button id="pesanSekarang" class="btn-pesan">Pesan Sekarang</button>
-      </div>
-    </div>
+                <!-- Submit Button -->
+                <div class="section-btn" style="margin-bottom: 2rem;">
+                    <button id="pesanSekarang" class="btn-pesan">Pesan Sekarang</button>
+                </div>
+            </div> <!-- End .main-content -->
+
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Detail Harga</h2>
+                </div>
+                <div class="sidebar-content" id="sidebarContent">
+                    <!-- Akan diisi via JS (rute, tanggal, jamMasuk, layanan, total harga) -->
+                </div>
+            </div>
+        </div> <!-- End .booking-container -->
+    </div> <!-- End .container -->
 
     <footer class="footer">
-      <div class="section__container footer__container">
-        <div class="footer__col">
-          <h3>NauticaBook</h3>
-          <p>
-            NauticaBook adalah platform untuk booking ferry dan cargo secara
-            cepat dan terpercaya. Pengguna dapat mencari jadwal, membandingkan
-            harga, dan memesan tiket dengan mudah dalam beberapa langkah.
-          </p>
-          <p>
-            NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman
-            pemesanan nyaman, baik untuk perjalanan pribadi, bisnis, maupun
-            logistik. Dengan mitra terpercaya, layanan pelanggan responsif, dan
-            sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
-            laut Anda.
-          </p>
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>NauticaBook</h3>
+                <p>
+                    NauticaBook adalah platform untuk booking ferry dan cargo secara
+                    cepat dan terpercaya. Pengguna dapat mencari jadwal, membandingkan
+                    harga, dan memesan tiket dengan mudah dalam beberapa langkah.
+                </p>
+                <p>
+                    NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman
+                    pemesanan nyaman, baik untuk perjalanan pribadi, bisnis, maupun
+                    logistik. Dengan mitra terpercaya, layanan pelanggan responsif, dan
+                    sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
+                    laut Anda.
+                </p>
+            </div>
+            <div class="footer__col">
+                <h4>Tim Luminous</h4>
+                <p>Raden Riki Hilviastari Saputra (23523217)</p>
+                <p>Arvindra Ahmad Ramadhan (23523128)</p>
+                <p>Taqya Maritsa Hakim (23523108)</p>
+                <p>-</p>
+            </div>
         </div>
-        <div class="footer__col">
-          <h4>Tim Luminous</h4>
-          <p>Raden Riki Hilviastari Saputra (23523217)</p>
-          <p>Arvindra Ahmad Ramadhan (23523128)</p>
-          <p>Taqya Maritsa Hakim (23523108)</p>
-          <p>-</p>
+        <div class="footer__bar">
+            Copyright © 2024 Webs by Luminous. All rights reserved.
         </div>
-      </div>
-      <div class="footer__bar">
-        Copyright © 2024 Webs by Luminous. All rights reserved.
-      </div>
     </footer>
 
+    <!-- SCRIPT UTAMA -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // 1. Ambil data dari sessionStorage
-        const bookingData =
-          JSON.parse(sessionStorage.getItem("bookingData")) || {};
-        const penumpangData =
-          JSON.parse(sessionStorage.getItem("penumpangData")) || [];
-        const totalPrice = sessionStorage.getItem("totalPrice") || 0;
-        const tipeTiket = sessionStorage.getItem("tipeTiket") || "";
-
-        // 2. Contoh: Tampilkan detail harga / rute
-        const detailHargaDiv = document.getElementById("detailHarga");
-        detailHargaDiv.innerHTML = `
-          <p><strong>Rute:</strong> ${bookingData.pelabuhanAsal} → ${
-          bookingData.pelabuhanTujuan
-        }</p>
-          <p><strong>Tanggal:</strong> ${bookingData.tanggal}</p>
-          <p><strong>Layanan:</strong> ${bookingData.layanan}</p>
-          <p><strong>Tipe Tiket:</strong> ${tipeTiket}</p>
-          <p><strong>Total Harga:</strong> Rp${parseInt(
-            totalPrice
-          ).toLocaleString()}</p>
-        `;
-
-        // 3. Tampilkan form "Detail Kendaraan" jika tipeTiket adalah kendaraan
-        const detailKendaraan = document.getElementById("detailKendaraan");
-        const kendaraanTipe = ["sepeda", "motor-kecil", "motor-besar", "mobil"];
-        // (Sesuaikan dengan value yang Anda simpan di sessionStorage)
-        if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
-          detailKendaraan.style.display = "block";
-        }
-
-        // 4. Generate Form Penumpang
-        const penumpangContainer =
-          document.getElementById("penumpangContainer");
-        penumpangData.forEach((p, index) => {
-          const div = document.createElement("div");
-          div.classList.add("form-group");
-
-          div.innerHTML = `
-            <h3>Penumpang ${index + 1} (${p.category})</h3>
-            <label for="nama${index}">Nama Lengkap *</label>
-            <input type="text" id="nama${index}" name="nama${index}" placeholder="Nama sesuai KTP" required>
-
-            <label for="jenisID${index}">Jenis ID *</label>
-            <select id="jenisID${index}" name="jenisID${index}" required>
-              ${
-                p.category === "Bayi" || p.category === "Anak"
-                  ? '<option value="lainnya">Lainnya</option>'
-                  : `
-                  <option value="ktp">KTP</option>
-                  <option value="paspor">Paspor</option>
-                  <option value="lainnya">Lainnya</option>
-                `
-              }
-            </select>
-
-            <label for="nomorID${index}">Nomor Identitas *</label>
-            <input type="text" id="nomorID${index}" name="nomorID${index}" placeholder="Masukkan Nomor ID" required>
-
-            <label for="usia${index}">Usia *</label>
-            <input type="number" id="usia${index}" name="usia${index}" placeholder="0" disabled>
-          `;
-
-          penumpangContainer.appendChild(div);
-
-          const jenisIDSelect = div.querySelector(`#jenisID${index}`);
-          const nomorIDInput = div.querySelector(`#nomorID${index}`);
-          const usiaInput = div.querySelector(`#usia${index}`);
-
-          // Function to calculate min and max dates based on category
-          // Function to calculate min and max dates based on category
-          const getDateConstraints = (category) => {
-            // Selalu ambil tanggal hari ini yang baru untuk setiap perhitungan
-            const today = new Date();
-            const constraints = {
-              min: new Date(),
-              max: new Date(),
-            };
-
-            switch (category) {
-              case "Bayi":
-                // Bayi: 0-2 tahun
-                // Max: hari ini
-                constraints.max = today;
-                // Min: hari ini - 2 tahun
-                constraints.min = new Date(
-                  today.getFullYear() - 2,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                break;
-
-              case "Anak":
-                // Anak: 2-4 tahun
-                // Max: hari ini - 2 tahun
-                constraints.max = new Date(
-                  today.getFullYear() - 2,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                // Min: hari ini - 4 tahun
-                constraints.min = new Date(
-                  today.getFullYear() - 4,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                break;
-
-              case "Dewasa":
-                // Dewasa: 5-59 tahun
-                // Max: hari ini - 5 tahun
-                constraints.max = new Date(
-                  today.getFullYear() - 5,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                // Min: hari ini - 59 tahun
-                constraints.min = new Date(
-                  today.getFullYear() - 59,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                break;
-
-              case "Lansia":
-                // Lansia: 60+ tahun
-                // Max: hari ini - 60 tahun
-                constraints.max = new Date(
-                  today.getFullYear() - 60,
-                  today.getMonth(),
-                  today.getDate()
-                );
-                // Min: tahun 1900
-                constraints.min = new Date(1900, 0, 1);
-                break;
-            }
-
-            return {
-              min: constraints.min.toISOString().split("T")[0],
-              max: constraints.max.toISOString().split("T")[0],
-            };
-          };
-
-          jenisIDSelect.addEventListener("change", function (e) {
-            if (e.target.value === "lainnya") {
-              nomorIDInput.type = "date";
-              nomorIDInput.value = "";
-
-              // Set date constraints based on category
-              const constraints = getDateConstraints(p.category);
-              nomorIDInput.min = constraints.min;
-              nomorIDInput.max = constraints.max;
-
-              // Debug log untuk memastikan constraint bekerja
-              console.log(`Category: ${p.category}`, {
-                min: constraints.min,
-                max: constraints.max,
-              });
-            } else {
-              nomorIDInput.type = "text";
-              nomorIDInput.value = "";
-              usiaInput.value = "";
-              // Remove constraints
-              nomorIDInput.removeAttribute("min");
-              nomorIDInput.removeAttribute("max");
-            }
-          });
-
-          // Trigger change event if category is Bayi or Anak to immediately show date picker
-          if (p.category === "Bayi" || p.category === "Anak") {
-            jenisIDSelect.value = "lainnya";
-            jenisIDSelect.dispatchEvent(new Event("change"));
-          }
-
-          nomorIDInput.addEventListener("change", function () {
-            if (jenisIDSelect.value === "lainnya") {
-              const dob = new Date(nomorIDInput.value);
-              const today = new Date();
-
-              let age = today.getFullYear() - dob.getFullYear();
-              const m = today.getMonth() - dob.getMonth();
-              if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                age--;
-              }
-
-              usiaInput.value = age;
-
-              // Validate if age matches category
-              let isValid = true;
-              const errorMsg = {
-                Bayi: "Usia harus dibawah 2 tahun",
-                Anak: "Usia harus antara 2-4 tahun",
-                Dewasa: "Usia harus antara 5-59 tahun",
-                Lansia: "Usia harus 60 tahun atau lebih",
-              };
-
-              switch (p.category) {
-                case "Bayi":
-                  isValid = age < 2;
-                  break;
-                case "Anak":
-                  isValid = age >= 2 && age <= 4;
-                  break;
-                case "Dewasa":
-                  isValid = age >= 5 && age <= 59;
-                  break;
-                case "Lansia":
-                  isValid = age >= 60;
-                  break;
-              }
-
-              if (!isValid) {
-                alert(errorMsg[p.category]);
-                nomorIDInput.value = "";
-                usiaInput.value = "";
-              }
-            }
-          });
-        });
-
-        // 5. Tombol Pesan Sekarang
-        const pesanSekarangBtn = document.getElementById("pesanSekarang");
-        pesanSekarangBtn.addEventListener("click", function () {
-          // Lakukan validasi form di sini:
-          // - Pastikan semua required terisi.
-          // - Pastikan jika 'lainnya' → user mengisi DOB yang valid.
-
-          // Contoh mini:
-          const namaPemesan = document
-            .getElementById("namaPemesan")
-            .value.trim();
-          const nomorHandphone = document
-            .getElementById("nomorHandphone")
-            .value.trim();
-          const email = document.getElementById("email").value.trim();
-
-          if (!namaPemesan || !nomorHandphone || !email) {
-            alert("Mohon isi semua data pemesan.");
-            return;
-          }
-
-          // Jika tipe tiket kendaraan -> pastikan Nopol terisi
-          if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
-            const nopol = document.getElementById("nopol").value.trim();
-            if (!nopol) {
-              alert("Mohon isi Nomor Polisi kendaraan.");
-              return;
-            }
-          }
-
-          // Validasi penumpang
-          for (let i = 0; i < penumpangData.length; i++) {
-            const namaPenumpang = document
-              .getElementById(`nama${i}`)
-              .value.trim();
-            const jenisID = document.getElementById(`jenisID${i}`).value;
-            const nomorID = document.getElementById(`nomorID${i}`).value.trim();
-
-            if (!namaPenumpang || !nomorID) {
-              alert(`Mohon isi data penumpang ke-${i + 1}`);
-              return;
-            }
-            // Contoh cek jika "lainnya" -> DOB harus valid
-            if (jenisID === "lainnya") {
-              const dob = new Date(nomorID);
-              if (dob.toString() === "Invalid Date") {
-                alert(`DOB penumpang ke-${i + 1} tidak valid`);
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Ambil dan cek data dari sessionStorage
+            const bookingData = JSON.parse(sessionStorage.getItem("bookingData")) || {};
+            const penumpangData = JSON.parse(sessionStorage.getItem("penumpangData")) || [];
+            const totalPrice = sessionStorage.getItem("totalPrice") || 0;
+            const tipeTiket = sessionStorage.getItem("tipeTiket") || "";
+            // Debug log
+            console.log('Booking Data:', bookingData);
+            console.log('Penumpang Data:', penumpangData);
+            console.log('Total Price:', totalPrice);
+            console.log('Tipe Tiket:', tipeTiket);
+            // Cek apakah data penumpang ada
+            if (!penumpangData || penumpangData.length === 0) {
+                alert('Data penumpang tidak ditemukan! Silakan pilih jumlah penumpang terlebih dahulu.');
+                window.location.href = 'home.html';
                 return;
-              }
             }
-          }
+            // 2. Tampilkan ringkasan detail di sidebar
+            const sidebarContent = document.getElementById("sidebarContent");
+            // Format tanggal
+            let formatedTanggal = "";
+            if (bookingData.tanggal) {
+                formatedTanggal = new Date(bookingData.tanggal).toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+            // Ambil jamMasuk
+            let jamMasuk = bookingData.jamMasuk || "(Waktu belum ditentukan)";
+            sidebarContent.innerHTML = `
+                <p><strong>Keberangkatan</strong></p>
+                <p>${bookingData.pelabuhanAsal} → ${bookingData.pelabuhanTujuan}</p>
+                
+                <p><strong>Jadwal Masuk Pelabuhan</strong></p>
+                <p>${formatedTanggal} <br/> Jam: ${jamMasuk} WIB</p>
+                
+                <p><strong>Layanan</strong></p>
+                <p>${bookingData.layanan}</p>
+                
+                <p><strong>Pengguna Jasa</strong></p>
+                <p>${tipeTiket}</p>
+        
+                <hr style="margin: 10px 0;"/>
+        
+                <p><strong>Harga Tiket Pergi</strong> 
+                   <span style="float:right">Rp${parseInt(totalPrice).toLocaleString()}</span>
+                </p>
+                <p><strong>Total</strong> 
+                   <span style="float:right; color: orange; font-weight:600;">
+                     Rp${parseInt(totalPrice).toLocaleString()}
+                   </span>
+                </p>
+            `;
+            // 3. Tampilkan form "Detail Kendaraan" jika tipeTiket adalah kendaraan
+            const detailKendaraan = document.getElementById("detailKendaraan");
+            const kendaraanTipe = ["sepeda", "motor-kecil", "motor-besar", "mobil"];
+            if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
+                detailKendaraan.style.display = "block";
+            }
+            // 4. Generate Form Penumpang
+            const penumpangContainer = document.getElementById("penumpangContainer");
+            penumpangData.forEach((p, index) => {
+                const div = document.createElement("div");
+                div.classList.add("form-group");
+                div.innerHTML = `
+                    <h3>Penumpang ${index + 1} (${p.category})</h3>
+                    <label for="nama${index}">Nama Lengkap *</label>
+                    <input type="text" id="nama${index}" name="nama${index}" placeholder="Nama sesuai KTP" required>
+        
+                    <label for="jenisID${index}">Jenis ID *</label>
+                    <select id="jenisID${index}" name="jenisID${index}" required>
+                        ${p.category === "Bayi" || p.category === "Anak"
+                            ? '<option value="lainnya">Lainnya</option>'
+                            : `
+                            <option value="ktp">KTP</option>
+                            <option value="paspor">Paspor</option>
+                            <option value="lainnya">Lainnya</option>
+                            `
+                        }
+                    </select>
+        
+                    <label for="nomorID${index}">Nomor Identitas *</label>
+                    <input type="text" id="nomorID${index}" name="nomorID${index}" placeholder="Masukkan Nomor ID" required>
+        
+                    <label for="usia${index}">Usia *</label>
+                    <input type="number" id="usia${index}" name="usia${index}" placeholder="0" disabled>
+                `;
+                penumpangContainer.appendChild(div);
+                const jenisIDSelect = div.querySelector(`#jenisID${index}`);
+                const nomorIDInput = div.querySelector(`#nomorID${index}`);
+                const usiaInput = div.querySelector(`#usia${index}`);
+                // Function untuk menghitung batasan tanggal berdasarkan kategori
+                const getDateConstraints = (category) => {
+                    const today = new Date();
+                    const constraints = {
+                        min: new Date(),
+                        max: new Date()
+                    };
+                    switch (category) {
+                        case "Bayi":
+                            // 0-2 tahun
+                            constraints.max = today;
+                            constraints.min = new Date(today.getFullYear() - 2, today.getMonth(),
+                                today.getDate());
+                            break;
+                        case "Anak":
+                            // 2-4 tahun
+                            constraints.max = new Date(today.getFullYear() - 2, today.getMonth(),
+                                today.getDate());
+                            constraints.min = new Date(today.getFullYear() - 4, today.getMonth(),
+                                today.getDate());
+                            break;
+                        case "Dewasa":
+                            // 5-59 tahun
+                            constraints.max = new Date(today.getFullYear() - 5, today.getMonth(),
+                                today.getDate());
+                            constraints.min = new Date(today.getFullYear() - 59, today.getMonth(),
+                                today.getDate());
+                            break;
+                        case "Lansia":
+                            // 60+ tahun
+                            constraints.max = new Date(today.getFullYear() - 60, today.getMonth(),
+                                today.getDate());
+                            constraints.min = new Date(1900, 0, 1);
+                            break;
+                    }
+                    return {
+                        min: constraints.min.toISOString().split("T")[0],
+                        max: constraints.max.toISOString().split("T")[0],
+                    };
+                };
+                // Event listener untuk perubahan jenis ID
+                jenisIDSelect.addEventListener("change", function(e) {
+                    const selectedType = e.target.value;
+                    if (selectedType === "lainnya") {
+                        // Untuk opsi "lainnya" (tanggal lahir)
+                        nomorIDInput.type = "date";
+                        nomorIDInput.value = "";
+                        const constraints = getDateConstraints(p.category);
+                        nomorIDInput.min = constraints.min;
+                        nomorIDInput.max = constraints.max;
+                        // Disable input usia karena akan dihitung otomatis
+                        usiaInput.disabled = true;
+                        usiaInput.value = "";
+                    } else {
+                        // Untuk KTP atau Paspor
+                        nomorIDInput.type = "text";
+                        nomorIDInput.value = "";
+                        nomorIDInput.removeAttribute("min");
+                        nomorIDInput.removeAttribute("max");
+                        nomorIDInput.placeholder = selectedType === "ktp" ?
+                            "Masukkan nomor KTP" : "Masukkan nomor Paspor";
+                        // Enable input usia untuk input manual
+                        usiaInput.disabled = false;
+                        usiaInput.value = "";
+                    }
+                });
+                // Set default untuk Bayi dan Anak
+                if (p.category === "Bayi" || p.category === "Anak") {
+                    jenisIDSelect.value = "lainnya";
+                    jenisIDSelect.dispatchEvent(new Event("change"));
+                }
+                // Event listener untuk input usia manual
+                usiaInput.addEventListener("input", function() {
+                    if (jenisIDSelect.value !== "lainnya") {
+                        const inputValue = this.value;
+                        // Jika input kosong, jangan lakukan validasi
+                        if (!inputValue) return;
+                        
+                        const age = parseInt(inputValue);
+                        if (isNaN(age)) {
+                            this.value = "";
+                            return;
+                        }
 
-          // Jika lolos semua, boleh lanjut
-          alert("Data valid! Lanjut ke step berikutnya ...");
-          // window.location.href = 'verifikasi.html' (misalnya)
+                        // Tunggu sampai user selesai mengetik
+                        clearTimeout(this.timeout);
+                        this.timeout = setTimeout(() => {
+                            let isValid = true;
+                            const errorMsg = {
+                                Bayi: "Usia harus dibawah 2 tahun",
+                                Anak: "Usia harus antara 2-4 tahun",
+                                Dewasa: "Usia harus antara 5-59 tahun",
+                                Lansia: "Usia harus 60 tahun atau lebih"
+                            };
+                            
+                            switch (p.category) {
+                                case "Bayi":
+                                    isValid = age < 2;
+                                    break;
+                                case "Anak":
+                                    isValid = (age >= 2 && age <= 4);
+                                    break;
+                                case "Dewasa":
+                                    isValid = (age >= 5 && age <= 59);
+                                    break;
+                                case "Lansia":
+                                    isValid = (age >= 60);
+                                    break;
+                            }
+                            
+                            if (!isValid) {
+                                alert(errorMsg[p.category]);
+                                this.value = "";
+                            }
+                        }, 1000); // Tunggu 1 detik setelah user selesai mengetik
+                    }
+                });
+                // Event listener untuk perhitungan usia dari tanggal
+                nomorIDInput.addEventListener("change", function() {
+                    if (jenisIDSelect.value === "lainnya") {
+                        const dob = new Date(nomorIDInput.value);
+                        const today = new Date();
+                        let age = today.getFullYear() - dob.getFullYear();
+                        const m = today.getMonth() - dob.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                            age--;
+                        }
+                        usiaInput.value = age;
+                        // Validasi usia sesuai kategori
+                        let isValid = true;
+                        const errorMsg = {
+                            Bayi: "Usia harus dibawah 2 tahun",
+                            Anak: "Usia harus antara 2-4 tahun",
+                            Dewasa: "Usia harus antara 5-59 tahun",
+                            Lansia: "Usia harus 60 tahun atau lebih"
+                        };
+                        switch (p.category) {
+                            case "Bayi":
+                                isValid = age < 2;
+                                break;
+                            case "Anak":
+                                isValid = (age >= 2 && age <= 4);
+                                break;
+                            case "Dewasa":
+                                isValid = (age >= 5 && age <= 59);
+                                break;
+                            case "Lansia":
+                                isValid = (age >= 60);
+                                break;
+                        }
+                        if (!isValid) {
+                            alert(errorMsg[p.category]);
+                            nomorIDInput.value = "";
+                            usiaInput.value = "";
+                        }
+                    }
+                });
+            });
+            // 5. Tombol Pesan Sekarang
+            const pesanSekarangBtn = document.getElementById("pesanSekarang");
+            pesanSekarangBtn.addEventListener("click", function() {
+                // Validasi data pemesan
+                const namaPemesan = document.getElementById("namaPemesan").value.trim();
+                const nomorHandphone = document.getElementById("nomorHandphone").value.trim();
+                const email = document.getElementById("email").value.trim();
+                if (!namaPemesan || !nomorHandphone || !email) {
+                    alert("Mohon isi semua data pemesan.");
+                    return;
+                }
+                // Validasi nomor kendaraan jika perlu
+                if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
+                    const nopol = document.getElementById("nopol").value.trim();
+                    if (!nopol) {
+                        alert("Mohon isi Nomor Polisi kendaraan.");
+                        return;
+                    }
+                }
+                // Validasi data penumpang
+                const detailPenumpang = [];
+                for (let i = 0; i < penumpangData.length; i++) {
+                    const namaPenumpang = document.getElementById(`nama${i}`).value.trim();
+                    const jenisID = document.getElementById(`jenisID${i}`).value;
+                    const nomorID = document.getElementById(`nomorID${i}`).value.trim();
+                    const usia = document.getElementById(`usia${i}`).value;
+                    if (!namaPenumpang || !nomorID) {
+                        alert(`Mohon isi data penumpang ke-${i + 1}`);
+                        return;
+                    }
+                    if (jenisID === "lainnya") {
+                        const dob = new Date(nomorID);
+                        if (dob.toString() === "Invalid Date") {
+                            alert(`DOB penumpang ke-${i + 1} tidak valid`);
+                            return;
+                        }
+                    }
+                    // Validasi usia harus diisi
+                    if (!usia) {
+                        alert(`Mohon isi usia penumpang ke-${i + 1}`);
+                        return;
+                    }
+                    // Simpan detail penumpang
+                    detailPenumpang.push({
+                        nama: namaPenumpang,
+                        jenisID: jenisID,
+                        nomorID: nomorID,
+                        usia: usia,
+                        kategori: penumpangData[i].category
+                    });
+                }
+                // Simpan data pemesan ke sessionStorage
+                const pemesanData = {
+                    nama: namaPemesan,
+                    telepon: nomorHandphone,
+                    email: email,
+                    nopol: kendaraanTipe.includes(tipeTiket.toLowerCase()) ? document
+                        .getElementById("nopol").value.trim() : null,
+                    detailPenumpang: detailPenumpang
+                };
+                sessionStorage.setItem('pemesanData', JSON.stringify(pemesanData));
+                // Arahkan ke halaman pembayaran
+                window.location.href = 'payverification.html';
+            });
         });
-      });
     </script>
-  </body>
+</body>
+
 </html>
