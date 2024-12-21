@@ -3,149 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NauticaBook - Booking Form</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="styles3.css">
-    <style>
-        /* Inline styling tambahan jika diperlukan */
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
-
-        .container-ticket {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1100px;
-            margin: 40px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .content-ticket {
-            flex: 2;
-            padding-right: 20px;
-        }
-
-        .sidebar {
-            flex: 1;
-            background: #f1f3f5;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h2, h3 {
-            margin-top: 0;
-        }
-
-        form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        form input, form select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .btn-pesan {
-            background-color: #0056b3;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .policy {
-            background-color: #fff3cd;
-            padding: 10px;
-            border: 1px solid #ffeeba;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-    </style>
+    <title>Booking Form - NauticaBook</title>
+    <script defer src="script.js"></script>
 </head>
 <body>
-    <!-- Navbar -->
-    <header class="header-section">
-        <div class="nav__logo">NauticaBook</div>
-    </header>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="title">Detail Pesanan</div>
+    </div>
 
-    <!-- Container -->
-    <div class="container-ticket">
-        <!-- Main Content -->
-        <div class="content-ticket">
-            <h2>Detail Pemesanan</h2>
-            <form action="process_booking.php" method="POST">
-                <!-- Informasi Pemesan -->
-                <div class="details">
-                    <h3>Informasi Pemesan</h3>
-                    <label for="namaPemesan">Nama Pemesan *</label>
-                    <input type="text" id="namaPemesan" name="namaPemesan" required>
-
-                    <label for="noTelepon">Nomor Telepon *</label>
-                    <input type="tel" id="noTelepon" name="noTelepon" required>
-
-                    <label for="email">Alamat Email *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <!-- Detail Penumpang -->
-                <div class="details">
-                    <h3>Detail Penumpang</h3>
-                    <label for="title">Title *</label>
-                    <select id="title" name="title" required>
-                        <option value="Tuan">Tuan</option>
-                        <option value="Nyonya">Nyonya</option>
-                        <option value="Nona">Nona</option>
-                    </select>
-
-                    <label for="namaLengkap">Nama Lengkap *</label>
-                    <input type="text" id="namaLengkap" name="namaLengkap" required>
-
-                    <label for="jenisId">Jenis ID *</label>
-                    <select id="jenisId" name="jenisId" required>
-                        <option value="KTP">KTP</option>
-                        <option value="SIM">SIM</option>
-                        <option value="Paspor">Paspor</option>
-                    </select>
-
-                    <label for="nomorIdentitas">Nomor Identitas *</label>
-                    <input type="text" id="nomorIdentitas" name="nomorIdentitas" required>
-
-                    <label for="usia">Usia *</label>
-                    <input type="number" id="usia" name="usia" required>
-                </div>
-
-                <!-- Catatan Penting -->
-                <div class="policy">
-                    <p>Pastikan data Anda sesuai dengan identitas resmi. Kesalahan data dapat menyebabkan tiket tidak valid.</p>
-                </div>
-
-                <!-- Tombol Lanjutkan -->
-                <button type="submit" class="btn-pesan">Lanjutkan</button>
-            </form>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Informasi Pemesan -->
+        <div class="section">
+            <h2>Informasi Pemesan</h2>
+            <div class="form-group">
+                <label for="namaPemesan">Nama Pemesan *</label>
+                <input type="text" id="namaPemesan" name="namaPemesan" placeholder="Masukkan nama sesuai KTP" required>
+            </div>
+            <div class="form-group">
+                <label for="nomorHandphone">Nomor Handphone *</label>
+                <input type="text" id="nomorHandphone" name="nomorHandphone" placeholder="081234567890" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Alamat Email *</label>
+                <input type="email" id="email" name="email" placeholder="example@email.com" required>
+            </div>
         </div>
 
-        <!-- Sidebar Rincian Harga -->
-        <aside class="sidebar">
-            <h2>Rincian Harga</h2>
-            <p>Keberangkatan: <strong>Gilimanuk → Ketapang</strong></p>
-            <p>Jadwal: <strong>Jum'at, 20 Desember 2024</strong></p>
-            <p>Layanan: <strong>Reguler</strong></p>
-            <p>Harga Tiket Pergi: <strong>Rp10.600</strong></p>
-            <p>Total: <strong style="color: #0056b3;">Rp10.600</strong></p>
-        </aside>
+        <!-- Detail Kendaraan -->
+        <div id="detailKendaraan" class="section" style="display: none;">
+            <h2>Detail Kendaraan</h2>
+            <div class="form-group">
+                <label for="nopol">Nomor Polisi *</label>
+                <input type="text" id="nopol" name="nopol" placeholder="B1234AB" required>
+            </div>
+        </div>
+
+        <!-- Detail Penumpang -->
+        <div class="section">
+            <h2>Detail Penumpang</h2>
+            <div id="penumpangContainer">
+                <!-- Penumpang templates will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Detail Harga -->
+        <div class="section">
+            <h2>Detail Harga</h2>
+            <div id="detailHarga">
+                <!-- Harga akan ditampilkan sesuai data -->
+            </div>
+        </div>
+
+        <!-- Informasi Penting -->
+        <div class="section info-section">
+            <h2>Informasi Penting</h2>
+            <p>1. Tiket akan hangus jika melewati waktu check-in.</p>
+            <p>2. Data identitas harus sesuai dengan KTP/Paspor.</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="section">
+            <button id="pesanSekarang" class="btn-pesan">Pesan Sekarang</button>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // 1. Ambil data dari sessionStorage
+          const bookingData = JSON.parse(sessionStorage.getItem('bookingData')) || {};
+          const penumpangData = JSON.parse(sessionStorage.getItem('penumpangData')) || [];
+          const totalPrice = sessionStorage.getItem('totalPrice') || 0;
+          const tipeTiket = sessionStorage.getItem('tipeTiket') || '';
+        
+          // 2. Contoh: Tampilkan detail harga / rute
+          const detailHargaDiv = document.getElementById('detailHarga');
+          detailHargaDiv.innerHTML = `
+            <p><strong>Rute:</strong> ${bookingData.pelabuhanAsal} → ${bookingData.pelabuhanTujuan}</p>
+            <p><strong>Tanggal:</strong> ${bookingData.tanggal}</p>
+            <p><strong>Layanan:</strong> ${bookingData.layanan}</p>
+            <p><strong>Tipe Tiket:</strong> ${tipeTiket}</p>
+            <p><strong>Total Harga:</strong> Rp${parseInt(totalPrice).toLocaleString()}</p>
+          `;
+        
+          // 3. Tampilkan form "Detail Kendaraan" jika tipeTiket adalah kendaraan
+          const detailKendaraan = document.getElementById('detailKendaraan');
+          const kendaraanTipe = ['sepeda', 'motor-kecil', 'motor-besar', 'mobil'];
+          // (Sesuaikan dengan value yang Anda simpan di sessionStorage)
+          if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
+            detailKendaraan.style.display = 'block';
+          }
+        
+          // 4. Generate Form Penumpang
+          const penumpangContainer = document.getElementById('penumpangContainer');
+          penumpangData.forEach((p, index) => {
+            // p.category misal "Dewasa", "Anak", dst.
+            // Silakan kustom jika perlu
+            const div = document.createElement('div');
+            div.classList.add('form-group');
+        
+            div.innerHTML = `
+              <h3>Penumpang ${index + 1} (${p.category})</h3>
+              <label for="nama${index}">Nama Lengkap *</label>
+              <input type="text" id="nama${index}" name="nama${index}" placeholder="Nama sesuai KTP" required>
+        
+              <label for="jenisID${index}">Jenis ID *</label>
+              <select id="jenisID${index}" name="jenisID${index}" required>
+                  <option value="ktp">KTP</option>
+                  <option value="paspor">Paspor</option>
+                  <option value="lainnya">Lainnya</option>
+              </select>
+        
+              <label for="nomorID${index}">Nomor Identitas *</label>
+              <input type="text" id="nomorID${index}" name="nomorID${index}" placeholder="Masukkan Nomor ID" required>
+        
+              <label for="usia${index}">Usia *</label>
+              <input type="number" id="usia${index}" name="usia${index}" placeholder="0" disabled>
+            `;
+        
+            penumpangContainer.appendChild(div);
+        
+            // 4a. Event "Lainnya" -> date picker untuk DOB
+            const jenisIDSelect = div.querySelector(`#jenisID${index}`);
+            const nomorIDInput = div.querySelector(`#nomorID${index}`);
+            const usiaInput = div.querySelector(`#usia${index}`);
+        
+            jenisIDSelect.addEventListener('change', function(e) {
+              if (e.target.value === 'lainnya') {
+                nomorIDInput.type = 'date';
+                nomorIDInput.value = '';  // reset
+              } else {
+                nomorIDInput.type = 'text';
+                nomorIDInput.value = '';
+                usiaInput.value = ''; // reset usia
+              }
+            });
+        
+            // 4b. Hitung usia saat user pilih DOB
+            nomorIDInput.addEventListener('change', function() {
+              if (jenisIDSelect.value === 'lainnya') {
+                const dob = new Date(nomorIDInput.value);
+                const today = new Date();
+        
+                // Kalkulasi umur
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                  age--;
+                }
+        
+                usiaInput.value = age;
+              }
+            });
+          });
+        
+          // 5. Tombol Pesan Sekarang
+          const pesanSekarangBtn = document.getElementById('pesanSekarang');
+          pesanSekarangBtn.addEventListener('click', function() {
+            // Lakukan validasi form di sini:
+            // - Pastikan semua required terisi.
+            // - Pastikan jika 'lainnya' → user mengisi DOB yang valid.
+        
+            // Contoh mini:
+            const namaPemesan = document.getElementById('namaPemesan').value.trim();
+            const nomorHandphone = document.getElementById('nomorHandphone').value.trim();
+            const email = document.getElementById('email').value.trim();
+        
+            if (!namaPemesan || !nomorHandphone || !email) {
+              alert('Mohon isi semua data pemesan.');
+              return;
+            }
+        
+            // Jika tipe tiket kendaraan -> pastikan Nopol terisi
+            if (kendaraanTipe.includes(tipeTiket.toLowerCase())) {
+              const nopol = document.getElementById('nopol').value.trim();
+              if (!nopol) {
+                alert('Mohon isi Nomor Polisi kendaraan.');
+                return;
+              }
+            }
+        
+            // Validasi penumpang
+            for (let i = 0; i < penumpangData.length; i++) {
+              const namaPenumpang = document.getElementById(`nama${i}`).value.trim();
+              const jenisID = document.getElementById(`jenisID${i}`).value;
+              const nomorID = document.getElementById(`nomorID${i}`).value.trim();
+        
+              if (!namaPenumpang || !nomorID) {
+                alert(`Mohon isi data penumpang ke-${i + 1}`);
+                return;
+              }
+              // Contoh cek jika "lainnya" -> DOB harus valid
+              if (jenisID === 'lainnya') {
+                const dob = new Date(nomorID);
+                if (dob.toString() === 'Invalid Date') {
+                  alert(`DOB penumpang ke-${i + 1} tidak valid`);
+                  return;
+                }
+              }
+            }
+        
+            // Jika lolos semua, boleh lanjut
+            alert('Data valid! Lanjut ke step berikutnya ...');
+            // window.location.href = 'verifikasi.html' (misalnya)
+          });
+        });
+        </script>
+        
 </body>
 </html>

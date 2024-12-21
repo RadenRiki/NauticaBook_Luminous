@@ -258,3 +258,43 @@ function openTab(event, tabName) {
   document.getElementById(tabName).style.display = "block";
   event.currentTarget.classList.add("active");
 }
+
+// validasi input
+
+document.getElementById('formPenumpang').addEventListener('submit', function(event) {
+  event.preventDefault(); // Mencegah form submit default
+
+  const pelabuhanAsal = document.getElementById('pelabuhanAsal').value;
+  const pelabuhanTujuan = document.getElementById('pelabuhanTujuan').value;
+  const tanggal = document.getElementById('tanggal').value;
+  const layanan = document.getElementById('layanan').value;
+  const jumlahDewasa = parseInt(document.getElementById('dewasa-count').textContent, 10);
+  const jumlahAnak = parseInt(document.getElementById('anak-count').textContent, 10);
+  const jumlahBayi = parseInt(document.getElementById('bayi-count').textContent, 10);
+  const jumlahLansia = parseInt(document.getElementById('lansia-count').textContent, 10);
+  const tipeTiket = document.getElementById('selectedTicketType').value;
+
+  if (!pelabuhanAsal || !pelabuhanTujuan || !tanggal || !layanan || 
+      (jumlahDewasa + jumlahAnak + jumlahBayi + jumlahLansia === 0) || !tipeTiket) {
+      alert('Harap lengkapi semua field sebelum melanjutkan!');
+      return;
+  }
+
+  const data = {
+      pelabuhanAsal,
+      pelabuhanTujuan,
+      tanggal,
+      layanan,
+      tipeTiket,
+      jumlahPenumpang: {
+          dewasa: jumlahDewasa,
+          anak: jumlahAnak,
+          bayi: jumlahBayi,
+          lansia: jumlahLansia,
+          total: jumlahDewasa + jumlahAnak + jumlahBayi + jumlahLansia
+      }
+  };
+
+  sessionStorage.setItem('bookingData', JSON.stringify(data));
+  window.location.href = 'ticketdetail.html';
+});
