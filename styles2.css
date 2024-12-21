@@ -92,50 +92,6 @@
   justify-content: center;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 300px;
-  background-color: var(--white);
-  padding: 20px;
-  
-  border-radius: 10px; /* Membuat sidebar berbentuk kotak */
-}
-
-.sidebar h2 {
-  color: var(--text-dark);
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.sidebar p {
-  color: var(--text-light);
-  font-size: 14px;
-}
-
-.sidebar nav ul {
-  list-style: none;
-  margin-top: 20px;
-}
-
-.sidebar nav ul li {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  color: var(--text-light);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.sidebar nav ul li i {
-  margin-right: 10px;
-  font-size: 18px;
-}
-
-.sidebar nav ul .active {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
 /* Content Area */
 .content-ticket {
   flex: 1;
