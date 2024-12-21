@@ -6,8 +6,14 @@ function togglePassengerDropdown() {
   dropdown.classList.toggle('active', isDropdownOpen);
 }
 
+function redirectLogin() {
+  alert("Anda perlu membuat akun terlebih dahulu.");
+  window.location.href = 'login.html';
+}
+
 function perluAkun() {
   alert("Anda perlu membuat akun terlebih dahulu.");
+  window.location.href = 'login.html';
 }
 
 function updateLayanan() {

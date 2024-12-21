@@ -51,17 +51,18 @@ const PaymentSystem = () => {
 
   const handlePayment = async () => {
     try {
-      // Ambil user_id dari sessionStorage
+      // Ambil user_id dan data booking
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
+      const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
       
       if (!userData?.id) {
         alert('Silakan login terlebih dahulu');
         window.location.href = 'login.html';
         return;
       }
-
-      // Persiapkan data untuk dikirim ke database
+  
+      // Data untuk dikirim ke database
       const ticketData = {
         user_id: userData.id,
         asal: bookingData.pelabuhanAsal,
@@ -70,26 +71,26 @@ const PaymentSystem = () => {
         tipe: bookingData.tipeTiket,
         jumlah_penumpang: bookingData.jumlahPenumpang.total,
         tanggal: bookingData.tanggal,
-        jam: bookingData.jamMasuk
+        jam: bookingData.jamMasuk,
+        nama_pemesan: pemesanData.nama,
+        email_pemesan: pemesanData.email,
+        nomor_hp: pemesanData.telepon
       };
-
-      // Kirim ke database via API
-      const response = await fetch('/api/tickets', {
+  
+      // Kirim ke API untuk disimpan di database
+      const response = await fetch('save_ticket.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(ticketData)
       });
-
-      if (!response.ok) {
-        throw new Error('Gagal menyimpan data tiket');
-      }
-
-      // Set payment status & redirect
+  
+      if (!response.ok) throw new Error('Gagal menyimpan tiket');
+  
+      // Jika berhasil
       sessionStorage.setItem('paymentStatus', 'success');
       window.location.href = 'payment-success.html';
-
     } catch (error) {
       console.error('Error:', error);
       alert('Terjadi kesalahan saat memproses pembayaran');

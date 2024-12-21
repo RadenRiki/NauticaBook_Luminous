@@ -2,7 +2,7 @@
 session_start(); // Start the session
 
 // Database connection
-$conn = mysqli_connect("localhost", "root", "", "luminousdb");
+$conn = new mysqli("localhost", "root", "root", "luminousdb");
 
 // Check connection
 if ($conn->connect_error) {
@@ -23,15 +23,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-
+    
         // Set session data
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['name'] = $user['name'];
-
-        // Redirect to home.html
-        header("Location: home.html");
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['referral'] = $user['referral'];
+    
+        // Redirect to profile.php
+        echo "
+        <script>
+            sessionStorage.setItem('user', JSON.stringify({
+                id: '{$user['id']}',
+                name: '{$user['name']}',
+                email: '{$user['email']}',
+                referral: '{$user['referral']}'
+            }));
+            window.location.href = 'profile.php';
+        </script>
+        ";
     } else {
         echo "<script>alert('Invalid email or password. Please try again.'); window.location.href='login.html';</script>";
-    }
+    }    
 }
 ?>

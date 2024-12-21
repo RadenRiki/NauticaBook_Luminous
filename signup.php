@@ -2,7 +2,7 @@
 session_start(); // Start the session
 
 // Database connection
-$conn = mysqli_connect("localhost", "root", "", "luminousdb");
+$conn = new mysqli("localhost", "root", "root", "luminousdb");
 
 // Check connection
 if ($conn->connect_error) {
@@ -35,12 +35,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Set session data
             $_SESSION['user_id'] = $stmt->insert_id;
             $_SESSION['name'] = $name;
-
-            // Redirect to profile.html
-            header("Location: profile.html");
+        
+            // Set user data ke sessionStorage via JavaScript
+            echo "
+            <script>
+                sessionStorage.setItem('user', JSON.stringify({
+                    id: '{$stmt->insert_id}',
+                    name: '{$name}'
+                }));
+                window.location.href = 'profile.html';
+            </script>
+            ";
         } else {
             echo "<script>alert('Signup failed. Please try again.'); window.location.href='signup.html';</script>";
-        }
+        }        
     }
 }
 ?>
