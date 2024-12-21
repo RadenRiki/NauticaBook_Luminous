@@ -288,20 +288,41 @@
                 </section>
 
                 <script>
-                    document.getElementById('pelabuhanAsal').addEventListener('change', function() {
+                    const asalSelect = document.getElementById('pelabuhanAsal');
+                    const tujuanSelect = document.getElementById('pelabuhanTujuan');
+
+                    // Event listener untuk Pelabuhan Asal
+                    asalSelect.addEventListener('change', function () {
                         const pelabuhanAsal = this.value;
-                        const pelabuhanTujuan = document.getElementById('pelabuhanTujuan');
+
                         if (pelabuhanAsal === 'merak') {
-                            pelabuhanTujuan.value = 'bakauheni';
+                            tujuanSelect.value = 'bakauheni';
                         } else if (pelabuhanAsal === 'bakauheni') {
-                            pelabuhanTujuan.value = 'merak';
+                            tujuanSelect.value = 'merak';
                         } else if (pelabuhanAsal === 'ketapang') {
-                            pelabuhanTujuan.value = 'gilimanuk';
+                            tujuanSelect.value = 'gilimanuk';
                         } else if (pelabuhanAsal === 'gilimanuk') {
-                            pelabuhanTujuan.value = 'ketapang';
+                            tujuanSelect.value = 'ketapang';
                         }
                     });
-                    document.getElementById('submitBooking').addEventListener('click', function(event) {
+
+                    // Event listener untuk Pelabuhan Tujuan
+                    tujuanSelect.addEventListener('change', function () {
+                        const pelabuhanTujuan = this.value;
+
+                        if (pelabuhanTujuan === 'merak') {
+                            asalSelect.value = 'bakauheni';
+                        } else if (pelabuhanTujuan === 'bakauheni') {
+                            asalSelect.value = 'merak';
+                        } else if (pelabuhanTujuan === 'ketapang') {
+                            asalSelect.value = 'gilimanuk';
+                        } else if (pelabuhanTujuan === 'gilimanuk') {
+                            asalSelect.value = 'ketapang';
+                        }
+                    });
+
+                    // Event listener untuk Submit Booking
+                    document.getElementById('submitBooking').addEventListener('click', function (event) {
                         event.preventDefault();
                         // Ambil semua jumlah penumpang yang sudah ada
                         const jumlahDewasa = parseInt(document.getElementById('dewasa-count').textContent, 10);
@@ -315,7 +336,7 @@
                             pelabuhanAsal: document.getElementById('pelabuhanAsal').value,
                             pelabuhanTujuan: document.getElementById('pelabuhanTujuan').value,
                             tanggal: document.getElementById('tanggal').value,
-                            jamMasuk: jamSelected, // <-- tambahkan ini
+                            jamMasuk: jamSelected,
                             layanan: document.getElementById('layanan').value,
                             tipeTiket: document.getElementById('selectedTicketType').value,
                             jumlahPenumpang: {
@@ -465,5 +486,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
