@@ -61,7 +61,7 @@
         }
 
         // Fetch tiket berdasarkan user_id
-        const response = await fetch(`/api/tickets/${userData.id}`);
+        const response = await fetch('tickets.php');
         const tickets = await response.json();
 
         // Container untuk tiket

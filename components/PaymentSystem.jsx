@@ -51,20 +51,23 @@ const PaymentSystem = () => {
 
   const handlePayment = async () => {
     try {
-      // Ambil user_id dan data booking
-      const userData = JSON.parse(sessionStorage.getItem('user'));
-      const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
-      const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
+      // Cek status login terlebih dahulu
+      const response = await fetch('check_session.php');
+      const sessionData = await response.json();
       
-      if (!userData?.id) {
+      if (!sessionData.user_id) {
         alert('Silakan login terlebih dahulu');
         window.location.href = 'login.html';
         return;
       }
   
+      // Ambil data booking dan data pemesan
+      const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
+      const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
+      
       // Data untuk dikirim ke database
       const ticketData = {
-        user_id: userData.id,
+        user_id: sessionData.user_id, // Gunakan user_id dari session PHP
         asal: bookingData.pelabuhanAsal,
         tujuan: bookingData.pelabuhanTujuan,
         layanan: bookingData.layanan,
@@ -76,9 +79,9 @@ const PaymentSystem = () => {
         email_pemesan: pemesanData.email,
         nomor_hp: pemesanData.telepon
       };
-  
+    
       // Kirim ke API untuk disimpan di database
-      const response = await fetch('save_ticket.php', {
+      const saveResponse = await fetch('save_ticket.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,14 +89,20 @@ const PaymentSystem = () => {
         body: JSON.stringify(ticketData)
       });
   
-      if (!response.ok) throw new Error('Gagal menyimpan tiket');
+      if (!saveResponse.ok) throw new Error('Gagal menyimpan tiket');
   
-      // Jika berhasil
-      sessionStorage.setItem('paymentStatus', 'success');
-      window.location.href = 'payment-success.html';
+      const result = await saveResponse.json();
+      
+      if (result.success) {
+        // Jika berhasil
+        window.location.href = 'payment-success.html';
+      } else {
+        throw new Error(result.error || 'Gagal menyimpan tiket');
+      }
+      
     } catch (error) {
       console.error('Error:', error);
-      alert('Terjadi kesalahan saat memproses pembayaran');
+      alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
     }
   };
 
