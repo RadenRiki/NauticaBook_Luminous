@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Informasi Pengirim</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
+    <style>
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            /* Contoh jarak */
+            align-self: start;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav__logo" onclick="window.location.href='home.php'">NauticaBook</div>
+        <ul class="nav__links">
+            <li class="link"><a href="home.php">Home</a></li>
+            <li class="link"><a href="myticket.php">MyTickets</a></li>
+            <li class="link"><a href="offers.php">Offers</a></li>
+        </ul>
+        <div class="profile-icon" onclick="window.location.href='profile.php'">
+            <i class="ri-user-3-line"></i>
+        </div>
+    </nav>
+
+    <section class="form-container">
+        <div class="form-header">
+            <h2>Informasi Pengirim</h2>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="name">Nama *</label>
+                <input type="text" id="name" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="phone">Nomor Ponsel *</label>
+                <input type="text" id="phone" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="postal-code">Kode Pos *</label>
+                <input type="text" id="postal-code" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="province">Provinsi Kota Area *</label>
+                <select id="province">
+                    <option value="" disabled selected>Pilih</option>
+                    <option>Jakarta</option>
+<option>Surabaya</option>
+<option>Bandung</option>
+<option>Medan</option>
+<option>Semarang</option>
+<option>Palembang</option>
+<option>Makassar</option>
+<option>Denpasar</option>
+<option>Yogyakarta</option>
+<option>Bekasi</option>
+<option>Tangerang</option>
+<option>Depok</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Alamat Rinci *</label>
+                <input type="text" id="address" placeholder="Silakan masukkan">
+            </div>
+        </form>
+    </section>
+    <section class="form-container">
+        <div class="form-header">
+            <h2>Informasi Pengirim</h2>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="name">Nama *</label>
+                <input type="text" id="name" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="phone">Nomor Ponsel *</label>
+                <input type="text" id="phone" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="postal-code">Kode Pos *</label>
+                <input type="text" id="postal-code" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="province">Provinsi Kota Area *</label>
+                <select id="province">
+                    <option value="" disabled selected>Pilih</option>
+                    <option>Yogyakarta</option>
+                    <option>Jakarta</option>
+<option>Surabaya</option>
+<option>Bandung</option>
+<option>Medan</option>
+<option>Semarang</option>
+<option>Palembang</option>
+<option>Makassar</option>
+<option>Denpasar</option>
+<option>Yogyakarta</option>
+<option>Bekasi</option>
+<option>Tangerang</option>
+<option>Depok</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Alamat Rinci *</label>
+                <input type="text" id="address" placeholder="Silakan masukkan">
+            </div>
+        </form>
+    </section>
+    <section class="form-container">
+        <div class="form-header">
+            <h2>Informasi Barang</h2>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="jenisBarang">Jenis barang *</label>
+                <select id="jenisBarang">
+                    <option value="" disabled selected>Silakan pilih</option>
+                    <option>Hasil Alam (Biji Kopi, dll)</option>
+                    <option>Alat Musik</option>
+                    <option>Lainnya</option>
+                    <option>Kendaraan</option>
+                    <option>Alat kesehatan</option>
+                    <option>Otomotif</option>
+                    <option>Aksesoris & Souvenir</option>
+                    <option>Kosmetik</option>
+                    <option>Furniture</option>
+                    <option>Pecah belah</option>
+                    <option>Elektronik</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="namaBarang">Nama Barang *</label>
+                <input type="text" id="namaBarang" placeholder="Silakan masukkan">
+            </div>
+            <div class="form-group">
+                <label for="caraPembayaran">Cara Pembayaran *</label>
+                <select id="caraPembayaran">
+                    <option value="" disabled selected>Pilih cara pembayaran</option>
+                    <option>Tunai</option>
+                    <option>DFOD</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jumlah">Jumlah barang *</label>
+                <input type="number" id="jumlahBarang" name="jumlahBarang" placeholder="Silakan masukan">
+            </div>
+            <div class="form-group">
+                <label for="berat">Berat barang *</label>
+                <input type="number" id="beratBarang" name="beratBarang" placeholder="Berat barang (kg)">
+            </div>
+            <div class="form-group">
+                <label for="note">Catatan *</label>
+                    <input type="text" id="note" placeholder="Silakan masukkan">
+                </select>
+            </div>
+        </form>
+    </section>
+
+    <!-- SIDEBAR -->
+    <section class="form-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Detail Harga</h2>
+            </div>
+            <div class="sidebar-content" id="sidebarContent">
+                <!-- Akan diisi via JS (rute, tanggal, jamMasuk, layanan, total harga) -->
+            </div>
+        </div>
+    </section>
+    <!-- Submit Button -->
+    <div class="button-container" style="margin-bottom: 2rem;">
+        <button id="pesanSekarang" class="pesan-button">Pesan</button>
+    </div>
+
+    <footer class="footer">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>NauticaBook</h3>
+                <p>
+                    NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
+                    Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
+                    langkah.
+                </p>
+                <p>
+                    NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman pemesanan nyaman,
+                    baik untuk perjalanan pribadi, bisnis, maupun logistik. Dengan mitra terpercaya,
+                    layanan pelanggan responsif, dan sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
+                    laut Anda.
+                </p>
+            </div>
+            <div class="footer__col">
+                <h4>Tim Luminous</h4>
+                <p>Raden Riki Hilviastari Saputra (23523217)</p>
+                <p>Arvindra Ahmad Ramadhan (23523128)</p>
+                <p> Taqya Maritsa Hakim (23523108)</p>
+                <p>-</p>
+            </div>
+            <div class="footer__col">
+                <h4>Legal</h4>
+                <p>FAQs</p>
+                <p>Terms & Conditions</p>
+                <p>Privacy Policy</p>
+            </div>
+            <div class="footer__col">
+                <h4>Resources</h4>
+                <p>Social Media</p>
+                <p>Help Center</p>
+                <p>Partnerships</p>
+            </div>
+        </div>
+        </div>
+        <div class="footer__bar">
+            Copyright © 2024 Webs by Luminous. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>

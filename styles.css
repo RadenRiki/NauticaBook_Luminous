@@ -896,7 +896,7 @@ select option:hover {
 /* Footer Section */
 .footer {
   background-color: var(--text-light);
-  margin-top: 10rem;
+  margin-top: 15rem;
 }
 
 .footer__container {
