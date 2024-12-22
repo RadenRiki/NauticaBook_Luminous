@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
+/** 
+ * Versi tanpa "import/export", cocok untuk <script type="text/babel">
+ * Memakai React global: const { useState, useEffect } = React;
+ */
 
-const PaymentSystem = () => {
+// Ambil hook React dari variabel global "React"
+const { useState, useEffect } = React;
+
+// Definisikan function PaymentSystem di global scope
+function PaymentSystem() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [bookingData, setBookingData] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -22,7 +29,7 @@ const PaymentSystem = () => {
     const va = '88' + Math.random().toString().slice(2, 14);
     setVirtualAccount(va);
 
-    // Set countdown timer
+    // Set countdown timer (1 jam)
     const timer = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 0) {
@@ -36,6 +43,7 @@ const PaymentSystem = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Format detik ke HH:MM:SS
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -49,9 +57,10 @@ const PaymentSystem = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Fungsi ketika user klik "Konfirmasi Pembayaran"
   const handlePayment = async () => {
     try {
-      // Cek status login terlebih dahulu
+      // Cek status login
       const response = await fetch('check_session.php');
       const sessionData = await response.json();
       
@@ -61,13 +70,13 @@ const PaymentSystem = () => {
         return;
       }
   
-      // Ambil data booking dan data pemesan
+      // Ambil data booking & pemesan dari sessionStorage
       const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
       const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
       
-      // Data untuk dikirim ke database
+      // Data yang dikirim ke server
       const ticketData = {
-        user_id: sessionData.user_id, // Gunakan user_id dari session PHP
+        user_id: sessionData.user_id, 
         asal: bookingData.pelabuhanAsal,
         tujuan: bookingData.pelabuhanTujuan,
         layanan: bookingData.layanan,
@@ -80,7 +89,7 @@ const PaymentSystem = () => {
         nomor_hp: pemesanData.telepon
       };
     
-      // Kirim ke API untuk disimpan di database
+      // Kirim ke save_ticket.php
       const saveResponse = await fetch('save_ticket.php', {
         method: 'POST',
         headers: {
@@ -89,12 +98,14 @@ const PaymentSystem = () => {
         body: JSON.stringify(ticketData)
       });
   
-      if (!saveResponse.ok) throw new Error('Gagal menyimpan tiket');
+      if (!saveResponse.ok) {
+        throw new Error('Gagal menyimpan tiket');
+      }
   
       const result = await saveResponse.json();
       
       if (result.success) {
-        // Jika berhasil
+        // Jika berhasil, redirect ke halaman sukses
         window.location.href = 'payment_success.html';
       } else {
         throw new Error(result.error || 'Gagal menyimpan tiket');
@@ -113,10 +124,16 @@ const PaymentSystem = () => {
         
         {bookingData && (
           <div className="mb-6">
-            <p className="text-gray-600">Rute: {bookingData.pelabuhanAsal} → {bookingData.pelabuhanTujuan}</p>
-            <p className="text-gray-600">Tanggal: {new Date(bookingData.tanggal).toLocaleDateString('id-ID')}</p>
+            <p className="text-gray-600">
+              Rute: {bookingData.pelabuhanAsal} → {bookingData.pelabuhanTujuan}
+            </p>
+            <p className="text-gray-600">
+              Tanggal: {new Date(bookingData.tanggal).toLocaleDateString('id-ID')}
+            </p>
             <p className="text-gray-600">Layanan: {bookingData.layanan}</p>
-            <p className="text-xl font-semibold mt-2">Total: Rp {totalPrice?.toLocaleString()}</p>
+            <p className="text-xl font-semibold mt-2">
+              Total: Rp {totalPrice?.toLocaleString()}
+            </p>
           </div>
         )}
 
@@ -128,15 +145,20 @@ const PaymentSystem = () => {
         </div>
 
         <div className="space-y-4">
-          <div className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
-               onClick={() => setPaymentMethod('bank')}>
+          {/* PILIHAN TRANSFER BANK */}
+          <div
+            className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
+            onClick={() => setPaymentMethod('bank')}
+          >
             <h3 className="font-semibold">Transfer Bank</h3>
             {paymentMethod === 'bank' && (
               <div className="mt-4 space-y-4">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600 mb-2">Nomor Virtual Account:</p>
                   <div className="flex items-center gap-2">
-                    <code className="bg-white px-4 py-2 rounded flex-1">{virtualAccount}</code>
+                    <code className="bg-white px-4 py-2 rounded flex-1">
+                      {virtualAccount}
+                    </code>
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
@@ -144,9 +166,22 @@ const PaymentSystem = () => {
                       }}
                       className="p-2 hover:bg-gray-200 rounded"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      {/* icon copy */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4
+                        a2 2 0 0 1 2-2h9a2 2 0
+                        0 1 2 2v1"/>
                       </svg>
                     </button>
                   </div>
@@ -154,11 +189,26 @@ const PaymentSystem = () => {
                 {copied && (
                   <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4">
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      {/* icon check */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M22 11.08V12a10 10
+                          0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12
+                          14.01 9 11.01"/>
                       </svg>
-                      <span className="ml-2">Nomor Virtual Account berhasil disalin!</span>
+                      <span className="ml-2">
+                        Nomor Virtual Account berhasil disalin!
+                      </span>
                     </div>
                   </div>
                 )}
@@ -166,8 +216,11 @@ const PaymentSystem = () => {
             )}
           </div>
 
-          <div className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
-               onClick={() => setPaymentMethod('minimarket')}>
+          {/* PILIHAN MINIMARKET */}
+          <div
+            className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
+            onClick={() => setPaymentMethod('minimarket')}
+          >
             <h3 className="font-semibold">Pembayaran Minimarket</h3>
             {paymentMethod === 'minimarket' && (
               <div className="mt-4 space-y-2">
@@ -180,10 +233,12 @@ const PaymentSystem = () => {
           </div>
         </div>
 
+        {/* TOMBOL KONFIRMASI */}
         {paymentMethod && (
           <button
             onClick={handlePayment}
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+            className="w-full mt-6 bg-blue-600 text-white
+              py-3 rounded-lg hover:bg-blue-700"
           >
             Konfirmasi Pembayaran
           </button>
@@ -191,6 +246,4 @@ const PaymentSystem = () => {
       </div>
     </div>
   );
-};
-
-export default PaymentSystem;
+}
