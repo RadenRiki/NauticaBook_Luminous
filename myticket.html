@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +8,28 @@
   <link rel="stylesheet" href="styles2.css" />
   <!-- Icon CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
-</head>
 
+  <style>
+    /* Tambahkan class .hidden untuk menyembunyikan elemen */
+    .hidden {
+      display: none;
+    }
+    /* (Opsional) gaya tombol detail */
+    .detail-btn {
+      display: inline-block;
+      margin: 8px 0;
+      padding: 6px 12px;
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .detail-btn:hover {
+      background-color: #005bb5;
+    }
+  </style>
+</head>
 <body>
   <!-- Navigation -->
   <nav>
@@ -24,6 +43,7 @@
       <i class="ri-user-3-line"></i>
     </div>
   </nav>
+
   <div class="container-ticket">
     <!-- Content Area -->
     <div class="content-ticket">
@@ -31,10 +51,10 @@
       <div class="tabs-tic">
         <span class="tab-tic active">Aktif</span>
         <span class="tab-tic">Riwayat</span>
-        <!-- <button class="tab-tic active" onclick="openTab(event, 'empty-state')">Aktif</button>
-        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Menunggu</button>
-        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Gagal</button>
-        <button class="tab-tic" onclick="openTab(event, 'empty-state')">Refund</button> -->
+        <!-- 
+          Anda bisa menambahkan tab lain (Menunggu, Gagal, Refund) 
+          dengan memanggil fungsi openTab dsb. 
+        -->
       </div>
 
       <!-- No Tickets Message -->
@@ -48,11 +68,33 @@
       </div>
     </div>
   </div>
+
   <script>
-    // Tambahkan script ini di myticket.html
+    // Fungsi untuk menampilkan/menyembunyikan detail tiket
+    function toggleTicketDetail(buttonElement) {
+      // Cari parent terdekat yang punya class "ticket-card"
+      const card = buttonElement.closest('.ticket-card');
+      if (!card) return;
+
+      // Di dalam card, cari elemen dengan class "ticket-details-hidden"
+      const hiddenDetails = card.querySelector('.ticket-details-hidden');
+      if (!hiddenDetails) return;
+
+      // Lakukan toggle class .hidden
+      hiddenDetails.classList.toggle('hidden');
+
+      // Ubah teks tombol (opsional)
+      if (hiddenDetails.classList.contains('hidden')) {
+        buttonElement.textContent = 'Lihat Detail';
+      } else {
+        buttonElement.textContent = 'Sembunyikan Detail';
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", async function () {
       try {
-        // Cek apakah user sudah login
+        // (Opsional) Cek apakah user sudah login melalui sessionStorage
+        // Anda boleh menonaktifkan cek ini jika Anda pakai server-side session
         const userData = JSON.parse(sessionStorage.getItem("user"));
         if (!userData?.id) {
           alert("Silakan login terlebih dahulu");
@@ -60,59 +102,75 @@
           return;
         }
 
-        // Fetch tiket berdasarkan user_id
+        // Fetch tiket berdasarkan user_id dari file tickets.php
         const response = await fetch('tickets.php');
         const tickets = await response.json();
 
-        // Container untuk tiket
+        // Container untuk menampilkan daftar tiket
         const contentTicket = document.querySelector(".content-ticket");
 
-        if (tickets.length === 0) {
-          // Tampilkan empty state jika tidak ada tiket
+        // Jika tidak ada tiket, tampilkan empty state
+        if (!tickets || tickets.length === 0) {
           contentTicket.innerHTML = `
-        <div class="empty-state">
-          <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
-          <h3>Tidak ada pesanan!</h3>
-          <p>Anda belum memiliki pesanan sama sekali</p>
-          <div class="buttons">
-            <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
-          </div>
-        </div>
-      `;
-        } else {
-          // Tampilkan daftar tiket
-          const ticketList = tickets
-            .map(
-              (ticket) => `
-        <div class="ticket-card">
-          <div class="ticket-header">
-            <h3>${ticket.asal} → ${ticket.tujuan}</h3>
-            <span class="ticket-status">Aktif</span>
-          </div>
-          <div class="ticket-details">
-            <p>Tanggal: ${new Date(ticket.tanggal).toLocaleDateString(
-                "id-ID"
-              )}</p>
-            <p>Jam: ${ticket.jam}</p>
-            <p>Layanan: ${ticket.layanan}</p>
-            <p>Tipe: ${ticket.tipe}</p>
-            <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
-          </div>
-        </div>
-      `
-            )
-            .join("");
-
-          contentTicket.innerHTML = `
-        <div class="tabs-tic">
-          <span class="tab-tic active">Aktif</span>
-          <span class="tab-tic">Riwayat</span>
-        </div>
-        <div class="tickets-container">
-          ${ticketList}
-        </div>
-      `;
+            <div class="empty-state">
+              <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
+              <h3>Tidak ada pesanan!</h3>
+              <p>Anda belum memiliki pesanan sama sekali</p>
+              <div class="buttons">
+                <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
+              </div>
+            </div>
+          `;
+          return;
         }
+
+        // Jika ada tiket, buat HTML card per tiket
+        const ticketList = tickets.map((ticket) => {
+          // Format tanggal
+          const formattedDate = new Date(ticket.tanggal).toLocaleDateString("id-ID");
+
+          return `
+            <div class="ticket-card">
+              <div class="ticket-header">
+                <h3>${ticket.asal} → ${ticket.tujuan}</h3>
+                <span class="ticket-status">Aktif</span>
+              </div>
+              <!-- Bagian ringkas yang selalu tampak -->
+              <div class="ticket-details">
+                <p>Tanggal: ${formattedDate}</p>
+                <p>Jam: ${ticket.jam}</p>
+                <p>Layanan: ${ticket.layanan}</p>
+                <p>Tipe: ${ticket.tipe}</p>
+                <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
+              </div>
+
+              <!-- Tombol Lihat Detail -->
+              <button class="detail-btn" onclick="toggleTicketDetail(this)">
+                Lihat Detail
+              </button>
+
+              <!-- Bagian detail lanjutan, disembunyikan secara default -->
+              <div class="ticket-details-hidden hidden">
+                <!-- Isi apa pun yang lebih detail, misalnya data penumpang, dll. -->
+                <p>Penumpang ke-1: [nama], [usia]</p>
+                <p>Penumpang ke-2: ...</p>
+                <hr/>
+                <p>Nomor Polisi Kendaraan: [jika ada]</p>
+                <p>(dsb.)</p>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        contentTicket.innerHTML = `
+          <div class="tabs-tic">
+            <span class="tab-tic active">Aktif</span>
+            <span class="tab-tic">Riwayat</span>
+          </div>
+          <div class="tickets-container">
+            ${ticketList}
+          </div>
+        `;
       } catch (error) {
         console.error("Error:", error);
         alert("Gagal memuat data tiket");
@@ -120,5 +178,4 @@
     });
   </script>
 </body>
-
 </html>
