@@ -222,4 +222,70 @@
         
         .btn-pesan:hover {
             background-color: var(--text-light);
-        }        
+        }   
+        
+
+
+/* Container payment success Styling */
+.container-sucess {
+  text-align: center;
+  padding: 2rem 10px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: auto; /* Centers horizontally */
+  margin-top: 10vh; /* Adds some space from the top */
+  width: 90%;
+}
+
+/* Image Styling */
+.container-sucess img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+  border-radius: 10px; /* Optional: Adds rounded corners for a modern look */
+}
+
+/* Typography */
+.success-message h1 {
+  font-size: 35px;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.success-message p {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+/* Button Styling */
+.success-message .btn {
+  background-color: #152c6d;
+  color: var(--white);
+  padding: 0.8rem 1.5rem;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 400;
+  transition: background-color 0.3s ease;
+}
+
+.success-message .btn:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .success-message h1 {
+    font-size: 1.5rem;
+  }
+
+  .success-message p {
+    font-size: 0.9rem;
+  }
+
+  .success-message .btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
