@@ -95,7 +95,7 @@ const PaymentSystem = () => {
       
       if (result.success) {
         // Jika berhasil
-        window.location.href = 'payment-success.html';
+        window.location.href = 'payment_success.html';
       } else {
         throw new Error(result.error || 'Gagal menyimpan tiket');
       }

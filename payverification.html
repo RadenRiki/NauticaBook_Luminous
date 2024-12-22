@@ -44,8 +44,10 @@
   <div id="payment-system"></div>
 
   <!-- Import PaymentSystem component -->
-  <script type="text/babel" data-type="module">
-    // Import komponen PaymentSystem
+  <!-- Memuat file PaymentSystem.jsx dari folder components -->
+  <!-- Pastikan "components/PaymentSystem.jsx" sesuai dengan struktur folder Anda -->
+  <script type="text/babel" src="components/PaymentSystem.jsx"></script>
+    <!-- // Import komponen PaymentSystem
     const PaymentSystem = () => {
       const [paymentMethod, setPaymentMethod] = React.useState('');
       const [bookingData, setBookingData] = React.useState(null);
@@ -98,7 +100,7 @@
       const handlePayment = () => {
         // Simulasi pembayaran berhasil
         sessionStorage.setItem('paymentStatus', 'success');
-        window.location.href = 'payment-success.html';
+        window.location.href = 'payment_success.html';
       };
 
       return (
@@ -186,11 +188,10 @@
           </div>
         </div>
       );
-    };
-
-    // Render komponen
-    const root = ReactDOM.createRoot(document.getElementById('payment-system'));
-    root.render(<PaymentSystem />);
-  </script>
-</body>
-</html>
+    }; -->
+    <script type="text/babel">
+      const root = ReactDOM.createRoot(document.getElementById("payment-system"));
+      root.render(<PaymentSystem />);
+    </script>
+  </body>
+  </html>

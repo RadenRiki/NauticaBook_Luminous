@@ -33,7 +33,7 @@ try {
     // Convert tanggal ke format yang sesuai dengan MySQL
     $formattedDate = date('Y-m-d', strtotime($data['tanggal']));
     
-    $stmt->bind_param("issssis", 
+    $stmt->bind_param("issssiss", 
         $data['user_id'],
         $data['asal'],
         $data['tujuan'],
