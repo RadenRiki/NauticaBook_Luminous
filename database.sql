@@ -38,3 +38,17 @@ CREATE TABLE cargo (
     tanggal DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+-- jangan lupa tambahin ini
+ALTER TABLE passengers 
+  ADD COLUMN nama_pemesan VARCHAR(255),
+  ADD COLUMN email_pemesan VARCHAR(255),
+  ADD COLUMN nomor_hp VARCHAR(20),
+  ADD COLUMN detail_penumpang TEXT;
+
+
+-- ALTER TABLE passengers
+-- ADD COLUMN nama_pemesan VARCHAR(255),
+-- ADD COLUMN email_pemesan VARCHAR(255),
+-- ADD COLUMN nomor_hp VARCHAR(20),
+-- ADD COLUMN detail_penumpang TEXT;

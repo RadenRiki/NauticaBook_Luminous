@@ -1041,3 +1041,168 @@ select option:hover {
     margin-top: 20px;
   }
 }
+
+
+/* UNTUK DETAIL CARGOOOOOOOOOOOOO */
+/* Cargo Detail Styles */
+.header-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 0 40px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-jadwal {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-jadwal:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Container Styles */
+.container {
+  background-color: #fff;
+  width: 1000px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 50px;
+  margin: 20px auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.header h1 {
+  font-size: 30px;
+  color: #333;
+  font-weight: bold;
+}
+
+.header p {
+  font-size: 20px;
+  color: #666;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Details Section */
+.details {
+  margin-bottom: 20px;
+}
+
+.details p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 15px;
+}
+
+.tab-link {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 16px;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-link:hover {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.tab-link.active {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  padding: 20px 0;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Price Details */
+.price-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Policies */
+.policy {
+  font-size: 15px;
+  color: #555;
+}
+
+.policy ul {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  list-style-type: none;
+  line-height: 1.8;
+}
+
+.policy li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.policy li::before {
+  content: "•";
+  color: #f59e0b;
+  margin-right: 8px;
+}
+
+/* Pesan Button */
+.btn-pesan {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.btn-pesan:hover {
+  background-color: var(--primary-color-dark);
+}

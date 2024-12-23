@@ -360,28 +360,27 @@
           </div>
         </form> -->
 
-                <!-- Booking Form Cargo -->
+                <!-- Form Cargo -->
                 <form id="formCargo" style="display: none;">
                     <!-- Jenis Barang -->
                     <div class="form__group">
                         <span><i class="ri-box-line"></i></span>
                         <div class="input__content">
                             <div class="input__group">
-                                <select id="jenisBarang" onchange="updateBarang()" required>
+                                <select id="jenisBarang" required>
                                     <option value="" disabled selected>Pilih Jenis Barang</option>
-                                    <option value="umum">Umum</option>
-                                    <option value="berat">Kosmetik dan Kecantikan</option>
-                                    <option value="kendaraan">Kendaraan</option>
-                                    <option value="kendaraan">Peralatan Rumah Tangga</option>
-                                    <option value="kendaraan">Mesin ukuran besar</option>
-                                    <option value="kendaraan">Elektronik</option>
-                                    <option value="kendaraan">Furniture</option>
-                                    <option value="kendaraan">Lainnya</option>
+                                    <option value="Umum">Umum</option>
+                                    <option value="Kosmetik dan Kecantikan">Kosmetik dan Kecantikan</option>
+                                    <option value="Kendaraan">Kendaraan</option>
+                                    <option value="Peralatan Rumah Tangga">Peralatan Rumah Tangga</option>
+                                    <option value="Mesin ukuran besar">Mesin ukuran besar</option>
+                                    <option value="Elektronik">Elektronik</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
                             <p>Pilih jenis barang untuk pengiriman</p>
                         </div>
-                        <input type="hidden" id="BarangInput" name="BarangInput" value="" />
                     </div>
 
                     <!-- Berat Barang -->
@@ -389,60 +388,139 @@
                         <span><i class="ri-scale-line"></i></span>
                         <div class="input__content">
                             <div class="input__group">
-                                <input type="number" id="beratBarang" name="beratBarang" placeholder="Berat Barang (Kg)"
-                                    required />
+                                <input type="number" id="beratBarang" name="beratBarang"
+                                    placeholder="Masukkan berat barang dalam kilogram" min="1" required />
                             </div>
                             <p>Masukkan berat barang dalam kilogram</p>
                         </div>
                     </div>
 
-                    <!-- Pelabuhan Asal dan Tujuan -->
+                    <!-- Pelabuhan Asal -->
                     <div class="form__group">
                         <span><i class="ri-ship-line"></i></span>
                         <div class="input__content">
                             <div class="input__group">
-                                <select id="pelabuhanAsalCargo" onchange="updateCargoAsal()" required>
+                                <select id="pelabuhanAsalCargo" onchange="updateCargoDestinations()" required>
                                     <option value="" disabled selected>Pilih Pelabuhan Asal</option>
                                     <option value="merak">Merak</option>
                                     <option value="bakauheni">Bakauheni</option>
+                                    <option value="ketapang">Ketapang</option>
+                                    <option value="gilimanuk">Gilimanuk</option>
+                                    <option value="tanjungpriok">Tanjung Priok</option>
+                                    <option value="tanjungperak">Tanjung Perak</option>
                                 </select>
                             </div>
                             <p>Pilih lokasi keberangkatan</p>
                         </div>
-                        <input type="hidden" id="CargoAsal" name="CargoAsal" value="" />
                     </div>
 
+                    <!-- Pelabuhan Tujuan -->
                     <div class="form__group">
                         <span><i class="ri-ship-line"></i></span>
                         <div class="input__content">
                             <div class="input__group">
-                                <select id="pelabuhanTujuanCargo" onchange="updateCargoTujuan()" required>
+                                <select id="pelabuhanTujuanCargo" required>
                                     <option value="" disabled selected>Pilih Pelabuhan Tujuan</option>
-                                    <option value="gilimanuk">Gilimanuk</option>
-                                    <option value="ketapang">Ketapang</option>
                                 </select>
                             </div>
                             <p>Pilih lokasi tujuan</p>
                         </div>
-                        <input type="hidden" id="CargoTujuan" name="CargoTujuan" value="" />
                     </div>
 
-                    <!-- Estimasi Jadwal -->
+                    <!-- Tanggal Pengiriman -->
                     <div class="form__group">
                         <span><i class="ri-calendar-line"></i></span>
                         <div class="input__content">
-                            <div class="input__group date-time">
+                            <div class="input__group">
                                 <input type="date" id="tanggalCargo" name="tanggalCargo" required />
                             </div>
                             <p>Pilih estimasi tanggal pengiriman</p>
                         </div>
                     </div>
+
                     <!-- Tombol Submit -->
-                    <div class="form__submit">
-                        <button type="submit" id="pesanCargoBtn" onclick="handleCargoSubmit()">Pesan Cargo</button>
+                    <div class="search-container">
+                        <button type="submit" class="search-btn">
+                            Cari Tarif Cargo <i class="ri-search-line"></i>
+                        </button>
                     </div>
                 </form>
 
+                <script>
+                    function updateCargoDestinations() {
+                        const asalSelect = document.getElementById('pelabuhanAsalCargo');
+                        const tujuanSelect = document.getElementById('pelabuhanTujuanCargo');
+                        const selectedAsal = asalSelect.value;
+
+                        // Hapus semua opsi tujuan yang ada
+                        while (tujuanSelect.options.length > 1) {
+                            tujuanSelect.remove(1);
+                        }
+
+                        // Definisikan rute yang valid
+                        const validRoutes = {
+                            'merak': ['bakauheni', 'tanjungpriok', 'tanjungperak'],
+                            'bakauheni': ['merak', 'tanjungpriok', 'tanjungperak'],
+                            'ketapang': ['gilimanuk', 'tanjungperak'],
+                            'gilimanuk': ['ketapang', 'tanjungperak'],
+                            'tanjungpriok': ['merak', 'bakauheni', 'tanjungperak'],
+                            'tanjungperak': ['merak', 'bakauheni', 'ketapang', 'gilimanuk', 'tanjungpriok']
+                        };
+
+                        // Nama pelabuhan untuk display
+                        const portNames = {
+                            'merak': 'Merak',
+                            'bakauheni': 'Bakauheni',
+                            'ketapang': 'Ketapang',
+                            'gilimanuk': 'Gilimanuk',
+                            'tanjungpriok': 'Tanjung Priok',
+                            'tanjungperak': 'Tanjung Perak'
+                        };
+
+                        // Tambahkan opsi tujuan yang valid
+                        if (selectedAsal && validRoutes[selectedAsal]) {
+                            validRoutes[selectedAsal].forEach(portCode => {
+                                const option = new Option(portNames[portCode], portCode);
+                                tujuanSelect.add(option);
+                            });
+                        }
+                    }
+
+                    // Set minimum date untuk input tanggal ke hari ini
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const today = new Date().toISOString().split('T')[0];
+                        document.getElementById('tanggalCargo').min = today;
+                    });
+
+                    // Form submission
+                    document.getElementById('formCargo').addEventListener('submit', function (event) {
+                        event.preventDefault();
+                        const asalValue = document.getElementById('pelabuhanAsalCargo').value;
+                        const tujuanValue = document.getElementById('pelabuhanTujuanCargo').value;
+                        const beratValue = document.getElementById('beratBarang').value;
+
+                        if (asalValue === tujuanValue) {
+                            alert('Pelabuhan asal dan tujuan tidak boleh sama!');
+                            return false;
+                        }
+
+                        if (beratValue <= 0) {
+                            alert('Berat barang harus lebih dari 0 kg!');
+                            return false;
+                        }
+
+                        // Jika validasi berhasil, simpan data dan redirect
+                        const cargoData = {
+                            pelabuhanAsalCargo: asalValue,
+                            pelabuhanTujuanCargo: tujuanValue,
+                            jenisBarang: document.getElementById('jenisBarang').value,
+                            beratBarang: parseFloat(beratValue),
+                            tanggalCargo: document.getElementById('tanggalCargo').value
+                        };
+                        sessionStorage.setItem('cargoData', JSON.stringify(cargoData));
+                        window.location.href = 'cargodetail.html';
+                    });
+                </script>
             </section>
         </div>
     </header>
@@ -491,4 +569,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

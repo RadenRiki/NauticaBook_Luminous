@@ -51,13 +51,9 @@
       <div class="tabs-tic">
         <span class="tab-tic active">Aktif</span>
         <span class="tab-tic">Riwayat</span>
-        <!-- 
-          Anda bisa menambahkan tab lain (Menunggu, Gagal, Refund) 
-          dengan memanggil fungsi openTab dsb. 
-        -->
       </div>
 
-      <!-- No Tickets Message -->
+      <!-- No Tickets Message (default state) -->
       <div class="empty-state">
         <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration" />
         <h3>Tidak ada pesanan!</h3>
@@ -93,8 +89,8 @@
 
     document.addEventListener("DOMContentLoaded", async function () {
       try {
-        // (Opsional) Cek apakah user sudah login melalui sessionStorage
-        // Anda boleh menonaktifkan cek ini jika Anda pakai server-side session
+        // (Opsional) Cek apakah user sudah login
+        // (boleh dihilangkan kalau pakai session di server saja)
         const userData = JSON.parse(sessionStorage.getItem("user"));
         if (!userData?.id) {
           alert("Silakan login terlebih dahulu");
@@ -129,12 +125,29 @@
           // Format tanggal
           const formattedDate = new Date(ticket.tanggal).toLocaleDateString("id-ID");
 
+          // (1) Data "detail_penumpang" kemungkinan JSON
+          // parse agar bisa di-loop
+          let penumpangHTML = "";
+          if (ticket.detail_penumpang) {
+            const penumpangArr = JSON.parse(ticket.detail_penumpang || "[]");
+            // Buat HTML penumpang
+            penumpangHTML = penumpangArr.map((p, i) => `
+            <div style="margin-bottom: 10px;">
+              <strong>Penumpang ke-${i+1} (${p.jenisID.toUpperCase()}):</strong><br/>
+              Nama: ${p.nama}<br/>
+              Nomor ID: ${p.nomorID}<br/>
+              Usia: ${p.usia}<br/>
+            </div>
+          `).join("");
+          }
+
           return `
             <div class="ticket-card">
               <div class="ticket-header">
                 <h3>${ticket.asal} → ${ticket.tujuan}</h3>
                 <span class="ticket-status">Aktif</span>
               </div>
+
               <!-- Bagian ringkas yang selalu tampak -->
               <div class="ticket-details">
                 <p>Tanggal: ${formattedDate}</p>
@@ -142,6 +155,11 @@
                 <p>Layanan: ${ticket.layanan}</p>
                 <p>Tipe: ${ticket.tipe}</p>
                 <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
+
+                <!-- (2) Data pemesan (kalau ada di DB) -->
+                <p>Nama Pemesan: ${ticket.nama_pemesan ?? '-'}</p>
+                <p>Email: ${ticket.email_pemesan ?? '-'}</p>
+                <p>No. HP: ${ticket.nomor_hp ?? '-'}</p>
               </div>
 
               <!-- Tombol Lihat Detail -->
@@ -151,17 +169,19 @@
 
               <!-- Bagian detail lanjutan, disembunyikan secara default -->
               <div class="ticket-details-hidden hidden">
-                <!-- Isi apa pun yang lebih detail, misalnya data penumpang, dll. -->
-                <p>Penumpang ke-1: [nama], [usia]</p>
-                <p>Penumpang ke-2: ...</p>
+                <!-- Tampilkan data penumpang -->
+                ${penumpangHTML}
+
                 <hr/>
-                <p>Nomor Polisi Kendaraan: [jika ada]</p>
-                <p>(dsb.)</p>
+                <!-- Contoh: menampilkan info kendaraan, dsb. -->
+                <p>Nomor Polisi Kendaraan: ${ticket.nopol ?? '-'}</p>
+                <p>(Info lainnya di sini)</p>
               </div>
             </div>
           `;
         }).join("");
 
+        // Tampilkan ke halaman
         contentTicket.innerHTML = `
           <div class="tabs-tic">
             <span class="tab-tic active">Aktif</span>

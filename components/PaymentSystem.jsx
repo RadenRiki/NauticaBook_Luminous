@@ -73,10 +73,11 @@ function PaymentSystem() {
       // Ambil data booking & pemesan dari sessionStorage
       const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
       const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
-      
-      // Data yang dikirim ke server
+
+      // detailPenumpang: array berisi semua penumpang
+      // misalnya: pemesanData.detailPenumpang
       const ticketData = {
-        user_id: sessionData.user_id, 
+        user_id: sessionData.user_id,
         asal: bookingData.pelabuhanAsal,
         tujuan: bookingData.pelabuhanTujuan,
         layanan: bookingData.layanan,
@@ -84,10 +85,14 @@ function PaymentSystem() {
         jumlah_penumpang: bookingData.jumlahPenumpang.total,
         tanggal: bookingData.tanggal,
         jam: bookingData.jamMasuk,
+
+        // kolom tambahan
         nama_pemesan: pemesanData.nama,
         email_pemesan: pemesanData.email,
-        nomor_hp: pemesanData.telepon
+        nomor_hp: pemesanData.telepon,
+        detail_penumpang: pemesanData.detailPenumpang  // array of penumpang
       };
+
     
       // Kirim ke save_ticket.php
       const saveResponse = await fetch('save_ticket.php', {
