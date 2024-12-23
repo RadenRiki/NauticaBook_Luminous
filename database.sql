@@ -46,6 +46,20 @@ ALTER TABLE passengers
   ADD COLUMN nomor_hp VARCHAR(20),
   ADD COLUMN detail_penumpang TEXT;
 
+-- tambahin ini lagi
+ALTER TABLE cargo 
+    ADD COLUMN nama_pengirim VARCHAR(255),
+    ADD COLUMN alamat_pengirim TEXT,
+    ADD COLUMN kota_pengirim VARCHAR(255),
+    ADD COLUMN kodepos_pengirim VARCHAR(20),
+    ADD COLUMN telepon_pengirim VARCHAR(20),
+    ADD COLUMN nama_penerima VARCHAR(255),
+    ADD COLUMN alamat_penerima TEXT,
+    ADD COLUMN kota_penerima VARCHAR(255),
+    ADD COLUMN kodepos_penerima VARCHAR(20),
+    ADD COLUMN telepon_penerima VARCHAR(20),
+    ADD COLUMN catatan TEXT,
+    ADD COLUMN status VARCHAR(50) DEFAULT 'aktif';
 
 -- ALTER TABLE passengers
 -- ADD COLUMN nama_pemesan VARCHAR(255),

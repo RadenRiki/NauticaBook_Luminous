@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- CSS Anda -->
+  <!-- CSS -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="styles2.css" />
   <link
@@ -20,7 +20,6 @@
 
   <title>Payment Verification</title>
   <script>
-    // Konfigurasi Tailwind opsional
     tailwind.config = {
       theme: {
         extend: {
@@ -39,20 +38,22 @@
     <div class="nav__logo">Pembayaran</div>
   </nav>
 
-  <!-- Mount point React -->
+  <!-- React mount point -->
   <div id="payment-system"></div>
 
-  <!-- Memuat PaymentSystem.jsx dengan type="text/babel" -->
-  <!-- Pastikan path "components/PaymentSystem.jsx" sesuai lokasi file Anda -->
+  <!-- Load both payment components -->
   <script type="text/babel" src="components/PaymentSystem.jsx"></script>
+  <script type="text/babel" src="components/CargoPaymentSystem.jsx"></script>
 
-  <!-- Render PaymentSystem -->
+  <!-- Render appropriate component -->
   <script type="text/babel">
-    // Setelah PaymentSystem terdefinisi di global,
-    // kita render di #payment-system
+    // Check if this is a cargo booking by checking sessionStorage
+    const isCargoBooking = !!sessionStorage.getItem('cargoBookingData');
+    
+    // Render the appropriate component based on booking type
     ReactDOM
       .createRoot(document.getElementById('payment-system'))
-      .render(<PaymentSystem />);
+      .render(isCargoBooking ? <CargoPaymentSystem /> : <PaymentSystem />);
   </script>
 </body>
 </html>
