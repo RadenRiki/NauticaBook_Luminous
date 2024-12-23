@@ -48,6 +48,9 @@ try {
     // Pastikan user_id dari session digunakan
     $data['user_id'] = $_SESSION['user_id'];
 
+    // Generate unique barcode
+    $barcode = 'TF' . date('Ymd') . strtoupper(substr(md5(uniqid()), 0, 6));
+    
     // Query untuk insert data
     $sql = "INSERT INTO passengers (
         user_id,
@@ -61,8 +64,9 @@ try {
         nama_pemesan,
         email_pemesan,
         nomor_hp,
-        detail_penumpang
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        detail_penumpang,
+        barcode
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
     
@@ -83,7 +87,7 @@ try {
     }
     
     $stmt->bind_param(
-        "issssissssss",
+        "issssisssssss",
         $data['user_id'],
         $data['asal'],
         $data['tujuan'],
@@ -95,7 +99,8 @@ try {
         $data['nama_pemesan'],
         $data['email_pemesan'],
         $data['nomor_hp'],
-        $detailPenumpangJson
+        $detailPenumpangJson,
+        $barcode
     );
 
     if ($stmt->execute()) {

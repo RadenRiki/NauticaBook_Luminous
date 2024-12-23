@@ -61,3 +61,30 @@ ALTER TABLE cargo
     ADD COLUMN catatan TEXT,
     ADD COLUMN status VARCHAR(50) DEFAULT 'aktif';
 
+-- barcode penumpang
+ALTER TABLE passengers DROP COLUMN barcode;
+
+ALTER TABLE passengers
+ADD COLUMN barcode VARCHAR(50);
+
+UPDATE passengers 
+SET barcode = CONCAT('TF', id, LEFT(MD5(id), 6))
+WHERE barcode IS NULL;
+
+ALTER TABLE passengers
+MODIFY barcode VARCHAR(50) NOT NULL,
+ADD UNIQUE INDEX (barcode);
+
+-- barcode cargo
+ALTER TABLE cargo DROP COLUMN barcode;
+
+ALTER TABLE cargo
+ADD COLUMN barcode VARCHAR(50);
+
+UPDATE cargo 
+SET barcode = CONCAT('TC', id, LEFT(MD5(id), 6))
+WHERE barcode IS NULL;
+
+ALTER TABLE cargo
+MODIFY barcode VARCHAR(50) NOT NULL,
+ADD UNIQUE INDEX (barcode);

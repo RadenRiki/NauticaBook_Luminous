@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="styles2.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+  
+  <!-- Tambahkan CDN QR Code library yang benar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
     .hidden {
       display: none !important;
@@ -55,6 +59,27 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
+    }
+
+    /* Tambahkan CSS untuk barcode */
+    .barcode-container {
+      text-align: center;
+      padding: 10px; /* Dikurangi dari 20px */
+      background: #f8f8f8;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .barcode-text {
+      font-family: monospace;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Batasi ukuran QR Code */
+    .qrcode {
+      display: inline-block;
     }
   </style>
 </head>
@@ -158,6 +183,11 @@
             </button>
 
             <div class="ticket-details-hidden hidden">
+              <!-- Tambahkan container barcode -->
+              <div class="barcode-container">
+                <div id="qrcode-${ticket.barcode}" class="qrcode"></div>
+                <p class="barcode-text">${ticket.barcode}</p>
+              </div>
               ${ticket.detail_penumpang ? getPenumpangHTML(ticket.detail_penumpang) : ''}
             </div>
           </div>
@@ -201,6 +231,11 @@
             </button>
 
             <div class="ticket-details-hidden hidden">
+              <!-- Tambahkan container barcode -->
+              <div class="barcode-container">
+                <div id="qrcode-${cargo.barcode}" class="qrcode"></div>
+                <p class="barcode-text">${cargo.barcode}</p>
+              </div>
               <div class="detail-section">
                 <strong>Detail Pengirim:</strong>
                 <p>Alamat: ${cargo.alamat_pengirim}</p>
@@ -254,7 +289,7 @@
         
         return penumpangArr.map((p, i) => `
           <div style="margin-bottom: 10px;">
-            <strong>Penumpang ke-${i+1} (${p.kategori || p.jenisID?.toUpperCase()}):</strong><br/>
+            <strong>Penumpang ke-${i+1} (${p.kategori || (p.jenisID ? p.jenisID.toUpperCase() : '')}):</strong><br/>
             Nama: ${p.nama}<br/>
             Nomor ID: ${p.nomorID}<br/>
             Usia: ${p.usia}<br/>
@@ -274,11 +309,30 @@
       const hiddenDetails = card.querySelector('.ticket-details-hidden');
       if (!hiddenDetails) return;
 
+      const barcode = hiddenDetails.querySelector('.barcode-text')?.textContent;
+
+      // Debugging: Log barcode dan qrContainer
+      console.log('Toggling detail for barcode:', barcode);
+
       // Toggle dengan animasi
       if (hiddenDetails.classList.contains('hidden')) {
         hiddenDetails.classList.remove('hidden');
         buttonElement.textContent = 'Sembunyikan Detail';
         buttonElement.style.backgroundColor = '#3048b3';
+
+        // Generate QR Code
+        if (barcode) {
+          const qrContainer = hiddenDetails.querySelector(`#qrcode-${barcode}`);
+          console.log('QR Container:', qrContainer);
+          if (qrContainer && !qrContainer.hasChildNodes()) {
+            new QRCode(qrContainer, {
+              text: barcode,
+              width: 80, // Dikurangi dari 128
+              height: 80, // Dikurangi dari 128
+              correctLevel: QRCode.CorrectLevel.H // Menambah tingkat koreksi error
+            });
+          }
+        }
       } else {
         hiddenDetails.classList.add('hidden');
         buttonElement.textContent = 'Lihat Detail';
@@ -286,7 +340,7 @@
       }
     }
 
-    // Load ferry tickets when page loads
+    // Load ferry tickets ketika halaman dimuat
     document.addEventListener('DOMContentLoaded', loadFerryTickets);
   </script>
 </body>
