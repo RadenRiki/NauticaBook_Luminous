@@ -61,8 +61,3 @@ ALTER TABLE cargo
     ADD COLUMN catatan TEXT,
     ADD COLUMN status VARCHAR(50) DEFAULT 'aktif';
 
--- ALTER TABLE passengers
--- ADD COLUMN nama_pemesan VARCHAR(255),
--- ADD COLUMN email_pemesan VARCHAR(255),
--- ADD COLUMN nomor_hp VARCHAR(20),
--- ADD COLUMN detail_penumpang TEXT;

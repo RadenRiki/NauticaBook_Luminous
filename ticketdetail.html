@@ -100,88 +100,112 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-    const tarif = {
-        "merak-bakauheni": {
-            regular: {  // Perhatikan perubahan dari 'reguler' ke 'regular'
-                "Pejalan Kaki": { 
-                    dewasa: 22700, 
-                    bayi: 1800,
-                    anak: 22700,
-                    lansia: 22700 
+        const tarif = {
+            "merak-bakauheni": {
+                regular: {  
+                    "Pejalan Kaki": { 
+                        dewasa: 22700, 
+                        bayi: 1800,
+                        anak: 22700,
+                        lansia: 22700 
+                    },
+                    "Sepeda": 26500,
+                    "Motor Kecil": 62100,
+                    "Motor Besar": 133000,
+                    "Mobil": 481800
                 },
-                "Sepeda": 26500,
-                "Motor Kecil": 62100,
-                "Motor Besar": 133000,
-                "Mobil": 481800  // Sesuaikan dengan tipe tiket dari form
+                express: {
+                    "Pejalan Kaki": { 
+                        dewasa: 84000, 
+                        bayi: 4000,
+                        anak: 84000,
+                        lansia: 84000 
+                    },
+                    "Sepeda": 85000,
+                    "Motor Kecil": 129677,
+                    "Motor Besar": 187853,
+                    "Mobil": 749128
+                }
             },
-            express: {
-                "Pejalan Kaki": { 
-                    dewasa: 84000, 
-                    bayi: 4000,
-                    anak: 84000,
-                    lansia: 84000 
+            "bakauheni-merak": {
+                regular: {
+                    "Pejalan Kaki": { 
+                        dewasa: 22700, 
+                        bayi: 1800,
+                        anak: 22700,
+                        lansia: 22700 
+                    },
+                    "Sepeda": 26500,
+                    "Motor Kecil": 62100,
+                    "Motor Besar": 133000,
+                    "Mobil": 481800
                 },
-                "Sepeda": 85000,
-                "Motor Kecil": 129677,
-                "Motor Besar": 187853,
-                "Mobil": 749128
-            }
-        },
-        "bakauheni-merak": {
-            regular: {
-                "Pejalan Kaki": { 
-                    dewasa: 22700, 
-                    bayi: 1800,
-                    anak: 22700,
-                    lansia: 22700 
-                },
-                "Sepeda": 26500,
-                "Motor Kecil": 62100,
-                "Motor Besar": 133000,
-                "Mobil": 481800
+                express: {
+                    "Pejalan Kaki": { 
+                        dewasa: 84000, 
+                        bayi: 4000,
+                        anak: 84000,
+                        lansia: 84000 
+                    },
+                    "Sepeda": 85000,
+                    "Motor Kecil": 129677,
+                    "Motor Besar": 187853,
+                    "Mobil": 749128
+                }
             },
-            express: {
-                "Pejalan Kaki": { 
-                    dewasa: 84000, 
-                    bayi: 4000,
-                    anak: 84000,
-                    lansia: 84000 
+            "ketapang-gilimanuk": {
+                regular: {
+                    "Pejalan Kaki": { 
+                        dewasa: 10600, 
+                        bayi: 1600,
+                        anak: 10600,
+                        lansia: 10600 
+                    },
+                    "Sepeda": 11000,
+                    "Motor Kecil": 31600,
+                    "Motor Besar": 45000,
+                    "Mobil": 213400
                 },
-                "Sepeda": 85000,
-                "Motor Kecil": 129677,
-                "Motor Besar": 187853,
-                "Mobil": 749128
-            }
-        },
-        "ketapang-gilimanuk": {
-            regular: {
-                "Pejalan Kaki": { 
-                    dewasa: 10600, 
-                    bayi: 1600,
-                    anak: 10600,
-                    lansia: 10600 
+                express: {
+                    "Pejalan Kaki": { 
+                        dewasa: 35000, 
+                        bayi: 3500,
+                        anak: 35000,
+                        lansia: 35000 
+                    },
+                    "Sepeda": 37000,
+                    "Motor Kecil": 85000,
+                    "Motor Besar": 120000,
+                    "Mobil": 550000
+                }
+            },
+            "gilimanuk-ketapang": {
+                regular: {
+                    "Pejalan Kaki": { 
+                        dewasa: 10600, 
+                        bayi: 1600,
+                        anak: 10600,
+                        lansia: 10600 
+                    },
+                    "Sepeda": 11000,
+                    "Motor Kecil": 31600,
+                    "Motor Besar": 45000,
+                    "Mobil": 213400
                 },
-                "Sepeda": 11000,
-                "Motor Kecil": 31600,
-                "Motor Besar": 45000,
-                "Mobil": 213400
+                express: {
+                    "Pejalan Kaki": { 
+                        dewasa: 35000, 
+                        bayi: 3500,
+                        anak: 35000,
+                        lansia: 35000 
+                    },
+                    "Sepeda": 37000,
+                    "Motor Kecil": 85000,
+                    "Motor Besar": 120000,
+                    "Mobil": 550000
+                }
             }
-        },
-        "gilimanuk-ketapang": {
-            regular: {
-                "Pejalan Kaki": { 
-                    dewasa: 10600, 
-                    bayi: 1600,
-                    anak: 10600,
-                    lansia: 10600 
-                },
-                "Sepeda": 11000,
-                "Motor Kecil": 31600,
-                "Motor Besar": 45000,
-                "Mobil": 213400
-            }
-        }
-    };
+        };
 
     const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
     if (!bookingData) {
