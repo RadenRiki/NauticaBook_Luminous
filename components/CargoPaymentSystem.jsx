@@ -66,72 +66,76 @@ function CargoPaymentSystem() {
   };
 
   // Handle payment confirmation
-    const handlePayment = async () => {
-        try {
-        // Log data sebelum dikirim
-        console.log('Session check request...');
-        const response = await fetch('check_session.php');
-        console.log('Session response:', await response.clone().text());
-        
-        const sessionData = await response.json();
-        console.log('Session data:', sessionData);
-    
-        if (!sessionData.user_id) {
-            alert('Silakan login terlebih dahulu');
-            window.location.href = 'login.html';
-            return;
-        }
-    
-        // Get cargo booking data from sessionStorage
-        const cargoBookingData = JSON.parse(sessionStorage.getItem('cargoBookingData'));
-        console.log('Retrieved cargoBookingData for payment:', cargoBookingData);
-        
-        // Prepare cargo data for saving
-        const cargoData = {
-            user_id: sessionData.user_id,
-            asal: cargoBookingData.pengirim.kota,
-            tujuan: cargoBookingData.penerima.kota,
-            jenis: cargoBookingData.cargoDetails.jenisBarang,
-            berat_kg: parseFloat(cargoBookingData.cargoDetails.beratBarang),
-            tanggal: cargoBookingData.cargoDetails.tanggalPengiriman,
-            pengirim: cargoBookingData.pengirim,
-            penerima: cargoBookingData.penerima,
-            catatan: cargoBookingData.catatan || ''  // Pastikan catatan tidak undefined
-        };
-    
-        // Debug log
-        console.log('Final cargo data structure:', cargoData);
-    
-        // Send to save_cargo.php
-        const saveResponse = await fetch('save_cargo.php', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(cargoData)
-        });
-    
-        // Log response dari save_cargo.php
-        console.log('Save response:', await saveResponse.clone().text());
-    
-        if (!saveResponse.ok) {
-            throw new Error('Gagal menyimpan data cargo');
-        }
-    
-        const result = await saveResponse.json();
-        console.log('Parsed save response:', result);
-        
-        if (result.success) {
-            window.location.href = 'payment_success.html';
-        } else {
-            throw new Error(result.error || 'Gagal menyimpan data cargo');
-        }
-        
-        } catch (error) {
-        console.error('Detailed error:', error);
-        alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
-        }
-    };
+  const handlePayment = async () => {
+    try {
+      // Log data sebelum dikirim
+      console.log('Session check request...');
+      const response = await fetch('check_session.php');
+      console.log('Session response:', await response.clone().text());
+      
+      const sessionData = await response.json();
+      console.log('Session data:', sessionData);
+
+      if (!sessionData.user_id) {
+        alert('Silakan login terlebih dahulu');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Get cargo booking data from sessionStorage
+      const cargoBookingData = JSON.parse(sessionStorage.getItem('cargoBookingData'));
+      console.log('Retrieved cargoBookingData for payment:', cargoBookingData);
+      
+      // Debug original date
+      console.log('Original date:', cargoBookingData.cargoDetails.tanggalPengiriman);
+
+      // Prepare cargo data for saving
+      const cargoData = {
+        user_id: sessionData.user_id,
+        asal: cargoBookingData.pengirim.kota,
+        tujuan: cargoBookingData.penerima.kota,
+        jenis: cargoBookingData.cargoDetails.jenisBarang,
+        berat_kg: parseFloat(cargoBookingData.cargoDetails.beratBarang),
+        tanggal: new Date(cargoBookingData.cargoDetails.tanggalPengiriman).toISOString().split('T')[0], // Format ke YYYY-MM-DD
+        pengirim: cargoBookingData.pengirim,
+        penerima: cargoBookingData.penerima,
+        catatan: cargoBookingData.catatan || ''
+      };
+
+      // Debug logs
+      console.log('Formatted date:', cargoData.tanggal);
+      console.log('Final cargo data structure:', cargoData);
+
+      // Send to save_cargo.php
+      const saveResponse = await fetch('save_cargo.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cargoData)
+      });
+
+      // Log response dari save_cargo.php
+      console.log('Save response:', await saveResponse.clone().text());
+
+      if (!saveResponse.ok) {
+        throw new Error('Gagal menyimpan data cargo');
+      }
+
+      const result = await saveResponse.json();
+      console.log('Parsed save response:', result);
+      
+      if (result.success) {
+        window.location.href = 'payment_success.html';
+      } else {
+        throw new Error(result.error || 'Gagal menyimpan data cargo');
+      }
+      
+    } catch (error) {
+      console.error('Detailed error:', error);
+      alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
+    }
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto p-6">

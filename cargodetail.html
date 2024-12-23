@@ -1,160 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Pesanan Cargo - NauticaBook</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pesanan Cargo - NauticaBook</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
+
 <body>
-  <!-- Header Section -->
-  <div class="header-section">
-    <div class="title">Detail Pesanan Cargo</div>
-    <a href="home.html" class="btn-jadwal">CARI JADWAL LAINNYA</a>
-  </div>
-
-  <!-- Container -->
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <div>
-        <h1 id="route">-</h1>
-        <p id="details">-</p>
-      </div>
-      <div class="price" id="totalPrice">Rp0</div>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="title">Detail Pesanan Cargo</div>
+        <a href="home.html" class="btn-jadwal">CARI JADWAL LAINNYA</a>
     </div>
 
-    <!-- Detail Informasi -->
-    <div class="details">
-      <p>Estimasi Pengiriman</p>
-      <p id="schedule" style="font-size: 22px; font-weight: bold; color: #333;">-</p>
-      <!-- Tombol Pesan -->
-      <div>
-        <button class="btn-pesan" id="btnPesan">PESAN CARGO</button>
-      </div>
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 id="route">-</h1>
+                <p id="details">-</p>
+            </div>
+            <div class="price" id="totalPrice">Rp0</div>
+        </div>
+
+        <!-- Detail Informasi -->
+        <div class="details">
+            <p>Estimasi Pengiriman</p>
+            <p id="schedule" style="font-size: 22px; font-weight: bold; color: #333;">-</p>
+            <!-- Tombol Pesan -->
+            <div>
+                <button class="btn-pesan" id="btnPesan">PESAN CARGO</button>
+            </div>
+        </div>
+
+        <!-- Tab Menu -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'harga')">Rincian Harga</button>
+            <button class="tab-link" onclick="openTab(event, 'cargo')">Detail Cargo</button>
+            <button class="tab-link" onclick="openTab(event, 'policy')">Kebijakan</button>
+        </div>
+
+        <!-- Tab Content: Rincian Harga -->
+        <div id="harga" class="tab-content active">
+            <div id="priceDetails"></div>
+        </div>
+
+        <!-- Tab Content: Detail Cargo -->
+        <div id="cargo" class="tab-content">
+            <div id="cargoDetails"></div>
+        </div>
+
+        <!-- Tab Content: Kebijakan -->
+        <div id="policy" class="tab-content">
+            <p><strong>Kebijakan Cargo:</strong></p>
+            <ul>
+                <li>Barang berbahaya dan terlarang tidak diperkenankan untuk dikirim;</li>
+                <li>Pastikan barang dikemas dengan baik dan aman;</li>
+                <li>Estimasi waktu pengiriman dapat berubah sesuai dengan kondisi cuaca dan operasional;</li>
+                <li>Asuransi pengiriman tersedia untuk melindungi barang Anda;</li>
+                <li>Tracking cargo tersedia selama proses pengiriman;</li>
+                <li>Dokumen pengiriman harus lengkap dan sesuai dengan peraturan yang berlaku.</li>
+            </ul>
+        </div>
     </div>
+    <!-- Tutup .container di sini -->
 
-    <!-- Tab Menu -->
-    <div class="tabs">
-      <button class="tab-link active" onclick="openTab(event, 'harga')">Rincian Harga</button>
-      <button class="tab-link" onclick="openTab(event, 'cargo')">Detail Cargo</button>
-      <button class="tab-link" onclick="openTab(event, 'policy')">Kebijakan</button>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>NauticaBook</h3>
+                <p>
+                    NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
+                    Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
+                    langkah.
+                </p>
+            </div>
+            <div class="footer__col">
+                <h4>Tim Luminous</h4>
+                <p>Raden Riki Hilviastari Saputra (23523217)</p>
+                <p>Arvindra Ahmad Ramadhan (23523128)</p>
+                <p>Taqya Maritsa Hakim (23523108)</p>
+                <p>Tazki Ulil Absar (23523208)</p>
+            </div>
+            <div class="footer__col">
+                <h4>Legal</h4>
+                <p>FAQs</p>
+                <p>Terms &amp; Conditions</p>
+                <p>Privacy Policy</p>
+            </div>
+            <div class="footer__col">
+                <h4>Resources</h4>
+                <p>Social Media</p>
+                <p>Help Center</p>
+                <p>Partnerships</p>
+            </div>
+        </div>
+        <div class="footer__bar">
+            Copyright © 2024 Webs by Luminous. All rights reserved.
+        </div>
+    </footer>
 
-    <!-- Tab Content: Rincian Harga -->
-    <div id="harga" class="tab-content active">
-      <div id="priceDetails"></div>
-    </div>
+    <!-- Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mendapatkan data cargo dari sessionStorage
+            const cargoData = JSON.parse(sessionStorage.getItem('cargoData'));
+            if (!cargoData) {
+                alert('Data cargo tidak tersedia.');
+                window.location.href = 'home.html';
+                return;
+            }
 
-    <!-- Tab Content: Detail Cargo -->
-    <div id="cargo" class="tab-content">
-      <div id="cargoDetails"></div>
-    </div>
+            // Harga per kg berdasarkan jenis barang (contoh tarif)
+            const tarifCargo = {
+                "umum": 15000,
+                "berat": 25000,
+                "kendaraan": 30000,
+                "elektronik": 35000
+            };
 
-    <!-- Tab Content: Kebijakan -->
-    <div id="policy" class="tab-content">
-      <p><strong>Kebijakan Cargo:</strong></p>
-      <ul>
-        <li>Barang berbahaya dan terlarang tidak diperkenankan untuk dikirim;</li>
-        <li>Pastikan barang dikemas dengan baik dan aman;</li>
-        <li>Estimasi waktu pengiriman dapat berubah sesuai dengan kondisi cuaca dan operasional;</li>
-        <li>Asuransi pengiriman tersedia untuk melindungi barang Anda;</li>
-        <li>Tracking cargo tersedia selama proses pengiriman;</li>
-        <li>Dokumen pengiriman harus lengkap dan sesuai dengan peraturan yang berlaku.</li>
-      </ul>
-    </div>
-  </div>
-  <!-- Tutup .container di sini -->
+            // Update informasi rute
+            document.getElementById('route').textContent =
+                `${cargoData.pelabuhanAsalCargo.toUpperCase()} → ${cargoData.pelabuhanTujuanCargo.toUpperCase()}`;
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="section__container footer__container">
-      <div class="footer__col">
-        <h3>NauticaBook</h3>
-        <p>
-          NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
-          Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
-          langkah.
-        </p>
-      </div>
-      <div class="footer__col">
-        <h4>Tim Luminous</h4>
-        <p>Raden Riki Hilviastari Saputra (23523217)</p>
-        <p>Arvindra Ahmad Ramadhan (23523128)</p>
-        <p>Taqya Maritsa Hakim (23523108)</p>
-        <p>Tazki Ulil Absar (23523208)</p>
-      </div>
-      <div class="footer__col">
-        <h4>Legal</h4>
-        <p>FAQs</p>
-        <p>Terms &amp; Conditions</p>
-        <p>Privacy Policy</p>
-      </div>
-      <div class="footer__col">
-        <h4>Resources</h4>
-        <p>Social Media</p>
-        <p>Help Center</p>
-        <p>Partnerships</p>
-      </div>
-    </div>
-    <div class="footer__bar">
-      Copyright © 2024 Webs by Luminous. All rights reserved.
-    </div>
-  </footer>
+            document.getElementById('details').textContent =
+                `${cargoData.jenisBarang.toUpperCase()} · ${cargoData.beratBarang} Kg`;
 
-  <!-- Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Mendapatkan data cargo dari sessionStorage
-      const cargoData = JSON.parse(sessionStorage.getItem('cargoData'));
-      if (!cargoData) {
-        alert('Data cargo tidak tersedia.');
-        window.location.href = 'home.html';
-        return;
-      }
+            // Format tanggal
+            const tanggal = new Date(cargoData.tanggalCargo).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('schedule').textContent = tanggal;
 
-      // Harga per kg berdasarkan jenis barang (contoh tarif)
-      const tarifCargo = {
-        "umum": 15000,
-        "berat": 25000,
-        "kendaraan": 30000,
-        "elektronik": 35000
-      };
+            // Hitung total harga
+            const hargaPerKg = tarifCargo[cargoData.jenisBarang.toLowerCase()] || tarifCargo.umum;
+            const totalHarga = hargaPerKg * cargoData.beratBarang;
 
-      // Update informasi rute
-      document.getElementById('route').textContent = 
-          `${cargoData.pelabuhanAsalCargo.toUpperCase()} → ${cargoData.pelabuhanTujuanCargo.toUpperCase()}`;
+            // Update total harga
+            document.getElementById('totalPrice').textContent = `Rp${totalHarga.toLocaleString()}`;
 
-      document.getElementById('details').textContent = 
-          `${cargoData.jenisBarang.toUpperCase()} · ${cargoData.beratBarang} Kg`;
-
-      // Format tanggal
-      const tanggal = new Date(cargoData.tanggalCargo).toLocaleDateString('id-ID', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      document.getElementById('schedule').textContent = tanggal;
-
-      // Hitung total harga
-      const hargaPerKg = tarifCargo[cargoData.jenisBarang.toLowerCase()] || tarifCargo.umum;
-      const totalHarga = hargaPerKg * cargoData.beratBarang;
-
-      // Update total harga
-      document.getElementById('totalPrice').textContent = `Rp${totalHarga.toLocaleString()}`;
-
-      // Update rincian harga
-      document.getElementById('priceDetails').innerHTML = `
+            // Update rincian harga
+            document.getElementById('priceDetails').innerHTML = `
         <div class="price-details">
           <span>Berat Cargo (${cargoData.beratBarang} Kg × Rp${hargaPerKg.toLocaleString()}/Kg)</span>
           <span>Rp${totalHarga.toLocaleString()}</span>
         </div>
       `;
 
-      // Update detail cargo
-      document.getElementById('cargoDetails').innerHTML = `
+            // Update detail cargo
+            document.getElementById('cargoDetails').innerHTML = `
         <div style="padding: 20px;">
           <h3 style="margin-bottom: 15px;">Informasi Cargo</h3>
           <div style="margin-bottom: 10px;">
@@ -175,40 +177,42 @@
         </div>
       `;
 
-      // Event listener tombol Pesan
-      document.getElementById('btnPesan').addEventListener('click', function() {
-        // Simpan data untuk halaman berikutnya
-        sessionStorage.setItem('totalPrice', totalHarga);
-        sessionStorage.setItem('cargoDetails', JSON.stringify({
-          jenisBarang: cargoData.jenisBarang,
-          beratBarang: cargoData.beratBarang,
-          pelabuhanAsal: cargoData.pelabuhanAsalCargo,
-          pelabuhanTujuan: cargoData.pelabuhanTujuanCargo,
-          tanggalPengiriman: tanggal,
-          harga: totalHarga
-        }));
-        // Redirect ke halaman form pemesanan cargo
-        window.location.href = 'cargo_booking_form.html';
-      });
-    });
+            // Event listener tombol Pesan
+            document.getElementById('btnPesan').addEventListener('click', function () {
+                // Simpan data untuk halaman berikutnya
+                sessionStorage.setItem('totalPrice', totalHarga);
+                sessionStorage.setItem('cargoDetails', JSON.stringify({
+                    jenisBarang: cargoData.jenisBarang,
+                    beratBarang: cargoData.beratBarang,
+                    pelabuhanAsal: cargoData.pelabuhanAsalCargo,
+                    pelabuhanTujuan: cargoData.pelabuhanTujuanCargo,
+                    tanggalPengiriman: cargoData.tanggalCargo,  // Simpan tanggal asli
+                    tanggalPengirimanFormatted: tanggal,        // Simpan juga format untuk display
+                    harga: totalHarga
+                }));
+                // Redirect ke halaman form pemesanan cargo
+                window.location.href = 'cargo_booking_form.html';
+            });
+        });
 
-    // Fungsi Tab
-    function openTab(evt, tabName) {
-      var i, tabContent, tabLinks;
-      
-      tabContent = document.getElementsByClassName("tab-content");
-      for (i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-      }
-      
-      tabLinks = document.getElementsByClassName("tab-link");
-      for (i = 0; i < tabLinks.length; i++) {
-        tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-      }
-      
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
-    }
-  </script>
+        // Fungsi Tab
+        function openTab(evt, tabName) {
+            var i, tabContent, tabLinks;
+
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+
+            tabLinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
+
 </html>
