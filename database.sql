@@ -88,3 +88,7 @@ WHERE barcode IS NULL;
 ALTER TABLE cargo
 MODIFY barcode VARCHAR(50) NOT NULL,
 ADD UNIQUE INDEX (barcode);
+
+-- ini untuk ada fitur tambah profile
+ALTER TABLE users
+ADD COLUMN profile_photo VARCHAR(255) DEFAULT NULL;
