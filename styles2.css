@@ -351,6 +351,13 @@
   background-color: var(--primary-color-dark);
 }
 
+@media (max-width: 1020px) {
+  .offers__grid {
+    grid-template-columns: 1fr; /* 1 kolom di layar sedang */
+    gap: 15px;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .success-message h1 {
@@ -365,4 +372,48 @@
     padding: 0.7rem 1.2rem;
     font-size: 0.9rem;
   }
+
+  .offers__grid {
+    grid-template-columns: 1fr; /* 1 kolom di layar sedang */
+    gap: 15px;
+  }
+
+  
+
+ 
+
+ 
+
+ 
+}
+
+@media (max-width: 480px) {
+  .offers__grid {
+    grid-template-columns: 1fr; /* 1 kolom di layar kecil */
+    gap: 10px;
+  }
+
+  .offer__card {
+    width: 90%; /* Memberikan sedikit margin di sisi */
+    margin: 0 auto;
+  }
+
+  .offer__content {
+    padding: 8px;
+  }
+
+  .offer__title {
+    font-size: 16px;
+  }
+
+  .offer__description {
+    font-size: 12px;
+  }
+ 
+
+  
+
+  
+
+
 }

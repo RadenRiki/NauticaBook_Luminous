@@ -1040,4 +1040,50 @@ select option:hover {
   .sidebar {
     margin-top: 20px;
   }
+
+  .booking-type {
+    width: 350px;
+  }
+
+  .auth-page {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .auth-left {
+    text-align: center;
+    padding: 30px;
+  }
+
+  .auth-right {
+    padding: 15px;
+  }
+
+  .auth-form h2 {
+    font-size: 18px;
+  }
+
+  .form-group input {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .ticket-dropdown {
+    left: 0px;
+    width: 420px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .booking-type {
+    width: 250px;
+  }
+
+
 }

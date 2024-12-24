@@ -204,5 +204,47 @@
         
         .btn-pesan:hover {
             background-color: var(--text-light);
-        }   
+        }  
+        
+        @media (max-width: 1020px) {
+            .container {
+                width: 750px;
+            }
+        }
+
+@media (max-width: 768px) {
+    .container {
+        width: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 400px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .header p {
+        font-size: 15px;
+        color: #666;
+    }
+
+    .price {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .btn-pesan {
+        padding: 9px 18px;
+        font-size: 13px;
+    
+    }
+
+}
         
