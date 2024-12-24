@@ -8,6 +8,65 @@
   <link rel="stylesheet" href="styles2.css">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
   <title>Offers</title>
+  <style>
+    /* Tambahkan style untuk referral form */
+    .referral-container {
+      max-width: 500px;
+      margin: 2rem auto;
+      text-align: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .referral-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .referral-btn {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .referral-btn:hover {
+      background: var(--primary-color-dark);
+    }
+
+    /* Style untuk offer spesial */
+    .special-offer {
+      border: 2px solid var(--primary-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .special-offer::before {
+      content: "Special Offer!";
+      position: absolute;
+      top: 10px;
+      right: -30px;
+      background: var(--primary-color);
+      color: white;
+      padding: 5px 40px;
+      transform: rotate(45deg);
+      font-size: 0.8rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -24,10 +83,27 @@
     </div>
   </nav>
 
+  <!-- Tambahkan form referral sebelum offers section -->
+  <div class="referral-container">
+    <h2>Punya kode referral?</h2>
+    <p>Masukkan kode referral teman untuk mendapatkan penawaran spesial!</p>
+    <input type="text" id="referralInput" class="referral-input" placeholder="Masukkan kode referral">
+    <button onclick="checkReferral()" class="referral-btn">Cek Referral</button>
+  </div>
+
   <!-- Offers Section -->
   <section class="section__container offers__container">
     <h1>Best Offers</h1>
     <div class="offers__grid">
+      <!-- Special offer (hidden by default) -->
+      <div class="offer__card special-offer hidden" id="specialOffer">
+        <img src="assets/special-offer.jpg" alt="Special Offer" class="offer__image">
+        <div class="offer__content">
+          <h2 class="offer__title">Diskon Spesial Referral 30%!</h2>
+          <p class="offer__description">Selamat! Anda mendapatkan diskon spesial 30% untuk pemesanan pertama!</p>
+        </div>
+      </div>
+
       <!-- Offer 1 -->
       <div class="offer__card" onclick="openOfferDetails('Offer 1')">
         <img src="assets/Bali.jpeg" alt="Offer 1" class="offer__image">
@@ -56,6 +132,7 @@
       </div>
     </div>
   </section>
+
   <footer class="footer">
     <div class="section__container footer__container">
       <div class="footer__col">
@@ -75,7 +152,7 @@
         <h4>Tim Luminous</h4>
         <p>Raden Riki Hilviastari Saputra (23523217)</p>
         <p>Arvindra Ahmad Ramadhan (23523128)</p>
-        <p> Taqya Maritsa Hakim (23523108)</p>
+        <p>Taqya Maritsa Hakim (23523108)</p>
         <p>Tazki Ulil Absar (23523208)</p>
       </div>
     </div>
@@ -83,7 +160,57 @@
       Copyright © 2024 Webs by Luminous. All rights reserved.
     </div>
   </footer>
-  <script src="script.js"></script>
+
+  <script>
+    // Fungsi untuk memeriksa status referral saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      const hasReferral = localStorage.getItem('hasReferral');
+      if (hasReferral === 'true') {
+        document.getElementById('specialOffer').classList.remove('hidden');
+      }
+    });
+  
+    async function checkReferral() {
+      const referralCode = document.getElementById('referralInput').value.trim();
+      
+      if (referralCode === "") {
+        alert('Silakan masukkan kode referral.');
+        return;
+      }
+  
+      try {
+        const response = await fetch('check_referral.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ referral: referralCode })
+        });
+  
+        const data = await response.json();
+        
+        if (data.valid) {
+          // Simpan status referral di localStorage
+          localStorage.setItem('hasReferral', 'true');
+          
+          // Tampilkan special offer
+          document.getElementById('specialOffer').classList.remove('hidden');
+          alert('Selamat! Anda mendapatkan penawaran spesial!');
+        } else {
+          alert('Kode referral tidak valid. Silakan coba lagi.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+      }
+    }
+  
+    // Optional: Fungsi untuk menghapus status referral
+    function clearReferral() {
+      localStorage.removeItem('hasReferral');
+      document.getElementById('specialOffer').classList.add('hidden');
+    }
+  </script>  
 </body>
 
 </html>
