@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['referral'] = $user['referral'];
+        $_SESSION['profile_photo'] = $user['profile_photo']; // Menambahkan profile_photo ke session
     
         // Redirect to profile.php
         echo "

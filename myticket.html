@@ -1,35 +1,89 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Tickets</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="styles2.css" />
-  <!-- Icon CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+  
+  <!-- Tambahkan CDN QR Code library yang benar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    /* Tambahkan class .hidden untuk menyembunyikan elemen */
     .hidden {
-      display: none;
+      display: none !important;
     }
-    /* (Opsional) gaya tombol detail */
+
+    .ticket-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
     .detail-btn {
-      display: inline-block;
-      margin: 8px 0;
-      padding: 6px 12px;
-      background-color: #0066cc;
-      color: #fff;
+      background-color: #4361ee;
+      color: white;
+      padding: 8px 16px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
     }
+
     .detail-btn:hover {
-      background-color: #005bb5;
+      background-color: #3048b3;
+    }
+
+    .ticket-details-hidden {
+      margin-top: 15px;
+      padding: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .ticket-status {
+      background-color: #4ade80;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    /* Tambahkan CSS untuk barcode */
+    .barcode-container {
+      text-align: center;
+      padding: 10px; /* Dikurangi dari 20px */
+      background: #f8f8f8;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .barcode-text {
+      font-family: monospace;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Batasi ukuran QR Code */
+    .qrcode {
+      display: inline-block;
     }
   </style>
 </head>
+
 <body>
   <!-- Navigation -->
   <nav>
@@ -45,20 +99,25 @@
   </nav>
 
   <div class="container-ticket">
-    <!-- Content Area -->
     <div class="content-ticket">
       <!-- Navigation Tabs -->
       <div class="tabs-tic">
-        <span class="tab-tic active">Aktif</span>
-        <span class="tab-tic">Riwayat</span>
-        <!-- 
-          Anda bisa menambahkan tab lain (Menunggu, Gagal, Refund) 
-          dengan memanggil fungsi openTab dsb. 
-        -->
+        <span class="tab-tic active" onclick="switchTab('ferry')">Ferry</span>
+        <span class="tab-tic" onclick="switchTab('cargo')">Cargo</span>
       </div>
 
-      <!-- No Tickets Message -->
-      <div class="empty-state">
+      <!-- Container untuk tiket Ferry -->
+      <div id="ferryTickets" class="tickets-container">
+        <!-- Akan diisi via JavaScript -->
+      </div>
+
+      <!-- Container untuk Cargo -->
+      <div id="cargoTickets" class="tickets-container" style="display: none;">
+        <!-- Akan diisi via JavaScript -->
+      </div>
+
+      <!-- No Tickets Message (default state) -->
+      <div id="emptyState" class="empty-state" style="display: none;">
         <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration" />
         <h3>Tidak ada pesanan!</h3>
         <p>Anda belum memiliki pesanan sama sekali</p>
@@ -69,113 +128,263 @@
     </div>
   </div>
 
+  <footer class="footer">
+    <div class="section__container footer__container">
+        <div class="footer__col">
+            <h3>NauticaBook</h3>
+            <p>
+                NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
+                Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
+                langkah.
+            </p>
+            <p>
+                NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman pemesanan nyaman,
+                baik untuk perjalanan pribadi, bisnis, maupun logistik. Dengan mitra terpercaya,
+                layanan pelanggan responsif, dan sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
+                laut Anda.
+            </p>
+        </div>
+        <div class="footer__col">
+            <h4>Tim Luminous</h4>
+            <p>Raden Riki Hilviastari Saputra (23523217)</p>
+            <p>Arvindra Ahmad Ramadhan (23523128)</p>
+            <p> Taqya Maritsa Hakim (23523108)</p>
+            <p>Tazki Ulil Absar (23523208)</p>
+        </div>
+        <div class="footer__col">
+            <h4>Legal</h4>
+            <p><a href="faqs.html" style="color: #fff;">FAQs</a></p>
+            <p><a href="tnc.html" style="color: #fff;">Terms & Conditions</a></p>
+            <p><a href="privacy.html" style="color: #fff;">Privacy Policy</a></p>
+          </div>
+        <div class="footer__col">
+            <h4>Resources</h4>
+            <p>Social Media</p>
+            <p>Help Center</p>
+            <p>Partnerships</p>
+        </div>
+    </div>
+    </div>
+    <div class="footer__bar">
+        Copyright © 2024 Webs by Luminous. All rights reserved.
+    </div>
+</footer>
+
   <script>
-    // Fungsi untuk menampilkan/menyembunyikan detail tiket
-    function toggleTicketDetail(buttonElement) {
-      // Cari parent terdekat yang punya class "ticket-card"
-      const card = buttonElement.closest('.ticket-card');
-      if (!card) return;
+    function switchTab(type) {
+      // Update active tab
+      const tabs = document.querySelectorAll('.tab-tic');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
 
-      // Di dalam card, cari elemen dengan class "ticket-details-hidden"
-      const hiddenDetails = card.querySelector('.ticket-details-hidden');
-      if (!hiddenDetails) return;
+      // Hide all containers
+      document.getElementById('ferryTickets').style.display = 'none';
+      document.getElementById('cargoTickets').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none';
 
-      // Lakukan toggle class .hidden
-      hiddenDetails.classList.toggle('hidden');
-
-      // Ubah teks tombol (opsional)
-      if (hiddenDetails.classList.contains('hidden')) {
-        buttonElement.textContent = 'Lihat Detail';
+      // Show selected container
+      if (type === 'ferry') {
+        loadFerryTickets();
       } else {
-        buttonElement.textContent = 'Sembunyikan Detail';
+        loadCargoTickets();
       }
     }
 
-    document.addEventListener("DOMContentLoaded", async function () {
+    async function loadFerryTickets() {
       try {
-        // (Opsional) Cek apakah user sudah login melalui sessionStorage
-        // Anda boleh menonaktifkan cek ini jika Anda pakai server-side session
-        const userData = JSON.parse(sessionStorage.getItem("user"));
-        if (!userData?.id) {
-          alert("Silakan login terlebih dahulu");
-          window.location.href = "login.html";
-          return;
-        }
-
-        // Fetch tiket berdasarkan user_id dari file tickets.php
         const response = await fetch('tickets.php');
         const tickets = await response.json();
+        const container = document.getElementById('ferryTickets');
 
-        // Container untuk menampilkan daftar tiket
-        const contentTicket = document.querySelector(".content-ticket");
-
-        // Jika tidak ada tiket, tampilkan empty state
         if (!tickets || tickets.length === 0) {
-          contentTicket.innerHTML = `
-            <div class="empty-state">
-              <img src="assets/pngtree-ferry-boat-vector-png-image_11244663.png" alt="Ferry Illustration">
-              <h3>Tidak ada pesanan!</h3>
-              <p>Anda belum memiliki pesanan sama sekali</p>
-              <div class="buttons">
-                <a href="home.html" class="primary-btn">PESAN SEKARANG</a>
-              </div>
-            </div>
-          `;
+          document.getElementById('emptyState').style.display = 'flex';
+          container.style.display = 'none';
           return;
         }
 
-        // Jika ada tiket, buat HTML card per tiket
-        const ticketList = tickets.map((ticket) => {
-          // Format tanggal
-          const formattedDate = new Date(ticket.tanggal).toLocaleDateString("id-ID");
-
-          return `
-            <div class="ticket-card">
-              <div class="ticket-header">
-                <h3>${ticket.asal} → ${ticket.tujuan}</h3>
-                <span class="ticket-status">Aktif</span>
-              </div>
-              <!-- Bagian ringkas yang selalu tampak -->
-              <div class="ticket-details">
-                <p>Tanggal: ${formattedDate}</p>
-                <p>Jam: ${ticket.jam}</p>
-                <p>Layanan: ${ticket.layanan}</p>
-                <p>Tipe: ${ticket.tipe}</p>
-                <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
-              </div>
-
-              <!-- Tombol Lihat Detail -->
-              <button class="detail-btn" onclick="toggleTicketDetail(this)">
-                Lihat Detail
-              </button>
-
-              <!-- Bagian detail lanjutan, disembunyikan secara default -->
-              <div class="ticket-details-hidden hidden">
-                <!-- Isi apa pun yang lebih detail, misalnya data penumpang, dll. -->
-                <p>Penumpang ke-1: [nama], [usia]</p>
-                <p>Penumpang ke-2: ...</p>
-                <hr/>
-                <p>Nomor Polisi Kendaraan: [jika ada]</p>
-                <p>(dsb.)</p>
-              </div>
+        container.style.display = 'block';
+        container.innerHTML = tickets.map(ticket => `
+          <div class="ticket-card">
+            <div class="ticket-header">
+              <h3>${ticket.asal} → ${ticket.tujuan}</h3>
+              <span class="ticket-status">Aktif</span>
             </div>
-          `;
-        }).join("");
+            <div class="ticket-details">
+              <p>Tanggal: ${new Date(ticket.tanggal).toLocaleDateString('id-ID')}</p>
+              <p>Jam: ${ticket.jam}</p>
+              <p>Layanan: ${ticket.layanan}</p>
+              <p>Tipe: ${ticket.tipe}</p>
+              <p>Jumlah Penumpang: ${ticket.jumlah_penumpang}</p>
+              <p>Nama Pemesan: ${ticket.nama_pemesan || '-'}</p>
+              <p>Email: ${ticket.email_pemesan || '-'}</p>
+              <p>No. HP: ${ticket.nomor_hp || '-'}</p>
+            </div>
+            
+            <button class="detail-btn" onclick="toggleTicketDetail(this)">
+              Lihat Detail
+            </button>
 
-        contentTicket.innerHTML = `
-          <div class="tabs-tic">
-            <span class="tab-tic active">Aktif</span>
-            <span class="tab-tic">Riwayat</span>
+            <div class="ticket-details-hidden hidden">
+              <!-- Tambahkan container barcode -->
+              <div class="barcode-container">
+                <div id="qrcode-${ticket.barcode}" class="qrcode"></div>
+                <p class="barcode-text">${ticket.barcode}</p>
+              </div>
+              ${ticket.detail_penumpang ? getPenumpangHTML(ticket.detail_penumpang) : ''}
+            </div>
           </div>
-          <div class="tickets-container">
-            ${ticketList}
-          </div>
-        `;
+        `).join('');
+
       } catch (error) {
         console.error("Error:", error);
-        alert("Gagal memuat data tiket");
+        alert("Gagal memuat data tiket ferry");
       }
-    });
+    }
+
+    async function loadCargoTickets() {
+      try {
+        const response = await fetch('my_cargo.php');
+        const cargos = await response.json();
+        const container = document.getElementById('cargoTickets');
+
+        if (!cargos || cargos.length === 0) {
+          document.getElementById('emptyState').style.display = 'flex';
+          container.style.display = 'none';
+          return;
+        }
+
+        container.style.display = 'block';
+        container.innerHTML = cargos.map(cargo => `
+          <div class="ticket-card">
+            <div class="ticket-header">
+              <h3>${cargo.asal} → ${cargo.tujuan}</h3>
+              <span class="ticket-status">Aktif</span>
+            </div>
+            <div class="ticket-details">
+              <p>Tanggal Pengiriman: ${new Date(cargo.tanggal).toLocaleDateString('id-ID')}</p>
+              <p>Jenis Barang: ${cargo.jenis}</p>
+              <p>Berat: ${cargo.berat_kg} Kg</p>
+              <p>Pengirim: ${cargo.nama_pengirim}</p>
+              <p>Penerima: ${cargo.nama_penerima}</p>
+            </div>
+            
+            <button class="detail-btn" onclick="toggleTicketDetail(this)">
+              Lihat Detail
+            </button>
+
+            <div class="ticket-details-hidden hidden">
+              <!-- Tambahkan container barcode -->
+              <div class="barcode-container">
+                <div id="qrcode-${cargo.barcode}" class="qrcode"></div>
+                <p class="barcode-text">${cargo.barcode}</p>
+              </div>
+              <div class="detail-section">
+                <strong>Detail Pengirim:</strong>
+                <p>Alamat: ${cargo.alamat_pengirim}</p>
+                <p>Kota: ${cargo.kota_pengirim}</p>
+                <p>Kode Pos: ${cargo.kodepos_pengirim}</p>
+                <p>Telepon: ${cargo.telepon_pengirim}</p>
+              </div>
+              
+              <div class="detail-section">
+                <strong>Detail Penerima:</strong>
+                <p>Alamat: ${cargo.alamat_penerima}</p>
+                <p>Kota: ${cargo.kota_penerima}</p>
+                <p>Kode Pos: ${cargo.kodepos_penerima}</p>
+                <p>Telepon: ${cargo.telepon_penerima}</p>
+              </div>
+
+              ${cargo.catatan ? `
+                <div class="detail-section">
+                  <strong>Catatan:</strong>
+                  <p>${cargo.catatan}</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Gagal memuat data cargo");
+      }
+    }
+
+    function getPenumpangHTML(detailPenumpang) {
+      try {
+        console.log('Detail Penumpang Raw:', detailPenumpang);
+        
+        // Handle both string and array formats
+        let penumpangArr;
+        if (typeof detailPenumpang === 'string') {
+          penumpangArr = JSON.parse(detailPenumpang);
+        } else {
+          penumpangArr = detailPenumpang;
+        }
+        
+        console.log('Processed Penumpang Array:', penumpangArr);
+        
+        if (!Array.isArray(penumpangArr)) {
+          console.error('Invalid penumpang data format');
+          return '';
+        }
+        
+        return penumpangArr.map((p, i) => `
+          <div style="margin-bottom: 10px;">
+            <strong>Penumpang ke-${i+1} (${p.kategori || (p.jenisID ? p.jenisID.toUpperCase() : '')}):</strong><br/>
+            Nama: ${p.nama}<br/>
+            Nomor ID: ${p.nomorID}<br/>
+            Usia: ${p.usia}<br/>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Error parsing passenger details:', e);
+        console.error('Input was:', detailPenumpang);
+        return '';
+      }
+    }
+
+    function toggleTicketDetail(buttonElement) {
+      const card = buttonElement.closest('.ticket-card');
+      if (!card) return;
+
+      const hiddenDetails = card.querySelector('.ticket-details-hidden');
+      if (!hiddenDetails) return;
+
+      const barcode = hiddenDetails.querySelector('.barcode-text')?.textContent;
+
+      // Debugging: Log barcode dan qrContainer
+      console.log('Toggling detail for barcode:', barcode);
+
+      // Toggle dengan animasi
+      if (hiddenDetails.classList.contains('hidden')) {
+        hiddenDetails.classList.remove('hidden');
+        buttonElement.textContent = 'Sembunyikan Detail';
+        buttonElement.style.backgroundColor = '#3048b3';
+
+        // Generate QR Code
+        if (barcode) {
+          const qrContainer = hiddenDetails.querySelector(`#qrcode-${barcode}`);
+          console.log('QR Container:', qrContainer);
+          if (qrContainer && !qrContainer.hasChildNodes()) {
+            new QRCode(qrContainer, {
+              text: barcode,
+              width: 80, // Dikurangi dari 128
+              height: 80, // Dikurangi dari 128
+              correctLevel: QRCode.CorrectLevel.H // Menambah tingkat koreksi error
+            });
+          }
+        }
+      } else {
+        hiddenDetails.classList.add('hidden');
+        buttonElement.textContent = 'Lihat Detail';
+        buttonElement.style.backgroundColor = '#4361ee';
+      }
+    }
+
+    // Load ferry tickets ketika halaman dimuat
+    document.addEventListener('DOMContentLoaded', loadFerryTickets);
   </script>
 </body>
+
 </html>

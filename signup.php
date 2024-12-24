@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start the session
+session_start();
 
 // Database connection
 $conn = new mysqli("localhost", "root", "root", "luminousdb");
@@ -35,15 +35,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Set session data
             $_SESSION['user_id'] = $stmt->insert_id;
             $_SESSION['name'] = $name;
+            $_SESSION['email'] = $email;
+            $_SESSION['referral'] = $referral;
+            // profile_photo akan null untuk user baru
         
             // Set user data ke sessionStorage via JavaScript
             echo "
             <script>
                 sessionStorage.setItem('user', JSON.stringify({
                     id: '{$stmt->insert_id}',
-                    name: '{$name}'
+                    name: '{$name}',
+                    email: '{$email}',
+                    referral: '{$referral}'
                 }));
-                window.location.href = 'profile.html';
+                window.location.href = 'profile.php';
             </script>
             ";
         } else {

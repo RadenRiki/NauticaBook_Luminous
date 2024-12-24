@@ -1,221 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cek Ongkir</title>
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="styles4.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pesanan Cargo - NauticaBook</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav__logo" onclick="window.location.href='home.php'">NauticaBook</div>
-        <ul class="nav__links">
-            <li class="link"><a href="home.php">Home</a></li>
-            <li class="link"><a href="myticket.php">MyTickets</a></li>
-            <li class="link"><a href="offers.php">Offers</a></li>
-        </ul>
-        <div class="profile-icon" onclick="window.location.href='profile.php'">
-            <i class="ri-user-3-line"></i>
-        </div>
-    </nav>
-  <section class="cek-ongkir">
-    <div class="container-cargo">
-      <!-- Header Section -->
-      <div class="header-cargo">
-        <h1>Cek Ongkir</h1>
-        <p>Cek tarif kirimanmu.</p>
-      </div>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="title">Detail Pesanan Cargo</div>
+        <a href="home.html" class="btn-jadwal">CARI JADWAL LAINNYA</a>
+    </div>
 
-      <!-- Input Section -->
-      <form class="ongkir-form" action="#" method="POST">
-        <div class="input-group">
-          <div class="icon">
-            <i class="ri-radio-button-line"></i>
-          </div>
-          <input type="text" name="asal" placeholder="Masukkan lokasi asal" value="SAMARINDA" required />
-          <div id="suggestions" class="suggestions"></div>
-        </div>
-        <div class="separator"></div>
-        <div class="input-group">
-          <div class="icon active">
-            <i class="ri-map-pin-line"></i>
-          </div>
-          <input type="text" name="tujuan" placeholder="Masukkan lokasi tujuan" value="SEMARANG" required />
-          
-        </div>
-        <div class="separator"></div>
-        <div class="input-group">
-            <div class="icon">
-                <i class="ri-weight-line"></i>
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 id="route">-</h1>
+                <p id="details">-</p>
             </div>
-            <input type="number" id="beratBarang" name="beratBarang" placeholder="Berat Barang (Kg)"
-                required />
-          </div>
-          <div class="separator"></div>
-          <div class="input-group">
-            <div class="icon active">
-                <i class="ri-calendar-line"></i>
-            </div>
-            <input type="date" id="tanggalCargo" name="tanggalCargo" required />
-          </div>
-        <button type="submit" class="submit-btn">Cek Tarif</button>
-      </form>
-    </div>
-      <!-- Result Section (Tabel) -->
-      <div class="result-section">
-        <table>
-          <thead>
-            <tr>
-              <th>Nama Layanan</th>
-              <th>Jenis Kiriman</th>
-              <th>Tarif</th>
-              <th>ETD (Estimates Days)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-                <td data-label="Nama Layanan">OKE</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 420.000</td>
-                <td data-label="ETD (Estimates Days)">4-5 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-              </tr>
-            <tr>
-            <tr>
-                <td data-label="Nama Layanan">REG</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 490.000</td>
-                <td data-label="ETD (Estimates Days)">3-4 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-            </tr>
-            <tr>
-                <td data-label="Nama Layanan">REG</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 490.000</td>
-                <td data-label="ETD (Estimates Days)">3-4 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-            </tr>
-            <tr>
-                <td data-label="Nama Layanan">REG</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 490.000</td>
-                <td data-label="ETD (Estimates Days)">3-4 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-            </tr>
-            <tr>
-                <td data-label="Nama Layanan">REG</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 490.000</td>
-                <td data-label="ETD (Estimates Days)">3-4 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-            </tr>
-            <tr>
-                <td data-label="Nama Layanan">JTR&lt;130</td>
-                <td data-label="Jenis Kiriman">Document/Paket</td>
-                <td data-label="Tarif">IDR 490.000</td>
-                <td data-label="ETD (Estimates Days)">3-4 D</td>
-                <td><a href="#" class="btn-order">Pesan Sekarang</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  </section>
+            <div class="price" id="totalPrice">Rp0</div>
+        </div>
 
-  <footer class="footer">
-    <div class="section__container footer__container">
-        <div class="footer__col">
-            <h3>NauticaBook</h3>
-            <p>
-                NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
-                Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
-                langkah.
-            </p>
-            <p>
-                NauticaBook menawarkan antarmuka ramah pengguna untuk pengalaman pemesanan nyaman,
-                baik untuk perjalanan pribadi, bisnis, maupun logistik. Dengan mitra terpercaya,
-                layanan pelanggan responsif, dan sistem pembayaran aman, NauticaBook memenuhi kebutuhan transportasi
-                laut Anda.
-            </p>
+        <!-- Detail Informasi -->
+        <div class="details">
+            <p>Estimasi Pengiriman</p>
+            <p id="schedule" style="font-size: 22px; font-weight: bold; color: #333;">-</p>
+            <!-- Tombol Pesan -->
+            <div>
+                <button class="btn-pesan" id="btnPesan">PESAN CARGO</button>
+            </div>
         </div>
-        <div class="footer__col">
-            <h4>Tim Luminous</h4>
-            <p>Raden Riki Hilviastari Saputra (23523217)</p>
-            <p>Arvindra Ahmad Ramadhan (23523128)</p>
-            <p> Taqya Maritsa Hakim (23523108)</p>
-            <p>-</p>
+
+        <!-- Tab Menu -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'harga')">Rincian Harga</button>
+            <button class="tab-link" onclick="openTab(event, 'cargo')">Detail Cargo</button>
+            <button class="tab-link" onclick="openTab(event, 'policy')">Kebijakan</button>
         </div>
-        <div class="footer__col">
-            <h4>Legal</h4>
-            <p>FAQs</p>
-            <p>Terms & Conditions</p>
-            <p>Privacy Policy</p>
+
+        <!-- Tab Content: Rincian Harga -->
+        <div id="harga" class="tab-content active">
+            <div id="priceDetails"></div>
         </div>
-        <div class="footer__col">
-            <h4>Resources</h4>
-            <p>Social Media</p>
-            <p>Help Center</p>
-            <p>Partnerships</p>
+
+        <!-- Tab Content: Detail Cargo -->
+        <div id="cargo" class="tab-content">
+            <div id="cargoDetails"></div>
+        </div>
+
+        <!-- Tab Content: Kebijakan -->
+        <div id="policy" class="tab-content">
+            <p><strong>Kebijakan Cargo:</strong></p>
+            <ul>
+                <li>Barang berbahaya dan terlarang tidak diperkenankan untuk dikirim;</li>
+                <li>Pastikan barang dikemas dengan baik dan aman;</li>
+                <li>Estimasi waktu pengiriman dapat berubah sesuai dengan kondisi cuaca dan operasional;</li>
+                <li>Asuransi pengiriman tersedia untuk melindungi barang Anda;</li>
+                <li>Tracking cargo tersedia selama proses pengiriman;</li>
+                <li>Dokumen pengiriman harus lengkap dan sesuai dengan peraturan yang berlaku.</li>
+            </ul>
         </div>
     </div>
-    </div>
-    <div class="footer__bar">
-        Copyright © 2024 Webs by Luminous. All rights reserved.
-    </div>
-</footer>
-<script>
-    // Daftar kota
-    const cities = [
-      "Jakarta", "Jember", "Jambi", "Jogja", "Jayapura",
-      "Jepara", "Jombang", "Jamblang", "Jatiwangi", "Semarang", "Pontianak"
-    ];
-  
-    const inputField = document.querySelector('input[name="asal"]');
-    const suggestionsBox = document.getElementById("suggestions");
-  
-    // Fungsi untuk menampilkan saran
-    function showSuggestions(query) {
-      suggestionsBox.innerHTML = ""; // Kosongkan daftar saran sebelumnya
-  
-      if (query.length === 0) return; // Jika input kosong, hentikan
-  
-      // Filter nama kota yang cocok dengan input
-      const filteredCities = cities.filter(city =>
-        city.toLowerCase().startsWith(query.toLowerCase())
-      );
-  
-      // Tambahkan hasil ke kotak saran
-      filteredCities.forEach(city => {
-        const suggestion = document.createElement("div");
-        suggestion.textContent = city;
-  
-        // Saat saran diklik, set input value
-        suggestion.addEventListener("click", () => {
-          inputField.value = city;
-          suggestionsBox.innerHTML = ""; // Kosongkan saran setelah dipilih
+    <!-- Tutup .container di sini -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>NauticaBook</h3>
+                <p>
+                    NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.
+                    Pengguna dapat mencari jadwal, membandingkan harga, dan memesan tiket dengan mudah dalam beberapa
+                    langkah.
+                </p>
+            </div>
+            <div class="footer__col">
+                <h4>Tim Luminous</h4>
+                <p>Raden Riki Hilviastari Saputra (23523217)</p>
+                <p>Arvindra Ahmad Ramadhan (23523128)</p>
+                <p>Taqya Maritsa Hakim (23523108)</p>
+                <p>Tazki Ulil Absar (23523208)</p>
+            </div>
+            <div class="footer__col">
+                <h4>Legal</h4>
+                <p>FAQs</p>
+                <p>Terms &amp; Conditions</p>
+                <p>Privacy Policy</p>
+            </div>
+            <div class="footer__col">
+                <h4>Resources</h4>
+                <p>Social Media</p>
+                <p>Help Center</p>
+                <p>Partnerships</p>
+            </div>
+        </div>
+        <div class="footer__bar">
+            Copyright © 2024 Webs by Luminous. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mendapatkan data cargo dari sessionStorage
+            const cargoData = JSON.parse(sessionStorage.getItem('cargoData'));
+            if (!cargoData) {
+                alert('Data cargo tidak tersedia.');
+                window.location.href = 'home.html';
+                return;
+            }
+
+            // Harga per kg berdasarkan jenis barang (contoh tarif)
+            const tarifCargo = {
+                "umum": 15000,
+                "berat": 25000,
+                "kendaraan": 30000,
+                "elektronik": 35000
+            };
+
+            // Update informasi rute
+            document.getElementById('route').textContent =
+                `${cargoData.pelabuhanAsalCargo.toUpperCase()} → ${cargoData.pelabuhanTujuanCargo.toUpperCase()}`;
+
+            document.getElementById('details').textContent =
+                `${cargoData.jenisBarang.toUpperCase()} · ${cargoData.beratBarang} Kg`;
+
+            // Format tanggal
+            const tanggal = new Date(cargoData.tanggalCargo).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('schedule').textContent = tanggal;
+
+            // Hitung total harga
+            const hargaPerKg = tarifCargo[cargoData.jenisBarang.toLowerCase()] || tarifCargo.umum;
+            const totalHarga = hargaPerKg * cargoData.beratBarang;
+
+            // Update total harga
+            document.getElementById('totalPrice').textContent = `Rp${totalHarga.toLocaleString()}`;
+
+            // Update rincian harga
+            document.getElementById('priceDetails').innerHTML = `
+        <div class="price-details">
+          <span>Berat Cargo (${cargoData.beratBarang} Kg × Rp${hargaPerKg.toLocaleString()}/Kg)</span>
+          <span>Rp${totalHarga.toLocaleString()}</span>
+        </div>
+      `;
+
+            // Update detail cargo
+            document.getElementById('cargoDetails').innerHTML = `
+        <div style="padding: 20px;">
+          <h3 style="margin-bottom: 15px;">Informasi Cargo</h3>
+          <div style="margin-bottom: 10px;">
+            <strong>Jenis Barang:</strong> ${cargoData.jenisBarang}
+          </div>
+          <div style="margin-bottom: 10px;">
+            <strong>Berat:</strong> ${cargoData.beratBarang} Kg
+          </div>
+          <div style="margin-bottom: 10px;">
+            <strong>Pelabuhan Asal:</strong> ${cargoData.pelabuhanAsalCargo}
+          </div>
+          <div style="margin-bottom: 10px;">
+            <strong>Pelabuhan Tujuan:</strong> ${cargoData.pelabuhanTujuanCargo}
+          </div>
+          <div style="margin-bottom: 10px;">
+            <strong>Tanggal Pengiriman:</strong> ${tanggal}
+          </div>
+        </div>
+      `;
+
+            // Event listener tombol Pesan
+            document.getElementById('btnPesan').addEventListener('click', function () {
+                // Simpan data untuk halaman berikutnya
+                sessionStorage.setItem('totalPrice', totalHarga);
+                sessionStorage.setItem('cargoDetails', JSON.stringify({
+                    jenisBarang: cargoData.jenisBarang,
+                    beratBarang: cargoData.beratBarang,
+                    pelabuhanAsal: cargoData.pelabuhanAsalCargo,
+                    pelabuhanTujuan: cargoData.pelabuhanTujuanCargo,
+                    tanggalPengiriman: cargoData.tanggalCargo,  // Simpan tanggal asli
+                    tanggalPengirimanFormatted: tanggal,        // Simpan juga format untuk display
+                    harga: totalHarga
+                }));
+                // Redirect ke halaman form pemesanan cargo
+                window.location.href = 'cargo_booking_form.html';
+            });
         });
-  
-        suggestionsBox.appendChild(suggestion);
-      });
-    }
-  
-    // Event listener untuk menangani input
-    inputField.addEventListener("input", (e) => {
-      const query = e.target.value;
-      showSuggestions(query);
-    });
-  
-    // Sembunyikan saran jika pengguna klik di luar
-    document.addEventListener("click", (e) => {
-      if (!inputField.contains(e.target)) {
-        suggestionsBox.innerHTML = "";
-      }
-    });
-  </script>
-  
 
+        // Fungsi Tab
+        function openTab(evt, tabName) {
+            var i, tabContent, tabLinks;
+
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+
+            tabLinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
+
 </html>

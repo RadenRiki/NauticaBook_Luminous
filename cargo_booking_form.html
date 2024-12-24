@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Cargo Booking Form - NauticaBook</title>
+    <style>
+        .container {
+            max-width: var(--max-width);
+            margin: 20px auto;
+            padding: 0 1rem;
+        }
+
+        .header-section {
+            background-color: var(--primary-color);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .header-content h3, .header-content h4 {
+            color: white;
+            margin: 0;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .btn-pesan {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-pesan:hover {
+            background: var(--primary-color-dark);
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h3>NauticaBook</h3>
+            <h4>DETAIL PEMESANAN CARGO</h4>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="booking-container">
+            <!-- Main Form -->
+            <div class="main-content">
+                <div class="section">
+                    <h2>Informasi Pengirim</h2>
+                    <div class="form-group">
+                        <label for="namaPengirim">Nama Pengirim *</label>
+                        <input type="text" id="namaPengirim" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamatPengirim">Alamat Lengkap *</label>
+                        <input type="text" id="alamatPengirim" placeholder="Masukkan alamat lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kotaPengirim">Kota *</label>
+                        <input type="text" id="kotaPengirim" placeholder="Masukkan nama kota" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kodePosPengirim">Kode Pos *</label>
+                        <input type="text" id="kodePosPengirim" placeholder="Masukkan kode pos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teleponPengirim">Nomor Handphone *</label>
+                        <input type="tel" id="teleponPengirim" placeholder="Contoh: 081234567890" required>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Informasi Penerima</h2>
+                    <div class="form-group">
+                        <label for="namaPenerima">Nama Penerima *</label>
+                        <input type="text" id="namaPenerima" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamatPenerima">Alamat Lengkap *</label>
+                        <input type="text" id="alamatPenerima" placeholder="Masukkan alamat lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kotaPenerima">Kota *</label>
+                        <input type="text" id="kotaPenerima" placeholder="Masukkan nama kota" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kodePosPenerima">Kode Pos *</label>
+                        <input type="text" id="kodePosPenerima" placeholder="Masukkan kode pos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teleponPenerima">Nomor Handphone *</label>
+                        <input type="tel" id="teleponPenerima" placeholder="Contoh: 081234567890" required>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Catatan</h2>
+                    <div class="form-group">
+                        <label for="catatan">Catatan untuk Pengiriman (Opsional)</label>
+                        <textarea id="catatan" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Informasi Penting</h2>
+                    <p>1. Pastikan semua data penerima sudah benar.</p>
+                    <p>2. Barang akan diproses setelah pembayaran berhasil.</p>
+                    <p>3. Estimasi waktu pengiriman dapat berubah sesuai kondisi.</p>
+                </div>
+
+                <button id="pesanSekarang" class="btn-pesan">Pesan Sekarang</button>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="section">
+                    <h2>Detail Harga</h2>
+                    <div id="sidebarContent">
+                        <!-- Akan diisi via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>NauticaBook</h3>
+                <p>NauticaBook adalah platform untuk booking ferry dan cargo secara cepat dan terpercaya.</p>
+            </div>
+            <div class="footer__col">
+                <h4>Tim Luminous</h4>
+                <p>Raden Riki Hilviastari Saputra (23523217)</p>
+                <p>Arvindra Ahmad Ramadhan (23523128)</p>
+                <p>Taqya Maritsa Hakim (23523108)</p>
+            </div>
+            <div class="footer__col">
+                <h4>Legal</h4>
+                <p>FAQs</p>
+                <p>Terms & Conditions</p>
+                <p>Privacy Policy</p>
+            </div>
+            <div class="footer__col">
+                <h4>Resources</h4>
+                <p>Social Media</p>
+                <p>Help Center</p>
+                <p>Partnerships</p>
+            </div>
+        </div>
+        <div class="footer__bar">
+            Copyright © 2024 Webs by Luminous. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil data cargo dari sessionStorage
+            const cargoDetails = JSON.parse(sessionStorage.getItem('cargoDetails'));
+            if (!cargoDetails) {
+                alert('Data cargo tidak ditemukan!');
+                window.location.href = 'home.html';
+                return;
+            }
+
+            // Update sidebar content
+            const sidebarContent = document.getElementById('sidebarContent');
+            sidebarContent.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-weight: 600; color: #333;">Keberangkatan</p>
+                    <p>${cargoDetails.pelabuhanAsal} → ${cargoDetails.pelabuhanTujuan}</p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-weight: 600; color: #333;">Estimasi Pengiriman</p>
+                    <p>${cargoDetails.tanggalPengiriman}</p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-weight: 600; color: #333;">Jenis Barang</p>
+                    <p>${cargoDetails.jenisBarang}</p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-weight: 600; color: #333;">Berat</p>
+                    <p>${cargoDetails.beratBarang} Kg</p>
+                </div>
+
+                <hr style="margin: 1rem 0; border: none; border-top: 1px solid #eee;" />
+
+                <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                    <span style="font-weight: 600; color: #333;">Harga Pengiriman</span>
+                    <span>Rp${parseInt(cargoDetails.harga).toLocaleString()}</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="font-weight: 600; color: #333;">Total</span>
+                    <span style="color: #f59e0b; font-weight: 600;">Rp${parseInt(cargoDetails.harga).toLocaleString()}</span>
+                </div>
+            `;
+
+            // Handle form submission
+            document.getElementById('pesanSekarang').addEventListener('click', function() {
+                // Validasi semua input required
+                const requiredInputs = document.querySelectorAll('input[required]');
+                let isValid = true;
+
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.style.borderColor = 'red';
+                    } else {
+                        input.style.borderColor = '';
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Mohon lengkapi semua data yang diperlukan.');
+                    return;
+                }
+
+                // Simpan data form
+                const bookingData = {
+                    pengirim: {
+                        nama: document.getElementById('namaPengirim').value,
+                        alamat: document.getElementById('alamatPengirim').value,
+                        kota: document.getElementById('kotaPengirim').value,
+                        kodePos: document.getElementById('kodePosPengirim').value,
+                        telepon: document.getElementById('teleponPengirim').value
+                    },
+                    penerima: {
+                        nama: document.getElementById('namaPenerima').value,
+                        alamat: document.getElementById('alamatPenerima').value,
+                        kota: document.getElementById('kotaPenerima').value,
+                        kodePos: document.getElementById('kodePosPenerima').value,
+                        telepon: document.getElementById('teleponPenerima').value
+                    },
+                    catatan: document.getElementById('catatan').value,
+                    cargoDetails: cargoDetails
+                };
+
+                // Simpan ke sessionStorage
+                sessionStorage.setItem('cargoBookingData', JSON.stringify(bookingData));
+
+                // Redirect ke halaman pembayaran
+                window.location.href = 'payverification.html';
+            });
+        });
+    </script>
+</body>
+</html>
