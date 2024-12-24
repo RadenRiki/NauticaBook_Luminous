@@ -89,7 +89,7 @@ $profile_photo = isset($_SESSION['profile_photo']) ? $_SESSION['profile_photo'] 
     <div class="profile__details">
       <!-- Foto Profil -->
       <div class="profile-photo-container">
-        <img src="<?php echo $profile_photo ? 'uploads/profile_photos/' . $profile_photo : 'assets/default-profile.png'; ?>" 
+        <img src="<?php echo $profile_photo ? 'uploads/profile_photos/' . $profile_photo : 'assets/User Icon Vector Symbol Design Illustration.jpeg'; ?>" 
              alt="Profile Photo" 
              class="profile-photo" 
              id="profilePhoto">
