@@ -174,17 +174,22 @@
   </footer>
 
   <script>
-    // Fungsi untuk memeriksa status referral saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-      const hasReferral = localStorage.getItem('hasReferral');
-      if (hasReferral === 'true') {
-        document.getElementById('specialOffer').classList.remove('hidden');
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('get_referral.php');
+        const data = await response.json();
+        
+        if (data.hasReferral) {
+          document.getElementById('specialOffer').classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error fetching referral status:', error);
       }
     });
   
     async function checkReferral() {
       const referralCode = document.getElementById('referralInput').value.trim();
-      
+  
       if (referralCode === "") {
         alert('Silakan masukkan kode referral.');
         return;
@@ -200,29 +205,21 @@
         });
   
         const data = await response.json();
-        
+  
         if (data.valid) {
-          // Simpan status referral di localStorage
-          localStorage.setItem('hasReferral', 'true');
-          
-          // Tampilkan special offer
-          document.getElementById('specialOffer').classList.remove('hidden');
-          alert('Selamat! Anda mendapatkan penawaran spesial!');
+          // Reload halaman untuk memperbarui status dari server
+          alert(data.message);
+          window.location.reload();
         } else {
-          alert('Kode referral tidak valid. Silakan coba lagi.');
+          alert(data.message);
         }
       } catch (error) {
         console.error('Error:', error);
         alert('Terjadi kesalahan. Silakan coba lagi.');
       }
     }
-  
-    // Optional: Fungsi untuk menghapus status referral
-    function clearReferral() {
-      localStorage.removeItem('hasReferral');
-      document.getElementById('specialOffer').classList.add('hidden');
-    }
-  </script>  
+  </script>
+    
 </body>
 
 </html>

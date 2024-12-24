@@ -92,3 +92,6 @@ ADD UNIQUE INDEX (barcode);
 -- ini untuk ada fitur tambah profile
 ALTER TABLE users
 ADD COLUMN profile_photo VARCHAR(255) DEFAULT NULL;
+
+-- untuk referral code
+ALTER TABLE users ADD COLUMN has_referral BOOLEAN DEFAULT FALSE;
