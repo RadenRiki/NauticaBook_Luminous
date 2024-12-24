@@ -75,7 +75,7 @@ $profile_photo = isset($_SESSION['profile_photo']) ? $_SESSION['profile_photo'] 
     <div class="nav__logo">NauticaBook</div>
     <ul class="nav__links">
       <li class="link"><a href="home.html">Home</a></li>
-      <li class="link"><a href="#">MyTickets</a></li>
+      <li class="link"><a href="myticket.html">MyTickets</a></li>
       <li class="link"><a href="offers.html">Offers</a></li>
     </ul>
     <div class="profile-icon">
