@@ -22,7 +22,13 @@ function PaymentSystem() {
     
     if (bookingDataStr && totalPriceStr) {
       setBookingData(JSON.parse(bookingDataStr));
-      setTotalPrice(parseInt(totalPriceStr));
+      const parsedTotalPrice = parseInt(totalPriceStr);
+      if (!isNaN(parsedTotalPrice)) {
+        setTotalPrice(parsedTotalPrice);
+        console.log('Total price loaded:', parsedTotalPrice);
+      } else {
+        console.error('Invalid total price in sessionStorage');
+      }
     }
 
     // Generate virtual account number
@@ -73,16 +79,24 @@ function PaymentSystem() {
       // Ambil data booking & pemesan dari sessionStorage
       const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
       const pemesanData = JSON.parse(sessionStorage.getItem('pemesanData'));
-
-      // Validasi detail penumpang
-      console.log('Detail penumpang:', pemesanData.detailPenumpang);
-      if (!Array.isArray(pemesanData.detailPenumpang)) {
-        throw new Error('Invalid passenger details format');
+      const storedTotalPrice = sessionStorage.getItem('totalPrice');
+      
+      if (!bookingData || !pemesanData || !storedTotalPrice) {
+        throw new Error('Data pemesanan tidak lengkap');
       }
 
-      // detailPenumpang: array berisi semua penumpang
+      const parsedTotalPrice = parseInt(storedTotalPrice);
+      if (isNaN(parsedTotalPrice)) {
+        throw new Error('Total harga tidak valid');
+      }
+
+      // Debug logs
+      console.log('BookingData:', bookingData);
+      console.log('PemesanData:', pemesanData);
+      console.log('Total Price from storage:', storedTotalPrice);
+      console.log('Parsed Total Price:', parsedTotalPrice);
+
       const ticketData = {
-        user_id: sessionData.user_id,
         asal: bookingData.pelabuhanAsal,
         tujuan: bookingData.pelabuhanTujuan,
         layanan: bookingData.layanan,
@@ -93,13 +107,13 @@ function PaymentSystem() {
         nama_pemesan: pemesanData.nama,
         email_pemesan: pemesanData.email,
         nomor_hp: pemesanData.telepon,
-        detail_penumpang: JSON.stringify(pemesanData.detailPenumpang)  // Stringify disini
+        detail_penumpang: pemesanData.detailPenumpang,
+        total_harga: parsedTotalPrice
       };
 
-      // Log data before sending
-      console.log('Sending ticket data:', ticketData);
-    
-      // Kirim ke save_ticket.php
+      // Debug: Log data yang akan dikirim
+      console.log('Data yang akan dikirim:', ticketData);
+
       const saveResponse = await fetch('save_ticket.php', {
         method: 'POST',
         headers: {
@@ -107,22 +121,27 @@ function PaymentSystem() {
         },
         body: JSON.stringify(ticketData)
       });
-  
-      if (!saveResponse.ok) {
-        throw new Error('Gagal menyimpan tiket');
-      }
-  
-      const result = await saveResponse.json();
-      
-      if (result.success) {
-        // Jika berhasil, redirect ke halaman sukses
-        window.location.href = 'payment_success.html';
-      } else {
-        throw new Error(result.error || 'Gagal menyimpan tiket');
+
+      const responseText = await saveResponse.text();
+      console.log('Response text:', responseText);
+
+      try {
+        const result = JSON.parse(responseText);
+        if (!saveResponse.ok) {
+          throw new Error(`Server error: ${result.error || responseText}`);
+        }
+        if (result.success) {
+          window.location.href = 'payment_success.html';
+        } else {
+          throw new Error(result.error || 'Gagal menyimpan tiket');
+        }
+      } catch (e) {
+        console.error('Error parsing or processing response:', e);
+        throw new Error(`Server response error: ${responseText}`);
       }
       
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error detail:', error);
       alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
     }
   };

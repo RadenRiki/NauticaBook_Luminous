@@ -99,250 +99,121 @@
 
 
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const tarif = {
-            "merak-bakauheni": {
-                regular: {  
-                    "Pejalan Kaki": { 
-                        dewasa: 22700, 
-                        bayi: 1800,
-                        anak: 22700,
-                        lansia: 22700 
-                    },
-                    "Sepeda": 26500,
-                    "Motor Kecil": 62100,
-                    "Motor Besar": 133000,
-                    "Mobil": 481800
-                },
-                express: {
-                    "Pejalan Kaki": { 
-                        dewasa: 84000, 
-                        bayi: 4000,
-                        anak: 84000,
-                        lansia: 84000 
-                    },
-                    "Sepeda": 85000,
-                    "Motor Kecil": 129677,
-                    "Motor Besar": 187853,
-                    "Mobil": 749128
-                }
-            },
-            "bakauheni-merak": {
-                regular: {
-                    "Pejalan Kaki": { 
-                        dewasa: 22700, 
-                        bayi: 1800,
-                        anak: 22700,
-                        lansia: 22700 
-                    },
-                    "Sepeda": 26500,
-                    "Motor Kecil": 62100,
-                    "Motor Besar": 133000,
-                    "Mobil": 481800
-                },
-                express: {
-                    "Pejalan Kaki": { 
-                        dewasa: 84000, 
-                        bayi: 4000,
-                        anak: 84000,
-                        lansia: 84000 
-                    },
-                    "Sepeda": 85000,
-                    "Motor Kecil": 129677,
-                    "Motor Besar": 187853,
-                    "Mobil": 749128
-                }
-            },
-            "ketapang-gilimanuk": {
-                regular: {
-                    "Pejalan Kaki": { 
-                        dewasa: 10600, 
-                        bayi: 1600,
-                        anak: 10600,
-                        lansia: 10600 
-                    },
-                    "Sepeda": 11000,
-                    "Motor Kecil": 31600,
-                    "Motor Besar": 45000,
-                    "Mobil": 213400
-                },
-                express: {
-                    "Pejalan Kaki": { 
-                        dewasa: 35000, 
-                        bayi: 3500,
-                        anak: 35000,
-                        lansia: 35000 
-                    },
-                    "Sepeda": 37000,
-                    "Motor Kecil": 85000,
-                    "Motor Besar": 120000,
-                    "Mobil": 550000
-                }
-            },
-            "gilimanuk-ketapang": {
-                regular: {
-                    "Pejalan Kaki": { 
-                        dewasa: 10600, 
-                        bayi: 1600,
-                        anak: 10600,
-                        lansia: 10600 
-                    },
-                    "Sepeda": 11000,
-                    "Motor Kecil": 31600,
-                    "Motor Besar": 45000,
-                    "Mobil": 213400
-                },
-                express: {
-                    "Pejalan Kaki": { 
-                        dewasa: 35000, 
-                        bayi: 3500,
-                        anak: 35000,
-                        lansia: 35000 
-                    },
-                    "Sepeda": 37000,
-                    "Motor Kecil": 85000,
-                    "Motor Besar": 120000,
-                    "Mobil": 550000
-                }
+        document.addEventListener('DOMContentLoaded', async function () {
+            const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
+            if (!bookingData) {
+                alert('Data pemesanan tidak tersedia.');
+                window.location.href = 'home.html';
+                return;
             }
-        };
-
-    const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
-    if (!bookingData) {
-        alert('Data pemesanan tidak tersedia.');
-        window.location.href = 'home.html';
-        return;
-    }
-
-    // Debug log
-    console.log('Booking Data:', bookingData);
-    
-    // Cari rute
-    const rute = `${bookingData.pelabuhanAsal}-${bookingData.pelabuhanTujuan}`.toLowerCase();
-    console.log('Mencari rute:', rute, 'dengan layanan:', bookingData.layanan);
-    console.log('Tipe tiket:', bookingData.tipeTiket);
-    
-    const tarifLayanan = tarif[rute]?.[bookingData.layanan];
-    if (!tarifLayanan) {
-        console.error('Tarif tidak ditemukan untuk:', {
-            rute: rute,
-            layanan: bookingData.layanan,
-            tersediaLayanan: Object.keys(tarif[rute] || {})
-        });
-        alert('Tarif untuk rute ini tidak ditemukan.');
-        return;
-    }
-
-    // Perhitungan harga
-    let totalHarga = 0;
-    const priceDetails = [];
-    
-    if (bookingData.tipeTiket === "Pejalan Kaki") {
-        // Hitung untuk setiap jenis penumpang
-        const kategori = {
-            dewasa: "Dewasa",
-            anak: "Anak",
-            bayi: "Bayi",
-            lansia: "Lansia"
-        };
-
-        for (const [type, label] of Object.entries(kategori)) {
-            if (bookingData.jumlahPenumpang[type] > 0) {
-                const harga = tarifLayanan["Pejalan Kaki"][type];
-                const subtotal = harga * bookingData.jumlahPenumpang[type];
-                totalHarga += subtotal;
+        
+            try {
+                // Ambil data tarif dari API
+                const rute = `${bookingData.pelabuhanAsal}-${bookingData.pelabuhanTujuan}`.toLowerCase();
+                const response = await fetch(`get_tarif.php?rute=${rute}&layanan=${bookingData.layanan}`);
                 
-                priceDetails.push(`
-                    <div class="price-details">
-                        <span>${label} x ${bookingData.jumlahPenumpang[type]}</span>
-                        <span>Rp${subtotal.toLocaleString()}</span>
-                    </div>
-                `);
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data tarif');
+                }
+                
+                const tarifLayanan = await response.json();
+                
+                if (!tarifLayanan || Object.keys(tarifLayanan).length === 0) {
+                    alert('Tarif untuk rute ini tidak ditemukan.');
+                    return;
+                }
+        
+                // Perhitungan harga
+                let totalHarga = 0;
+                const priceDetails = [];
+                
+                if (bookingData.tipeTiket === "Pejalan Kaki") {
+                    // Hitung untuk setiap jenis penumpang
+                    const kategori = {
+                        dewasa: "Dewasa",
+                        anak: "Anak",
+                        bayi: "Bayi",
+                        lansia: "Lansia"
+                    };
+        
+                    for (const [type, label] of Object.entries(kategori)) {
+                        if (bookingData.jumlahPenumpang[type] > 0) {
+                            const harga = tarifLayanan["Pejalan Kaki"][type];
+                            const subtotal = harga * bookingData.jumlahPenumpang[type];
+                            totalHarga += subtotal;
+                            
+                            priceDetails.push(`
+                                <div class="price-details">
+                                    <span>${label} x ${bookingData.jumlahPenumpang[type]}</span>
+                                    <span>Rp${subtotal.toLocaleString()}</span>
+                                </div>
+                            `);
+                        }
+                    }
+                } else {
+                    // Untuk kendaraan, harga flat per kendaraan
+                    const hargaKendaraan = tarifLayanan[bookingData.tipeTiket];
+                    totalHarga = hargaKendaraan;
+                    
+                    priceDetails.push(`
+                        <div class="price-details">
+                            <span>${bookingData.tipeTiket}</span>
+                            <span>Rp${hargaKendaraan.toLocaleString()}</span>
+                        </div>
+                    `);
+                }
+        
+                // Update UI seperti sebelumnya
+                document.getElementById("route").textContent = 
+                    `${bookingData.pelabuhanAsal.toUpperCase()} → ${bookingData.pelabuhanTujuan.toUpperCase()}`;
+                
+                const totalPenumpang = bookingData.jumlahPenumpang.total;
+                document.getElementById("details").textContent = 
+                    `${bookingData.layanan.toUpperCase()} · ${totalPenumpang} Penumpang`;
+        
+                let formatedDate = new Date(bookingData.tanggal).toLocaleDateString('id-ID', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                document.getElementById("schedule").textContent =
+                    `${formatedDate} | Jam Masuk: ${bookingData.jamMasuk} WIB`;
+        
+                document.getElementById("priceDetails").innerHTML = priceDetails.join('');
+                document.getElementById("totalPrice").textContent = `Rp${totalHarga.toLocaleString()}`;
+        
+                // Event listener untuk tombol pesan tetap sama
+                document.getElementById('btnPesan').addEventListener('click', function () {
+                    console.log('Total Harga before storing:', totalHarga);
+                    sessionStorage.setItem('totalPrice', totalHarga.toString());
+                    const { dewasa, anak, bayi, lansia } = bookingData.jumlahPenumpang;
+                    const penumpangData = [];
+                
+                    for (let i = 0; i < dewasa; i++) penumpangData.push({ category: 'Dewasa' });
+                    for (let i = 0; i < anak; i++) penumpangData.push({ category: 'Anak' });
+                    for (let i = 0; i < bayi; i++) penumpangData.push({ category: 'Bayi' });
+                    for (let i = 0; i < lansia; i++) penumpangData.push({ category: 'Lansia' });
+                
+                    sessionStorage.setItem('penumpangData', JSON.stringify(penumpangData));
+                    sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+                    sessionStorage.setItem('totalPrice', totalHarga.toString());
+                    sessionStorage.setItem('tipeTiket', bookingData.tipeTiket);
+                
+                    // Verifikasi data tersimpan
+                    console.log('Stored totalPrice:', sessionStorage.getItem('totalPrice'));
+                    console.log('Stored booking data:', sessionStorage.getItem('bookingData'));
+                    console.log('Stored penumpang data:', sessionStorage.getItem('penumpangData'));
+                
+                    window.location.href = 'booking_form.html';
+                });
+        
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengambil data tarif');
             }
-        }
-    } else {
-        // Untuk kendaraan, harga flat per kendaraan
-        const hargaKendaraan = tarifLayanan[bookingData.tipeTiket];
-        totalHarga = hargaKendaraan;
-        
-        priceDetails.push(`
-            <div class="price-details">
-                <span>${bookingData.tipeTiket}</span>
-                <span>Rp${hargaKendaraan.toLocaleString()}</span>
-            </div>
-        `);
-    }
-
-    // Update UI
-    document.getElementById("route").textContent = 
-        `${bookingData.pelabuhanAsal.toUpperCase()} → ${bookingData.pelabuhanTujuan.toUpperCase()}`;
-    
-    const totalPenumpang = bookingData.jumlahPenumpang.total;
-    
-    document.getElementById("details").textContent = 
-        `${bookingData.layanan.toUpperCase()} · ${totalPenumpang} Penumpang`;
-    
-    document.getElementById("schedule").textContent = 
-        `${new Date(bookingData.tanggal).toLocaleDateString('id-ID', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        })}`;
-
-        let formatedDate = new Date(bookingData.tanggal).toLocaleDateString('id-ID', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
         });
-        
-        let jam = bookingData.jamMasuk; // jam "06:00" misalnya
-        
-        document.getElementById("schedule").textContent =
-          `${formatedDate} | Jam Masuk: ${jam} WIB`;
-        
-
-    document.getElementById("priceDetails").innerHTML = priceDetails.join('');
-    document.getElementById("totalPrice").textContent = `Rp${totalHarga.toLocaleString()}`;
-
-    // Tombol Pesan
-    document.getElementById('btnPesan').addEventListener('click', function () {
-        sessionStorage.setItem('totalPrice', totalHarga);
-
-        // Misalkan data jumlah penumpang di bookingData.jumlahPenumpang
-        const { dewasa, anak, bayi, lansia } = bookingData.jumlahPenumpang;
-
-        // Buat array penumpangData
-        const penumpangData = [];
-
-        // Masukkan sekian banyak "objek penumpang" (masih bisa diisi apa pun)
-        for (let i = 0; i < dewasa; i++) {
-          penumpangData.push({ category: 'Dewasa' });
-        }
-        for (let i = 0; i < anak; i++) {
-          penumpangData.push({ category: 'Anak' });
-        }
-        for (let i = 0; i < bayi; i++) {
-          penumpangData.push({ category: 'Bayi' });
-        }
-        for (let i = 0; i < lansia; i++) {
-          penumpangData.push({ category: 'Lansia' });
-        }
-
-        // Simpan array ini di sessionStorage
-        sessionStorage.setItem('penumpangData', JSON.stringify(penumpangData));
-        sessionStorage.setItem('bookingData', JSON.stringify(bookingData)); 
-        // agar rute, jam, tanggal, layanan dsb. bisa ditampilkan ulang di booking_form.html
-
-        sessionStorage.setItem('totalPrice', totalHarga);
-
-        sessionStorage.setItem('tipeTiket', bookingData.tipeTiket); 
-        // Contoh: "Mobil", "Pejalan Kaki", "Motor Kecil", dll
-
-        window.location.href = 'booking_form.html';
-        });
-    });
   </script>  
 </body>
 </html>

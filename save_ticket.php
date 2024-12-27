@@ -33,7 +33,7 @@ try {
     error_log("Received ticket data: " . print_r($data, true));
 
     // Validasi data yang diperlukan
-    $requiredFields = ['asal', 'tujuan', 'layanan', 'tipe', 'jumlah_penumpang', 'tanggal', 'jam', 'nama_pemesan', 'email_pemesan', 'nomor_hp', 'detail_penumpang'];
+    $requiredFields = ['asal', 'tujuan', 'layanan', 'tipe', 'jumlah_penumpang', 'tanggal', 'jam', 'nama_pemesan', 'email_pemesan', 'nomor_hp', 'detail_penumpang', 'total_harga'];
     foreach ($requiredFields as $field) {
         if (!isset($data[$field])) {
             throw new Exception("Missing required field: $field");
@@ -65,8 +65,9 @@ try {
         email_pemesan,
         nomor_hp,
         detail_penumpang,
-        barcode
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        barcode,
+        total_harga
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
     
@@ -87,7 +88,7 @@ try {
     }
     
     $stmt->bind_param(
-        "issssisssssss",
+        "issssisssssssd",
         $data['user_id'],
         $data['asal'],
         $data['tujuan'],
@@ -100,7 +101,8 @@ try {
         $data['email_pemesan'],
         $data['nomor_hp'],
         $detailPenumpangJson,
-        $barcode
+        $barcode,
+        $data['total_harga']
     );
 
     if ($stmt->execute()) {
