@@ -31,9 +31,17 @@ $query = "SELECT p.*, u.name as customer_name
           ORDER BY p.tanggal DESC 
           LIMIT 5";
 $recent_bookings = mysqli_query($conn, $query);
+
+// Get all bookings for bookings tab
+$query = "SELECT p.*, u.name as customer_name 
+          FROM passengers p 
+          JOIN users u ON p.user_id = u.id 
+          ORDER BY p.tanggal DESC";
+$all_bookings = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,27 +54,27 @@ $recent_bookings = mysqli_query($conn, $query);
             margin: 2rem auto;
             padding: 0 1rem;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .stat-card {
             background: var(--white);
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .stat-card h3 {
             color: var(--text-light);
             font-size: 0.875rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .stat-card .number {
             color: var(--text-dark);
             font-size: 1.5rem;
@@ -143,6 +151,7 @@ $recent_bookings = mysqli_query($conn, $query);
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 0.5rem;
         }
 
         .btn-delete {
@@ -153,6 +162,42 @@ $recent_bookings = mysqli_query($conn, $query);
             border-radius: 4px;
             cursor: pointer;
         }
+
+        .btn-edit:hover {
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--extra-light);
+            border-radius: 4px;
+        }
+
+        .form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--extra-light);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--extra-light);
+    border-radius: 4px;
+}
 
         .logout-btn {
             padding: 0.5rem 1rem;
@@ -171,7 +216,7 @@ $recent_bookings = mysqli_query($conn, $query);
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
 
@@ -186,8 +231,75 @@ $recent_bookings = mysqli_query($conn, $query);
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-controls select,
+        .filter-controls input {
+            padding: 0.5rem;
+            border: 1px solid var(--extra-light);
+            border-radius: 4px;
+            min-width: 200px;
+        }
+
+        .booking-details {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .booking-details p {
+            margin: 0.5rem 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .settings-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--extra-light);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav>
@@ -207,7 +319,6 @@ $recent_bookings = mysqli_query($conn, $query);
             <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
             <button class="tab-btn" onclick="showTab('bookings')">Bookings</button>
             <button class="tab-btn" onclick="showTab('routes')">Routes</button>
-            <button class="tab-btn" onclick="showTab('admin_management')">Admin Management</button>
             <button class="tab-btn" onclick="showTab('settings')">Settings</button>
         </div>
 
@@ -259,92 +370,280 @@ $recent_bookings = mysqli_query($conn, $query);
             </table>
         </div>
 
-        <!-- Admin Management Tab -->
-        <div id="admin_management" class="tab-content">
+        <!-- Bookings Tab -->
+        <div id="bookings" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 class="section__header">Admin Management</h2>
-                <button class="btn-edit" onclick="openAddAdminModal()">Add New Admin</button>
+                <h2 class="section__header">All Bookings</h2>
+                <div class="filter-controls">
+                    <input type="date" id="filterDate" placeholder="Filter by date">
+                    <select id="filterRoute">
+                        <option value="">All Routes</option>
+                        <option value="merak-bakauheni">Merak - Bakauheni</option>
+                        <option value="bakauheni-merak">Bakauheni - Merak</option>
+                        <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                        <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                    </select>
+                </div>
             </div>
-            
+
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Last Login</th>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Route</th>
+                        <th>Service</th>
+                        <th>Type</th>
+                        <th>Passengers</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($booking = mysqli_fetch_assoc($all_bookings)): ?>
+                    <tr>
+                        <td>#<?php echo $booking['id']; ?></td>
+                        <td><?php echo htmlspecialchars($booking['customer_name']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['asal'] . ' - ' . $booking['tujuan']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['layanan']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['tipe']); ?></td>
+                        <td><?php echo $booking['jumlah_penumpang']; ?></td>
+                        <td><?php echo date('d M Y', strtotime($booking['tanggal'])); ?></td>
+                        <td>
+                            <span class="status-badge">Active</span>
+                        </td>
+                        <td>
+                            <button class="btn-edit" onclick="viewBooking(<?php echo $booking['id']; ?>)">View</button>
+                            <button class="btn-delete"
+                                onclick="deleteBooking(<?php echo $booking['id']; ?>)">Cancel</button>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Routes and Settings tabs remain the same -->
+        <div id="routes" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section__header">Route Management</h2>
+                <button class="btn-edit" onclick="openAddRouteModal()">Add New Route</button>
+            </div>
+
+            <div class="filter-controls">
+                <select id="filterRouteService" onchange="filterRoutes()">
+                    <option value="">All Services</option>
+                    <option value="regular">Regular</option>
+                    <option value="express">Express</option>
+                </select>
+                <select id="filterRouteType" onchange="filterRoutes()">
+                    <option value="">All Types</option>
+                    <option value="Pejalan Kaki">Pejalan Kaki</option>
+                    <option value="Sepeda">Sepeda</option>
+                    <option value="Motor Kecil">Motor Kecil</option>
+                    <option value="Motor Besar">Motor Besar</option>
+                    <option value="Mobil">Mobil</option>
+                </select>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Route</th>
+                        <th>Service</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Price</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $query = "SELECT * FROM admin ORDER BY id";
-                    $admin_result = mysqli_query($conn, $query);
-                    while ($admin = mysqli_fetch_assoc($admin_result)): 
-                    ?>
+            $query = "SELECT * FROM tarif_layanan ORDER BY rute, layanan, tipe_tiket";
+            $result = mysqli_query($conn, $query);
+            while ($tarif = mysqli_fetch_assoc($result)):
+            ?>
                     <tr>
-                        <td><?php echo $admin['id']; ?></td>
-                        <td><?php echo htmlspecialchars($admin['username']); ?></td>
-                        <td><?php echo htmlspecialchars($admin['email']); ?></td>
-                        <td><?php echo $admin['last_login']; ?></td>
+                        <td><?php echo htmlspecialchars($tarif['rute']); ?></td>
+                        <td><?php echo htmlspecialchars($tarif['layanan']); ?></td>
+                        <td><?php echo htmlspecialchars($tarif['tipe_tiket']); ?></td>
+                        <td><?php echo $tarif['kategori'] ?? '-'; ?></td>
+                        <td>Rp <?php echo number_format($tarif['harga']); ?></td>
                         <td>
-                            <button class="btn-edit" onclick="editAdmin(<?php echo $admin['id']; ?>)">Edit</button>
-                            <?php if ($admin['id'] != $_SESSION['admin_id']): ?>
-                            <button class="btn-delete" onclick="deleteAdmin(<?php echo $admin['id']; ?>)">Delete</button>
-                            <?php endif; ?>
+                            <button class="btn-edit" onclick="editTarif(<?php echo $tarif['id']; ?>)">Edit</button>
+                            <button class="btn-delete"
+                                onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
 
-            <!-- Modal untuk Add/Edit Admin -->
-            <div id="adminModal" class="modal" style="display: none;">
+            <!-- Modal untuk Add/Edit Route -->
+            <div id="routeModal" class="modal">
                 <div class="modal-content">
-                    <h2 id="modalTitle">Add New Admin</h2>
-                    <form id="adminForm" method="POST" action="admin_handlers.php">
-                        <input type="hidden" name="action" id="formAction" value="add_admin">
-                        <input type="hidden" name="admin_id" id="adminId">
-                        
+                    <h2 id="routeModalTitle">Add New Route</h2>
+                    <form id="routeForm" method="POST" action="route_handlers.php">
+                        <input type="hidden" name="action" id="routeFormAction" value="add_route">
+                        <input type="hidden" name="tarif_id" id="tarifId">
+
                         <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" id="adminUsername" required>
+                            <label>Route</label>
+                            <select name="rute" required>
+                                <option value="merak-bakauheni">Merak - Bakauheni</option>
+                                <option value="bakauheni-merak">Bakauheni - Merak</option>
+                                <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                                <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                            </select>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" id="adminEmail" required>
+                            <label>Service</label>
+                            <select name="layanan" required>
+                                <option value="regular">Regular</option>
+                                <option value="express">Express</option>
+                            </select>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" id="adminPassword">
-                            <small>(Leave blank to keep current password when editing)</small>
+                            <label>Type</label>
+                            <select name="tipe_tiket" required>
+                                <option value="Pejalan Kaki">Pejalan Kaki</option>
+                                <option value="Sepeda">Sepeda</option>
+                                <option value="Motor Kecil">Motor Kecil</option>
+                                <option value="Motor Besar">Motor Besar</option>
+                                <option value="Mobil">Mobil</option>
+                            </select>
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="kategori">
+                                <option value="">-</option>
+                                <option value="dewasa">Dewasa</option>
+                                <option value="anak">Anak</option>
+                                <option value="bayi">Bayi</option>
+                                <option value="lansia">Lansia</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Price (Rp)</label>
+                            <input type="number" name="harga" required>
+                        </div>
+
                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                             <button type="submit" class="btn-edit">Save</button>
-                            <button type="button" class="btn-delete" onclick="closeModal()">Cancel</button>
+                            <button type="button" class="btn-delete" onclick="closeRouteModal()">Cancel</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Other tabs -->
-        <div id="bookings" class="tab-content">
-            <h2 class="section__header">All Bookings</h2>
-            <!-- Add bookings content -->
-        </div>
-
-        <div id="routes" class="tab-content">
-            <h2 class="section__header">Route Management</h2>
-            <!-- Add routes content -->
-        </div>
-
         <div id="settings" class="tab-content">
             <h2 class="section__header">Admin Settings</h2>
-            <!-- Add settings content -->
+
+            <div class="grid-2">
+                <!-- Change Password Card -->
+                <div class="settings-card">
+                    <h3>Change Password</h3>
+                    <form id="changePasswordForm" method="POST" action="admin_handlers.php">
+                        <input type="hidden" name="action" value="change_password">
+
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" name="current_password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" name="new_password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" name="confirm_password" required>
+                        </div>
+
+                        <button type="submit" class="btn-edit">Update Password</button>
+                    </form>
+                </div>
+
+                <!-- Profile Settings Card -->
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <h2 class="section__header">Admin Settings</h2>
+
+                    <div class="grid-2">
+                        <!-- Change Password Card -->
+                        <div class="settings-card">
+                            <h3>Change Password</h3>
+                            <form id="changePasswordForm" method="POST" action="admin_handlers.php">
+                                <input type="hidden" name="action" value="change_password">
+
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" name="current_password" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" name="new_password" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" name="confirm_password" required>
+                                </div>
+
+                                <button type="submit" class="btn-edit">Update Password</button>
+                            </form>
+                        </div>
+
+                        <!-- Profile Settings Card -->
+                        <div class="settings-card">
+                            <h3>Profile Settings</h3>
+                            <?php
+                            // Get admin data
+                            $admin_id = $_SESSION['admin_id'];
+                            $query = "SELECT * FROM admin WHERE id = ?";
+                            $stmt = mysqli_prepare($conn, $query);
+                            mysqli_stmt_bind_param($stmt, "i", $admin_id);
+                            mysqli_stmt_execute($stmt);
+                            $result = mysqli_stmt_get_result($stmt);
+                            $admin_data = mysqli_fetch_assoc($result);
+                            ?>
+                            <form id="profileForm" method="POST" action="admin_handlers.php">
+                                <input type="hidden" name="action" value="update_profile">
+
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" name="username"
+                                        value="<?php echo htmlspecialchars($admin_data['username']); ?>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email"
+                                        value="<?php echo htmlspecialchars($admin_data['email']); ?>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Notification Preferences</label>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="emailNotif" name="email_notifications">
+                                        <label for="emailNotif">Email Notifications</label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-edit">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -357,46 +656,162 @@ $recent_bookings = mysqli_query($conn, $query);
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-
             // Show selected tab
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        function openAddAdminModal() {
-            document.getElementById('modalTitle').textContent = 'Add New Admin';
-            document.getElementById('formAction').value = 'add_admin';
-            document.getElementById('adminId').value = '';
-            document.getElementById('adminUsername').value = '';
-            document.getElementById('adminEmail').value = '';
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminModal').style.display = 'block';
+        function viewBooking(bookingId) {
+            // Create modal for booking details
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            // Fetch booking details
+            fetch(`get_booking_details.php?id=${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    modal.innerHTML = `
+                        <div class="modal-content">
+                            <h2>Booking Details #${bookingId}</h2>
+                            <div class="booking-details">
+                                <p><strong>Customer:</strong> ${booking.customer_name}</p>
+                                <p><strong>Route:</strong> ${booking.asal} - ${booking.tujuan}</p>
+                                <p><strong>Date:</strong> ${booking.tanggal}</p>
+                                <p><strong>Service:</strong> ${booking.layanan}</p>
+                                <p><strong>Type:</strong> ${booking.tipe}</p>
+                                <p><strong>Passengers:</strong> ${booking.jumlah_penumpang}</p>
+                                <p><strong>Time:</strong> ${booking.jam}</p>
+                                <p><strong>Barcode:</strong> ${booking.barcode}</p>
+                                <p><strong>Total Price:</strong> Rp ${Number(booking.total_harga).toLocaleString()}</p>
+                            </div>
+                            <div class="booking-details">
+                                <h3>Booking Contact</h3>
+                                <p><strong>Name:</strong> ${booking.nama_pemesan}</p>
+                                <p><strong>Email:</strong> ${booking.email_pemesan}</p>
+                                <p><strong>Phone:</strong> ${booking.nomor_hp}</p>
+                            </div>
+                            <button onclick="closeModal()" class="btn-delete">Close</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                })
+                .catch(error => {
+                    console.error('Error fetching booking details:', error);
+                    alert('Failed to load booking details');
+                });
         }
 
-        function editAdmin(adminId) {
-            // Fetch admin data dan tampilkan di modal
-            document.getElementById('modalTitle').textContent = 'Edit Admin';
-            document.getElementById('formAction').value = 'edit_admin';
-            document.getElementById('adminId').value = adminId;
-            // Tambahkan AJAX untuk mengambil data admin
-            document.getElementById('adminModal').style.display = 'block';
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.remove();
+            }
         }
 
-        function deleteAdmin(adminId) {
-            if (confirm('Are you sure you want to delete this admin?')) {
+        function deleteBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch('cancel_booking.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `booking_id=${bookingId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Booking cancelled successfully');
+                            location.reload();
+                        } else {
+                            alert('Failed to cancel booking: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to cancel booking');
+                    });
+            }
+        }
+
+        // Filter functionality for bookings
+        const filterDate = document.getElementById('filterDate');
+        const filterRoute = document.getElementById('filterRoute');
+
+        function applyFilters() {
+            const rows = document.querySelectorAll('#bookings .data-table tbody tr');
+            const dateValue = filterDate.value;
+            const routeValue = filterRoute.value.toLowerCase();
+            rows.forEach(row => {
+                const date = row.querySelector('td:nth-child(7)').textContent;
+                const route = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const dateMatch = !dateValue || date.includes(dateValue);
+                const routeMatch = !routeValue || route.includes(routeValue);
+                if (dateMatch && routeMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        if (filterDate) filterDate.addEventListener('change', applyFilters);
+        if (filterRoute) filterRoute.addEventListener('change', applyFilters);
+
+        // Route Management Functions
+        function openAddRouteModal() {
+            document.getElementById('routeModalTitle').textContent = 'Add New Route';
+            document.getElementById('routeFormAction').value = 'add_route';
+            document.getElementById('tarifId').value = '';
+            document.getElementById('routeForm').reset();
+            document.getElementById('routeModal').style.display = 'block';
+        }
+
+        function closeRouteModal() {
+            document.getElementById('routeModal').style.display = 'none';
+        }
+
+        function editTarif(id) {
+            fetch(`get_tarif_details.php?id=${id}`)
+                .then(response => response.json())
+                .then(tarif => {
+                    if(tarif.error) {
+                        alert(tarif.error);
+                        return;
+                    }
+                    
+                    document.getElementById('routeModalTitle').textContent = 'Edit Route';
+                    document.getElementById('routeFormAction').value = 'edit_route';
+                    document.getElementById('tarifId').value = id;
+                    
+                    document.querySelector('select[name="rute"]').value = tarif.rute;
+                    document.querySelector('select[name="layanan"]').value = tarif.layanan;
+                    document.querySelector('select[name="tipe_tiket"]').value = tarif.tipe_tiket;
+                    document.querySelector('select[name="kategori"]').value = tarif.kategori || '';
+                    document.querySelector('input[name="harga"]').value = tarif.harga;
+                    
+                    document.getElementById('routeModal').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load route details');
+                });
+        }
+
+        function deleteTarif(id) {
+            if (confirm('Are you sure you want to delete this route? This action cannot be undone.')) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = 'admin_handlers.php';
+                form.action = 'route_handlers.php';
                 
                 const actionInput = document.createElement('input');
                 actionInput.type = 'hidden';
                 actionInput.name = 'action';
-                actionInput.value = 'delete_admin';
+                actionInput.value = 'delete_route';
                 
                 const idInput = document.createElement('input');
                 idInput.type = 'hidden';
-                idInput.name = 'admin_id';
-                idInput.value = adminId;
+                idInput.name = 'tarif_id';
+                idInput.value = id;
                 
                 form.appendChild(actionInput);
                 form.appendChild(idInput);
@@ -405,9 +820,79 @@ $recent_bookings = mysqli_query($conn, $query);
             }
         }
 
-        function closeModal() {
-            document.getElementById('adminModal').style.display = 'none';
+        function filterRoutes() {
+            const serviceValue = document.getElementById('filterRouteService').value.toLowerCase();
+            const typeValue = document.getElementById('filterRouteType').value;
+            const rows = document.querySelectorAll('#routes .data-table tbody tr');
+            rows.forEach(row => {
+                const service = row.cells[1].textContent.toLowerCase();
+                const type = row.cells[2].textContent;
+                const serviceMatch = !serviceValue || service === serviceValue;
+                const typeMatch = !typeValue || type === typeValue;
+                if (serviceMatch && typeMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
+
+        // Form validation listeners
+        document.getElementById('routeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const harga = this.querySelector('input[name="harga"]').value;
+            if (harga <= 0) {
+                alert('Price must be greater than 0');
+                return;
+            }
+            this.submit();
+        });
+
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newPass = this.querySelector('input[name="new_password"]').value;
+            const confirmPass = this.querySelector('input[name="confirm_password"]').value;
+            if (newPass !== confirmPass) {
+                alert('New password and confirmation do not match');
+                return;
+            }
+            this.submit();
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[name="email"]').value;
+            if (!email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            const username = this.querySelector('input[name="username"]').value;
+            if (username.length < 3) {
+                alert('Username must be at least 3 characters long');
+                return;
+            }
+            this.submit();
+        });
+
+        // Modal event listeners
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+                if (document.getElementById('routeModal')) {
+                    closeRouteModal();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                if (document.getElementById('routeModal')) {
+                    closeRouteModal();
+                }
+            }
+        });
     </script>
 </body>
+
 </html>
