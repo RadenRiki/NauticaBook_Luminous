@@ -24,6 +24,18 @@ $query = "SELECT SUM(total_harga) as total FROM passengers";
 $revenue_result = mysqli_query($conn, $query);
 $total_revenue = mysqli_fetch_assoc($revenue_result)['total'] ?? 0;
 
+// Update Recent Bookings query
+$query = "SELECT 'ferry' as type, p.id, p.user_id, p.asal, p.tujuan, p.tanggal, p.barcode, u.name as customer_name 
+          FROM passengers p 
+          JOIN users u ON p.user_id = u.id 
+          UNION ALL
+          SELECT 'cargo' as type, c.id, c.user_id, c.asal, c.tujuan, c.tanggal, c.barcode, u.name as customer_name 
+          FROM cargo c 
+          JOIN users u ON c.user_id = u.id 
+          ORDER BY tanggal DESC 
+          LIMIT 5";
+$recent_bookings = mysqli_query($conn, $query);
+
 // Get recent bookings
 $query = "SELECT p.*, u.name as customer_name 
           FROM passengers p 
@@ -185,19 +197,19 @@ $all_bookings = mysqli_query($conn, $query);
         }
 
         .form-group select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--extra-light);
-    border-radius: 4px;
-    background-color: white;
-}
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--extra-light);
+            border-radius: 4px;
+            background-color: white;
+        }
 
-.form-group input[type="number"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--extra-light);
-    border-radius: 4px;
-}
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--extra-light);
+            border-radius: 4px;
+        }
 
         .logout-btn {
             padding: 0.5rem 1rem;
@@ -319,6 +331,7 @@ $all_bookings = mysqli_query($conn, $query);
             <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
             <button class="tab-btn" onclick="showTab('bookings')">Bookings</button>
             <button class="tab-btn" onclick="showTab('routes')">Routes</button>
+            <button class="tab-btn" onclick="showTab('cargo')">Cargo Management</button> <!-- Tambah ini -->
             <button class="tab-btn" onclick="showTab('settings')">Settings</button>
         </div>
 
@@ -542,6 +555,67 @@ $all_bookings = mysqli_query($conn, $query);
             </div>
         </div>
 
+        <!-- Tambahkan tab content untuk cargo -->
+        <div id="cargo" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section__header">Cargo Management</h2>
+                <button class="btn-edit" onclick="openAddCargoTarifModal()">Add New Tariff</button>
+            </div>
+
+            <div class="filter-controls">
+                <input type="date" id="filterCargoDate" placeholder="Filter by date">
+                <select id="filterCargoRoute">
+                    <option value="">All Routes</option>
+                    <option value="merak-bakauheni">Merak - Bakauheni</option>
+                    <option value="bakauheni-merak">Bakauheni - Merak</option>
+                    <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                    <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                </select>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Route</th>
+                        <th>Type</th>
+                        <th>Weight</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+            $query = "SELECT c.*, u.name as customer_name 
+                      FROM cargo c 
+                      JOIN users u ON c.user_id = u.id 
+                      ORDER BY c.tanggal DESC";
+            $result = mysqli_query($conn, $query);
+            while ($cargo = mysqli_fetch_assoc($result)): 
+            ?>
+                    <tr>
+                        <td>#<?php echo $cargo['id']; ?></td>
+                        <td><?php echo htmlspecialchars($cargo['customer_name']); ?></td>
+                        <td><?php echo htmlspecialchars($cargo['asal'] . ' - ' . $cargo['tujuan']); ?></td>
+                        <td><?php echo htmlspecialchars($cargo['jenis']); ?></td>
+                        <td><?php echo $cargo['berat_kg']; ?> kg</td>
+                        <td><?php echo date('d M Y', strtotime($cargo['tanggal'])); ?></td>
+                        <td>
+                            <span class="status-badge"><?php echo ucfirst($cargo['status']); ?></span>
+                        </td>
+                        <td>
+                            <button class="btn-edit" onclick="viewCargo(<?php echo $cargo['id']; ?>)">View</button>
+                            <button class="btn-delete"
+                                onclick="cancelCargo(<?php echo $cargo['id']; ?>)">Cancel</button>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+
         <div id="settings" class="tab-content">
             <h2 class="section__header">Admin Settings</h2>
 
@@ -732,7 +806,6 @@ $all_bookings = mysqli_query($conn, $query);
                     });
             }
         }
-
         // Filter functionality for bookings
         const filterDate = document.getElementById('filterDate');
         const filterRoute = document.getElementById('filterRoute');
@@ -753,10 +826,8 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             });
         }
-
         if (filterDate) filterDate.addEventListener('change', applyFilters);
         if (filterRoute) filterRoute.addEventListener('change', applyFilters);
-
         // Route Management Functions
         function openAddRouteModal() {
             document.getElementById('routeModalTitle').textContent = 'Add New Route';
@@ -774,21 +845,18 @@ $all_bookings = mysqli_query($conn, $query);
             fetch(`get_tarif_details.php?id=${id}`)
                 .then(response => response.json())
                 .then(tarif => {
-                    if(tarif.error) {
+                    if (tarif.error) {
                         alert(tarif.error);
                         return;
                     }
-                    
                     document.getElementById('routeModalTitle').textContent = 'Edit Route';
                     document.getElementById('routeFormAction').value = 'edit_route';
                     document.getElementById('tarifId').value = id;
-                    
                     document.querySelector('select[name="rute"]').value = tarif.rute;
                     document.querySelector('select[name="layanan"]').value = tarif.layanan;
                     document.querySelector('select[name="tipe_tiket"]').value = tarif.tipe_tiket;
                     document.querySelector('select[name="kategori"]').value = tarif.kategori || '';
                     document.querySelector('input[name="harga"]').value = tarif.harga;
-                    
                     document.getElementById('routeModal').style.display = 'block';
                 })
                 .catch(error => {
@@ -802,17 +870,14 @@ $all_bookings = mysqli_query($conn, $query);
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = 'route_handlers.php';
-                
                 const actionInput = document.createElement('input');
                 actionInput.type = 'hidden';
                 actionInput.name = 'action';
                 actionInput.value = 'delete_route';
-                
                 const idInput = document.createElement('input');
                 idInput.type = 'hidden';
                 idInput.name = 'tarif_id';
                 idInput.value = id;
-                
                 form.appendChild(actionInput);
                 form.appendChild(idInput);
                 document.body.appendChild(form);
@@ -836,7 +901,6 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             });
         }
-
         // Form validation listeners
         document.getElementById('routeForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -847,7 +911,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const newPass = this.querySelector('input[name="new_password"]').value;
@@ -858,7 +921,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         document.getElementById('profileForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = this.querySelector('input[name="email"]').value;
@@ -873,7 +935,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         // Modal event listeners
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
@@ -883,7 +944,6 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             }
         };
-
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();

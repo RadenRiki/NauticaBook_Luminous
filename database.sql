@@ -218,3 +218,179 @@ CREATE TABLE admin (
 
 INSERT INTO admin (username, email, password) 
 VALUES ('admin', 'admin@nauticabook.com', 'admin123');
+
+CREATE TABLE tarif_cargo (
+    id int NOT NULL AUTO_INCREMENT,
+    jenis_barang varchar(50) NOT NULL,
+    harga_per_kg decimal(10,2) NOT NULL,
+    rute varchar(50) NOT NULL,
+    aktif boolean DEFAULT true,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_tarif_cargo (jenis_barang, rute)
+);
+
+INSERT INTO tarif_cargo (jenis_barang, harga_per_kg, rute) VALUES
+-- Rute Merak-Bakauheni
+('Umum', 15000, 'merak-bakauheni'),
+('Kosmetik dan Kecantikan', 20000, 'merak-bakauheni'),
+('Kendaraan', 30000, 'merak-bakauheni'),
+('Peralatan Rumah Tangga', 18000, 'merak-bakauheni'),
+('Mesin ukuran besar', 25000, 'merak-bakauheni'),
+('Elektronik', 35000, 'merak-bakauheni'),
+('Furniture', 22000, 'merak-bakauheni'),
+('Lainnya', 15000, 'merak-bakauheni'),
+
+-- Rute Bakauheni-Merak (harga sama dengan sebaliknya)
+('Umum', 15000, 'bakauheni-merak'),
+('Kosmetik dan Kecantikan', 20000, 'bakauheni-merak'),
+('Kendaraan', 30000, 'bakauheni-merak'),
+('Peralatan Rumah Tangga', 18000, 'bakauheni-merak'),
+('Mesin ukuran besar', 25000, 'bakauheni-merak'),
+('Elektronik', 35000, 'bakauheni-merak'),
+('Furniture', 22000, 'bakauheni-merak'),
+('Lainnya', 15000, 'bakauheni-merak'),
+
+-- Rute Ketapang-Gilimanuk (tarif lebih rendah karena jarak lebih dekat)
+('Umum', 12000, 'ketapang-gilimanuk'),
+('Kosmetik dan Kecantikan', 17000, 'ketapang-gilimanuk'),
+('Kendaraan', 25000, 'ketapang-gilimanuk'),
+('Peralatan Rumah Tangga', 15000, 'ketapang-gilimanuk'),
+('Mesin ukuran besar', 22000, 'ketapang-gilimanuk'),
+('Elektronik', 30000, 'ketapang-gilimanuk'),
+('Furniture', 18000, 'ketapang-gilimanuk'),
+('Lainnya', 12000, 'ketapang-gilimanuk'),
+
+-- Rute Gilimanuk-Ketapang
+('Umum', 12000, 'gilimanuk-ketapang'),
+('Kosmetik dan Kecantikan', 17000, 'gilimanuk-ketapang'),
+('Kendaraan', 25000, 'gilimanuk-ketapang'),
+('Peralatan Rumah Tangga', 15000, 'gilimanuk-ketapang'),
+('Mesin ukuran besar', 22000, 'gilimanuk-ketapang'),
+('Elektronik', 30000, 'gilimanuk-ketapang'),
+('Furniture', 18000, 'gilimanuk-ketapang'),
+('Lainnya', 12000, 'gilimanuk-ketapang'),
+
+-- Rute dengan Tanjung Priok (tarif lebih tinggi karena pelabuhan besar)
+('Umum', 18000, 'tanjungpriok-merak'),
+('Kosmetik dan Kecantikan', 23000, 'tanjungpriok-merak'),
+('Kendaraan', 33000, 'tanjungpriok-merak'),
+('Peralatan Rumah Tangga', 21000, 'tanjungpriok-merak'),
+('Mesin ukuran besar', 28000, 'tanjungpriok-merak'),
+('Elektronik', 38000, 'tanjungpriok-merak'),
+('Furniture', 25000, 'tanjungpriok-merak'),
+('Lainnya', 18000, 'tanjungpriok-merak'),
+
+-- Lanjutan untuk rute-rute yang belum ada sebelumnya...
+
+-- Rute dengan Tanjung Priok - Bakauheni
+('Umum', 18000, 'tanjungpriok-bakauheni'),
+('Kosmetik dan Kecantikan', 23000, 'tanjungpriok-bakauheni'),
+('Kendaraan', 33000, 'tanjungpriok-bakauheni'),
+('Peralatan Rumah Tangga', 21000, 'tanjungpriok-bakauheni'),
+('Mesin ukuran besar', 28000, 'tanjungpriok-bakauheni'),
+('Elektronik', 38000, 'tanjungpriok-bakauheni'),
+('Furniture', 25000, 'tanjungpriok-bakauheni'),
+('Lainnya', 18000, 'tanjungpriok-bakauheni'),
+
+-- Rute Tanjung Priok - Tanjung Perak (rute panjang, harga lebih tinggi)
+('Umum', 20000, 'tanjungpriok-tanjungperak'),
+('Kosmetik dan Kecantikan', 25000, 'tanjungpriok-tanjungperak'),
+('Kendaraan', 35000, 'tanjungpriok-tanjungperak'),
+('Peralatan Rumah Tangga', 23000, 'tanjungpriok-tanjungperak'),
+('Mesin ukuran besar', 30000, 'tanjungpriok-tanjungperak'),
+('Elektronik', 40000, 'tanjungpriok-tanjungperak'),
+('Furniture', 27000, 'tanjungpriok-tanjungperak'),
+('Lainnya', 20000, 'tanjungpriok-tanjungperak'),
+
+-- Rute Tanjung Perak - Tanjung Priok
+('Umum', 20000, 'tanjungperak-tanjungpriok'),
+('Kosmetik dan Kecantikan', 25000, 'tanjungperak-tanjungpriok'),
+('Kendaraan', 35000, 'tanjungperak-tanjungpriok'),
+('Peralatan Rumah Tangga', 23000, 'tanjungperak-tanjungpriok'),
+('Mesin ukuran besar', 30000, 'tanjungperak-tanjungpriok'),
+('Elektronik', 40000, 'tanjungperak-tanjungpriok'),
+('Furniture', 27000, 'tanjungperak-tanjungpriok'),
+('Lainnya', 20000, 'tanjungperak-tanjungpriok'),
+
+-- Rute Tanjung Perak - Merak
+('Umum', 19000, 'tanjungperak-merak'),
+('Kosmetik dan Kecantikan', 24000, 'tanjungperak-merak'),
+('Kendaraan', 34000, 'tanjungperak-merak'),
+('Peralatan Rumah Tangga', 22000, 'tanjungperak-merak'),
+('Mesin ukuran besar', 29000, 'tanjungperak-merak'),
+('Elektronik', 39000, 'tanjungperak-merak'),
+('Furniture', 26000, 'tanjungperak-merak'),
+('Lainnya', 19000, 'tanjungperak-merak'),
+
+-- Rute Tanjung Perak - Bakauheni
+('Umum', 19000, 'tanjungperak-bakauheni'),
+('Kosmetik dan Kecantikan', 24000, 'tanjungperak-bakauheni'),
+('Kendaraan', 34000, 'tanjungperak-bakauheni'),
+('Peralatan Rumah Tangga', 22000, 'tanjungperak-bakauheni'),
+('Mesin ukuran besar', 29000, 'tanjungperak-bakauheni'),
+('Elektronik', 39000, 'tanjungperak-bakauheni'),
+('Furniture', 26000, 'tanjungperak-bakauheni'),
+('Lainnya', 19000, 'tanjungperak-bakauheni'),
+
+-- Rute Tanjung Perak - Ketapang
+('Umum', 16000, 'tanjungperak-ketapang'),
+('Kosmetik dan Kecantikan', 21000, 'tanjungperak-ketapang'),
+('Kendaraan', 31000, 'tanjungperak-ketapang'),
+('Peralatan Rumah Tangga', 19000, 'tanjungperak-ketapang'),
+('Mesin ukuran besar', 26000, 'tanjungperak-ketapang'),
+('Elektronik', 36000, 'tanjungperak-ketapang'),
+('Furniture', 23000, 'tanjungperak-ketapang'),
+('Lainnya', 16000, 'tanjungperak-ketapang'),
+
+-- Rute Tanjung Perak - Gilimanuk
+('Umum', 16000, 'tanjungperak-gilimanuk'),
+('Kosmetik dan Kecantikan', 21000, 'tanjungperak-gilimanuk'),
+('Kendaraan', 31000, 'tanjungperak-gilimanuk'),
+('Peralatan Rumah Tangga', 19000, 'tanjungperak-gilimanuk'),
+('Mesin ukuran besar', 26000, 'tanjungperak-gilimanuk'),
+('Elektronik', 36000, 'tanjungperak-gilimanuk'),
+('Furniture', 23000, 'tanjungperak-gilimanuk'),
+('Lainnya', 16000, 'tanjungperak-gilimanuk'),
+
+-- Rute Merak - Tanjung Priok
+('Umum', 18000, 'merak-tanjungpriok'),
+('Kosmetik dan Kecantikan', 23000, 'merak-tanjungpriok'),
+('Kendaraan', 33000, 'merak-tanjungpriok'),
+('Peralatan Rumah Tangga', 21000, 'merak-tanjungpriok'),
+('Mesin ukuran besar', 28000, 'merak-tanjungpriok'),
+('Elektronik', 38000, 'merak-tanjungpriok'),
+('Furniture', 25000, 'merak-tanjungpriok'),
+('Lainnya', 18000, 'merak-tanjungpriok'),
+
+-- Rute Merak - Tanjung Perak
+('Umum', 19000, 'merak-tanjungperak'),
+('Kosmetik dan Kecantikan', 24000, 'merak-tanjungperak'),
+('Kendaraan', 34000, 'merak-tanjungperak'),
+('Peralatan Rumah Tangga', 22000, 'merak-tanjungperak'),
+('Mesin ukuran besar', 29000, 'merak-tanjungperak'),
+('Elektronik', 39000, 'merak-tanjungperak'),
+('Furniture', 26000, 'merak-tanjungperak'),
+('Lainnya', 19000, 'merak-tanjungperak'),
+
+-- Rute Bakauheni - Tanjung Priok
+('Umum', 18000, 'bakauheni-tanjungpriok'),
+('Kosmetik dan Kecantikan', 23000, 'bakauheni-tanjungpriok'),
+('Kendaraan', 33000, 'bakauheni-tanjungpriok'),
+('Peralatan Rumah Tangga', 21000, 'bakauheni-tanjungpriok'),
+('Mesin ukuran besar', 28000, 'bakauheni-tanjungpriok'),
+('Elektronik', 38000, 'bakauheni-tanjungpriok'),
+('Furniture', 25000, 'bakauheni-tanjungpriok'),
+('Lainnya', 18000, 'bakauheni-tanjungpriok'),
+
+-- Rute Bakauheni - Tanjung Perak
+('Umum', 19000, 'bakauheni-tanjungperak'),
+('Kosmetik dan Kecantikan', 24000, 'bakauheni-tanjungperak'),
+('Kendaraan', 34000, 'bakauheni-tanjungperak'),
+('Peralatan Rumah Tangga', 22000, 'bakauheni-tanjungperak'),
+('Mesin ukuran besar', 29000, 'bakauheni-tanjungperak'),
+('Elektronik', 39000, 'bakauheni-tanjungperak'),
+('Furniture', 26000, 'bakauheni-tanjungperak'),
+('Lainnya', 19000, 'bakauheni-tanjungperak');
+
