@@ -16,31 +16,34 @@ $query = "SELECT COUNT(*) as total FROM passengers";
 $bookings_result = mysqli_query($conn, $query);
 $total_bookings = mysqli_fetch_assoc($bookings_result)['total'];
 
-$query = "SELECT COUNT(*) as total FROM cargo";
+$query = "SELECT COUNT(*) as total FROM cargo WHERE status = 'aktif'";
 $cargo_result = mysqli_query($conn, $query);
 $total_cargo = mysqli_fetch_assoc($cargo_result)['total'];
 
-$query = "SELECT SUM(total_harga) as total FROM passengers";
+// Update query Total Revenue
+$query = "SELECT 
+            (SELECT COALESCE(SUM(total_harga), 0) FROM passengers) +
+            (SELECT COALESCE(SUM(tc.harga_per_kg * c.berat_kg), 0)
+             FROM cargo c
+             JOIN tarif_cargo tc ON tc.rute = CONCAT(LOWER(c.asal), '-', LOWER(c.tujuan))
+             AND tc.jenis_barang = c.jenis
+             WHERE c.status = 'aktif') as total";
 $revenue_result = mysqli_query($conn, $query);
 $total_revenue = mysqli_fetch_assoc($revenue_result)['total'] ?? 0;
 
-// Update Recent Bookings query
-$query = "SELECT 'ferry' as type, p.id, p.user_id, p.asal, p.tujuan, p.tanggal, p.barcode, u.name as customer_name 
+// Update query Recent Bookings
+$query = "SELECT 'ferry' as type, p.id, p.user_id, p.asal, p.tujuan, p.tanggal, p.barcode, u.name as customer_name, p.total_harga 
           FROM passengers p 
           JOIN users u ON p.user_id = u.id 
           UNION ALL
-          SELECT 'cargo' as type, c.id, c.user_id, c.asal, c.tujuan, c.tanggal, c.barcode, u.name as customer_name 
+          SELECT 'cargo' as type, c.id, c.user_id, c.asal, c.tujuan, c.tanggal, c.barcode, u.name as customer_name, 
+                 (SELECT harga_per_kg * c.berat_kg FROM tarif_cargo tc 
+                  WHERE tc.rute = CONCAT(LOWER(c.asal), '-', LOWER(c.tujuan)) 
+                  AND tc.jenis_barang = c.jenis LIMIT 1) as total_harga
           FROM cargo c 
           JOIN users u ON c.user_id = u.id 
+          WHERE c.status = 'aktif'
           ORDER BY tanggal DESC 
-          LIMIT 5";
-$recent_bookings = mysqli_query($conn, $query);
-
-// Get recent bookings
-$query = "SELECT p.*, u.name as customer_name 
-          FROM passengers p 
-          JOIN users u ON p.user_id = u.id 
-          ORDER BY p.tanggal DESC 
           LIMIT 5";
 $recent_bookings = mysqli_query($conn, $query);
 
@@ -437,157 +440,335 @@ $all_bookings = mysqli_query($conn, $query);
             </table>
         </div>
 
-        <!-- Routes and Settings tabs remain the same -->
         <div id="routes" class="tab-content">
+            <!-- Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2 class="section__header">Route Management</h2>
                 <button class="btn-edit" onclick="openAddRouteModal()">Add New Route</button>
             </div>
 
+            <!-- Tab Controls -->
             <div class="filter-controls">
-                <select id="filterRouteService" onchange="filterRoutes()">
-                    <option value="">All Services</option>
-                    <option value="regular">Regular</option>
-                    <option value="express">Express</option>
-                </select>
-                <select id="filterRouteType" onchange="filterRoutes()">
-                    <option value="">All Types</option>
-                    <option value="Pejalan Kaki">Pejalan Kaki</option>
-                    <option value="Sepeda">Sepeda</option>
-                    <option value="Motor Kecil">Motor Kecil</option>
-                    <option value="Motor Besar">Motor Besar</option>
-                    <option value="Mobil">Mobil</option>
-                </select>
+                <button class="tab-btn active" onclick="switchRouteTab('ferry')">Ferry Routes</button>
+                <button class="tab-btn" onclick="switchRouteTab('cargo')">Cargo Tariffs</button>
             </div>
 
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Route</th>
-                        <th>Service</th>
-                        <th>Type</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
+            <!-- Ferry Routes Table (yang sudah ada) -->
+            <div id="ferryRoutes" class="route-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section__header">Ferry Route Management</h2>
+                    <button class="btn-edit" onclick="openAddRouteModal()">Add New Route</button>
+                </div>
+                <div class="filter-controls">
+                    <select id="filterRouteService" onchange="filterRoutes()">
+                        <option value="">All Services</option>
+                        <option value="regular">Regular</option>
+                        <option value="express">Express</option>
+                    </select>
+                    <select id="filterRouteType" onchange="filterRoutes()">
+                        <option value="">All Types</option>
+                        <option value="Pejalan Kaki">Pejalan Kaki</option>
+                        <option value="Sepeda">Sepeda</option>
+                        <option value="Motor Kecil">Motor Kecil</option>
+                        <option value="Motor Besar">Motor Besar</option>
+                        <option value="Mobil">Mobil</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Service</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+        $query = "SELECT * FROM tarif_layanan ORDER BY rute, layanan, tipe_tiket";
+        $result = mysqli_query($conn, $query);
+        while ($tarif = mysqli_fetch_assoc($result)):
+        ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($tarif['rute']); ?></td>
+                            <td><?php echo htmlspecialchars($tarif['layanan']); ?></td>
+                            <td><?php echo htmlspecialchars($tarif['tipe_tiket']); ?></td>
+                            <td><?php echo $tarif['kategori'] ?? '-'; ?></td>
+                            <td>Rp <?php echo number_format($tarif['harga']); ?></td>
+                            <td>
+                                <button class="btn-edit" onclick="editTarif(<?php echo $tarif['id']; ?>)">Edit</button>
+                                <button class="btn-delete"
+                                    onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cargo Tariffs Table (baru) -->
+            <div id="cargoTariffs" class="route-content" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section__header">Cargo Tariff Management</h2>
+                    <button class="btn-edit" onclick="openAddCargoTariffModal()">Add New Tariff</button>
+                </div>
+
+                <div class="filter-controls">
+                    <select id="filterCargoRoute" onchange="filterCargoTariffs()">
+                        <option value="">All Routes</option>
+                        <option value="merak-bakauheni">Merak - Bakauheni</option>
+                        <option value="bakauheni-merak">Bakauheni - Merak</option>
+                        <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                        <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                    </select>
+                    <select id="filterCargoType" onchange="filterCargoTariffs()">
+                        <option value="">All Types</option>
+                        <option value="Umum">Umum</option>
+                        <option value="Kosmetik dan Kecantikan">Kosmetik dan Kecantikan</option>
+                        <option value="Kendaraan">Kendaraan</option>
+                        <option value="Peralatan Rumah Tangga">Peralatan Rumah Tangga</option>
+                        <option value="Mesin ukuran besar">Mesin ukuran besar</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Type</th>
+                            <th>Price per Kg</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                $query = "SELECT * FROM tarif_cargo WHERE aktif = true ORDER BY rute, jenis_barang";
+                $result = mysqli_query($conn, $query);
+                while ($tarif = mysqli_fetch_assoc($result)):
+                ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($tarif['rute']); ?></td>
+                            <td><?php echo htmlspecialchars($tarif['jenis_barang']); ?></td>
+                            <td>Rp <?php echo number_format($tarif['harga_per_kg']); ?></td>
+                            <td>
+                                <button class="btn-edit"
+                                    onclick="editCargoTariff(<?php echo $tarif['id']; ?>)">Edit</button>
+                                <button class="btn-delete"
+                                    onclick="deleteCargoTariff(<?php echo $tarif['id']; ?>)">Delete</button>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal untuk Add/Edit Cargo Tariff -->
+        <div id="cargoTariffModal" class="modal">
+            <div class="modal-content">
+                <h2 id="cargoTariffModalTitle">Add New Cargo Tariff</h2>
+                <form id="cargoTariffForm" method="POST" action="cargo_tariff_handlers.php">
+                    <input type="hidden" name="action" id="cargoTariffFormAction" value="add_tariff">
+                    <input type="hidden" name="tariff_id" id="cargoTariffId">
+
+                    <div class="form-group">
+                        <label>Route</label>
+                        <select name="rute" required>
+                            <option value="merak-bakauheni">Merak - Bakauheni</option>
+                            <option value="bakauheni-merak">Bakauheni - Merak</option>
+                            <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                            <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                            <option value="tanjungpriok-merak">Tanjung Priok - Merak</option>
+                            <option value="tanjungpriok-bakauheni">Tanjung Priok - Bakauheni</option>
+                            <option value="tanjungpriok-tanjungperak">Tanjung Priok - Tanjung Perak</option>
+                            <option value="tanjungperak-tanjungpriok">Tanjung Perak - Tanjung Priok</option>
+                            <option value="tanjungperak-merak">Tanjung Perak - Merak</option>
+                            <option value="tanjungperak-bakauheni">Tanjung Perak - Bakauheni</option>
+                            <option value="tanjungperak-ketapang">Tanjung Perak - Ketapang</option>
+                            <option value="tanjungperak-gilimanuk">Tanjung Perak - Gilimanuk</option>
+                            <option value="merak-tanjungpriok">Merak - Tanjung Priok</option>
+                            <option value="merak-tanjungperak">Merak - Tanjung Perak</option>
+                            <option value="bakauheni-tanjungpriok">Bakauheni - Tanjung Priok</option>
+                            <option value="bakauheni-tanjungperak">Bakauheni - Tanjung Perak</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="jenis_barang" required>
+                            <option value="Umum">Umum</option>
+                            <option value="Kosmetik dan Kecantikan">Kosmetik dan Kecantikan</option>
+                            <option value="Kendaraan">Kendaraan</option>
+                            <option value="Peralatan Rumah Tangga">Peralatan Rumah Tangga</option>
+                            <option value="Mesin ukuran besar">Mesin ukuran besar</option>
+                            <option value="Elektronik">Elektronik</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per Kg (Rp)</label>
+                        <input type="number" name="harga_per_kg" required>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="submit" class="btn-edit">Save</button>
+                        <button type="button" class="btn-delete" onclick="closeCargoTariffModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <select id="filterRouteService" onchange="filterRoutes()">
+                <option value="">All Services</option>
+                <option value="regular">Regular</option>
+                <option value="express">Express</option>
+            </select>
+            <select id="filterRouteType" onchange="filterRoutes()">
+                <option value="">All Types</option>
+                <option value="Pejalan Kaki">Pejalan Kaki</option>
+                <option value="Sepeda">Sepeda</option>
+                <option value="Motor Kecil">Motor Kecil</option>
+                <option value="Motor Besar">Motor Besar</option>
+                <option value="Mobil">Mobil</option>
+            </select>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Route</th>
+                    <th>Service</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
             $query = "SELECT * FROM tarif_layanan ORDER BY rute, layanan, tipe_tiket";
             $result = mysqli_query($conn, $query);
             while ($tarif = mysqli_fetch_assoc($result)):
             ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($tarif['rute']); ?></td>
-                        <td><?php echo htmlspecialchars($tarif['layanan']); ?></td>
-                        <td><?php echo htmlspecialchars($tarif['tipe_tiket']); ?></td>
-                        <td><?php echo $tarif['kategori'] ?? '-'; ?></td>
-                        <td>Rp <?php echo number_format($tarif['harga']); ?></td>
-                        <td>
-                            <button class="btn-edit" onclick="editTarif(<?php echo $tarif['id']; ?>)">Edit</button>
-                            <button class="btn-delete"
-                                onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+                <tr>
+                    <td><?php echo htmlspecialchars($tarif['rute']); ?></td>
+                    <td><?php echo htmlspecialchars($tarif['layanan']); ?></td>
+                    <td><?php echo htmlspecialchars($tarif['tipe_tiket']); ?></td>
+                    <td><?php echo $tarif['kategori'] ?? '-'; ?></td>
+                    <td>Rp <?php echo number_format($tarif['harga']); ?></td>
+                    <td>
+                        <button class="btn-edit" onclick="editTarif(<?php echo $tarif['id']; ?>)">Edit</button>
+                        <button class="btn-delete" onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
 
-            <!-- Modal untuk Add/Edit Route -->
-            <div id="routeModal" class="modal">
-                <div class="modal-content">
-                    <h2 id="routeModalTitle">Add New Route</h2>
-                    <form id="routeForm" method="POST" action="route_handlers.php">
-                        <input type="hidden" name="action" id="routeFormAction" value="add_route">
-                        <input type="hidden" name="tarif_id" id="tarifId">
+        <!-- Modal untuk Add/Edit Route -->
+        <div id="routeModal" class="modal">
+            <div class="modal-content">
+                <h2 id="routeModalTitle">Add New Route</h2>
+                <form id="routeForm" method="POST" action="route_handlers.php">
+                    <input type="hidden" name="action" id="routeFormAction" value="add_route">
+                    <input type="hidden" name="tarif_id" id="tarifId">
 
-                        <div class="form-group">
-                            <label>Route</label>
-                            <select name="rute" required>
-                                <option value="merak-bakauheni">Merak - Bakauheni</option>
-                                <option value="bakauheni-merak">Bakauheni - Merak</option>
-                                <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
-                                <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>Route</label>
+                        <select name="rute" required>
+                            <option value="merak-bakauheni">Merak - Bakauheni</option>
+                            <option value="bakauheni-merak">Bakauheni - Merak</option>
+                            <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                            <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Service</label>
-                            <select name="layanan" required>
-                                <option value="regular">Regular</option>
-                                <option value="express">Express</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>Service</label>
+                        <select name="layanan" required>
+                            <option value="regular">Regular</option>
+                            <option value="express">Express</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select name="tipe_tiket" required>
-                                <option value="Pejalan Kaki">Pejalan Kaki</option>
-                                <option value="Sepeda">Sepeda</option>
-                                <option value="Motor Kecil">Motor Kecil</option>
-                                <option value="Motor Besar">Motor Besar</option>
-                                <option value="Mobil">Mobil</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="tipe_tiket" required>
+                            <option value="Pejalan Kaki">Pejalan Kaki</option>
+                            <option value="Sepeda">Sepeda</option>
+                            <option value="Motor Kecil">Motor Kecil</option>
+                            <option value="Motor Besar">Motor Besar</option>
+                            <option value="Mobil">Mobil</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select name="kategori">
-                                <option value="">-</option>
-                                <option value="dewasa">Dewasa</option>
-                                <option value="anak">Anak</option>
-                                <option value="bayi">Bayi</option>
-                                <option value="lansia">Lansia</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="kategori">
+                            <option value="">-</option>
+                            <option value="dewasa">Dewasa</option>
+                            <option value="anak">Anak</option>
+                            <option value="bayi">Bayi</option>
+                            <option value="lansia">Lansia</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Price (Rp)</label>
-                            <input type="number" name="harga" required>
-                        </div>
+                    <div class="form-group">
+                        <label>Price (Rp)</label>
+                        <input type="number" name="harga" required>
+                    </div>
 
-                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                            <button type="submit" class="btn-edit">Save</button>
-                            <button type="button" class="btn-delete" onclick="closeRouteModal()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="submit" class="btn-edit">Save</button>
+                        <button type="button" class="btn-delete" onclick="closeRouteModal()">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Tambahkan tab content untuk cargo -->
-        <div id="cargo" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 class="section__header">Cargo Management</h2>
-                <button class="btn-edit" onclick="openAddCargoTarifModal()">Add New Tariff</button>
-            </div>
+    <!-- Tambahkan tab content untuk cargo -->
+    <div id="cargo" class="tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 class="section__header">Cargo Management</h2>
+            <button class="btn-edit" onclick="openAddCargoTarifModal()">Add New Tariff</button>
+        </div>
 
-            <div class="filter-controls">
-                <input type="date" id="filterCargoDate" placeholder="Filter by date">
-                <select id="filterCargoRoute">
-                    <option value="">All Routes</option>
-                    <option value="merak-bakauheni">Merak - Bakauheni</option>
-                    <option value="bakauheni-merak">Bakauheni - Merak</option>
-                    <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
-                    <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
-                </select>
-            </div>
+        <div class="filter-controls">
+            <input type="date" id="filterCargoDate" placeholder="Filter by date">
+            <select id="filterCargoRoute">
+                <option value="">All Routes</option>
+                <option value="merak-bakauheni">Merak - Bakauheni</option>
+                <option value="bakauheni-merak">Bakauheni - Merak</option>
+                <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
+                <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+            </select>
+        </div>
 
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Customer</th>
-                        <th>Route</th>
-                        <th>Type</th>
-                        <th>Weight</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Route</th>
+                    <th>Type</th>
+                    <th>Weight</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
             $query = "SELECT c.*, u.name as customer_name 
                       FROM cargo c 
                       JOIN users u ON c.user_id = u.id 
@@ -595,91 +776,59 @@ $all_bookings = mysqli_query($conn, $query);
             $result = mysqli_query($conn, $query);
             while ($cargo = mysqli_fetch_assoc($result)): 
             ?>
-                    <tr>
-                        <td>#<?php echo $cargo['id']; ?></td>
-                        <td><?php echo htmlspecialchars($cargo['customer_name']); ?></td>
-                        <td><?php echo htmlspecialchars($cargo['asal'] . ' - ' . $cargo['tujuan']); ?></td>
-                        <td><?php echo htmlspecialchars($cargo['jenis']); ?></td>
-                        <td><?php echo $cargo['berat_kg']; ?> kg</td>
-                        <td><?php echo date('d M Y', strtotime($cargo['tanggal'])); ?></td>
-                        <td>
-                            <span class="status-badge"><?php echo ucfirst($cargo['status']); ?></span>
-                        </td>
-                        <td>
-                            <button class="btn-edit" onclick="viewCargo(<?php echo $cargo['id']; ?>)">View</button>
-                            <button class="btn-delete"
-                                onclick="cancelCargo(<?php echo $cargo['id']; ?>)">Cancel</button>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
+                <tr>
+                    <td>#<?php echo $cargo['id']; ?></td>
+                    <td><?php echo htmlspecialchars($cargo['customer_name']); ?></td>
+                    <td><?php echo htmlspecialchars($cargo['asal'] . ' - ' . $cargo['tujuan']); ?></td>
+                    <td><?php echo htmlspecialchars($cargo['jenis']); ?></td>
+                    <td><?php echo $cargo['berat_kg']; ?> kg</td>
+                    <td><?php echo date('d M Y', strtotime($cargo['tanggal'])); ?></td>
+                    <td>
+                        <span class="status-badge"><?php echo ucfirst($cargo['status']); ?></span>
+                    </td>
+                    <td>
+                        <button class="btn-edit" onclick="viewCargo(<?php echo $cargo['id']; ?>)">View</button>
+                        <button class="btn-delete" onclick="cancelCargo(<?php echo $cargo['id']; ?>)">Cancel</button>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
 
-        <div id="settings" class="tab-content">
-            <h2 class="section__header">Admin Settings</h2>
+    <div id="settings" class="tab-content">
+        <h2 class="section__header">Admin Settings</h2>
 
-            <div class="grid-2">
-                <!-- Change Password Card -->
-                <div class="settings-card">
-                    <h3>Change Password</h3>
-                    <form id="changePasswordForm" method="POST" action="admin_handlers.php">
-                        <input type="hidden" name="action" value="change_password">
+        <div class="grid-2">
+            <!-- Change Password Card -->
+            <div class="settings-card">
+                <h3>Change Password</h3>
+                <form id="changePasswordForm" method="POST" action="admin_handlers.php">
+                    <input type="hidden" name="action" value="change_password">
 
-                        <div class="form-group">
-                            <label>Current Password</label>
-                            <input type="password" name="current_password" required>
-                        </div>
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" name="current_password" required>
+                    </div>
 
-                        <div class="form-group">
-                            <label>New Password</label>
-                            <input type="password" name="new_password" required>
-                        </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="new_password" required>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Confirm New Password</label>
-                            <input type="password" name="confirm_password" required>
-                        </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" name="confirm_password" required>
+                    </div>
 
-                        <button type="submit" class="btn-edit">Update Password</button>
-                    </form>
-                </div>
+                    <button type="submit" class="btn-edit">Update Password</button>
+                </form>
+            </div>
 
-                <!-- Profile Settings Card -->
-                <!-- Settings Tab -->
-                <div id="settings" class="tab-content">
-                    <h2 class="section__header">Admin Settings</h2>
-
-                    <div class="grid-2">
-                        <!-- Change Password Card -->
-                        <div class="settings-card">
-                            <h3>Change Password</h3>
-                            <form id="changePasswordForm" method="POST" action="admin_handlers.php">
-                                <input type="hidden" name="action" value="change_password">
-
-                                <div class="form-group">
-                                    <label>Current Password</label>
-                                    <input type="password" name="current_password" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>New Password</label>
-                                    <input type="password" name="new_password" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Confirm New Password</label>
-                                    <input type="password" name="confirm_password" required>
-                                </div>
-
-                                <button type="submit" class="btn-edit">Update Password</button>
-                            </form>
-                        </div>
-
-                        <!-- Profile Settings Card -->
-                        <div class="settings-card">
-                            <h3>Profile Settings</h3>
-                            <?php
+            <!-- Profile Settings Card -->
+            <div class="settings-card">
+                <h3>Profile Settings</h3>
+                <?php
                             // Get admin data
                             $admin_id = $_SESSION['admin_id'];
                             $query = "SELECT * FROM admin WHERE id = ?";
@@ -689,36 +838,36 @@ $all_bookings = mysqli_query($conn, $query);
                             $result = mysqli_stmt_get_result($stmt);
                             $admin_data = mysqli_fetch_assoc($result);
                             ?>
-                            <form id="profileForm" method="POST" action="admin_handlers.php">
-                                <input type="hidden" name="action" value="update_profile">
+                <form id="profileForm" method="POST" action="admin_handlers.php">
+                    <input type="hidden" name="action" value="update_profile">
 
-                                <div class="form-group">
-                                    <label>Username</label>
-                                    <input type="text" name="username"
-                                        value="<?php echo htmlspecialchars($admin_data['username']); ?>" required>
-                                </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username"
+                            value="<?php echo htmlspecialchars($admin_data['username']); ?>" required>
+                    </div>
 
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" name="email"
-                                        value="<?php echo htmlspecialchars($admin_data['email']); ?>" required>
-                                </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" value="<?php echo htmlspecialchars($admin_data['email']); ?>"
+                            required>
+                    </div>
 
-                                <div class="form-group">
-                                    <label>Notification Preferences</label>
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" id="emailNotif" name="email_notifications">
-                                        <label for="emailNotif">Email Notifications</label>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn-edit">Save Changes</button>
-                            </form>
+                    <div class="form-group">
+                        <label>Notification Preferences</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="emailNotif" name="email_notifications">
+                            <label for="emailNotif">Email Notifications</label>
                         </div>
                     </div>
-                </div>
+
+                    <button type="submit" class="btn-edit">Save Changes</button>
+                </form>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 
     <script>
@@ -952,6 +1101,101 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             }
         });
+        // Tambahkan fungsi ini di bagian script
+        function viewCargo(cargoId) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            fetch(`get_cargo_details.php?id=${cargoId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) {
+                        throw new Error(result.message || 'Failed to load cargo details');
+                    }
+                    const cargo = result.data;
+                    modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>Cargo Details #${cargoId}</h2>
+                    <div class="booking-details">
+                        <p><strong>Customer:</strong> ${cargo.customer}</p>
+                        <p><strong>Route:</strong> ${cargo.route}</p>
+                        <p><strong>Type:</strong> ${cargo.type}</p>
+                        <p><strong>Weight:</strong> ${cargo.weight}</p>
+                        <p><strong>Date:</strong> ${cargo.date}</p>
+                        <p><strong>Status:</strong> ${cargo.status}</p>
+                        <p><strong>Total Price:</strong> Rp${cargo.total_harga}</p>
+                        <p><strong>Barcode:</strong> ${cargo.barcode}</p>
+                    </div>
+                    <div class="booking-details">
+                        <h3>Sender Details</h3>
+                        <p><strong>Name:</strong> ${cargo.pengirim.nama}</p>
+                        <p><strong>Address:</strong> ${cargo.pengirim.alamat}</p>
+                        <p><strong>City:</strong> ${cargo.pengirim.kota}</p>
+                        <p><strong>Postal Code:</strong> ${cargo.pengirim.kodepos}</p>
+                        <p><strong>Phone:</strong> ${cargo.pengirim.telepon}</p>
+                    </div>
+                    <div class="booking-details">
+                        <h3>Recipient Details</h3>
+                        <p><strong>Name:</strong> ${cargo.penerima.nama}</p>
+                        <p><strong>Address:</strong> ${cargo.penerima.alamat}</p>
+                        <p><strong>City:</strong> ${cargo.penerima.kota}</p>
+                        <p><strong>Postal Code:</strong> ${cargo.penerima.kodepos}</p>
+                        <p><strong>Phone:</strong> ${cargo.penerima.telepon}</p>
+                    </div>
+                    ${cargo.catatan ? `
+                    <div class="booking-details">
+                        <h3>Notes</h3>
+                        <p>${cargo.catatan}</p>
+                    </div>` : ''}
+                    <button onclick="closeModal()" class="btn-delete">Close</button>
+                </div>
+            `;
+                    document.body.appendChild(modal);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load cargo details');
+                });
+        }
+
+        function cancelCargo(cargoId) {
+            if (confirm('Are you sure you want to cancel this cargo shipment?')) {
+                fetch('cancel_cargo.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `cargo_id=${cargoId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Cargo shipment cancelled successfully');
+                            location.reload();
+                        } else {
+                            alert('Failed to cancel cargo shipment: ' + data.message);
+                        }
+                    });
+            }
+        }
+        // Tambahkan fungsi ini di bagian script
+        const filterCargoDate = document.getElementById('filterCargoDate');
+        const filterCargoRoute = document.getElementById('filterCargoRoute');
+
+        function applyCargoFilters() {
+            const rows = document.querySelectorAll('#cargo .data-table tbody tr');
+            const dateValue = filterCargoDate.value;
+            const routeValue = filterCargoRoute.value.toLowerCase();
+            rows.forEach(row => {
+                const date = row.querySelector('td:nth-child(6)').textContent;
+                const route = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const dateMatch = !dateValue || date.includes(dateValue);
+                const routeMatch = !routeValue || route.includes(routeValue);
+                row.style.display = (dateMatch && routeMatch) ? '' : 'none';
+            });
+        }
+        if (filterCargoDate) filterCargoDate.addEventListener('change', applyCargoFilters);
+        if (filterCargoRoute) filterCargoRoute.addEventListener('change', applyCargoFilters);
     </script>
 </body>
 
