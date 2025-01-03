@@ -237,6 +237,10 @@ $all_bookings = mysqli_query($conn, $query);
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            overflow-y: auto;
+            /* Mengizinkan scroll pada modal */
+            padding: 20px;
+            /* Memberi ruang di atas dan bawah */
         }
 
         .modal-content {
@@ -249,6 +253,13 @@ $all_bookings = mysqli_query($conn, $query);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            margin: 20px auto;
+            /* Centered dan memberi ruang atas bawah */
+            max-height: 90vh;
+            /* Maksimal tinggi 90% dari viewport */
+            overflow-y: auto;
+            /* Scroll jika konten terlalu panjang */
+
         }
 
         .status-badge {
@@ -382,7 +393,8 @@ $all_bookings = mysqli_query($conn, $query);
                         <td><?php echo htmlspecialchars($booking['asal'] . ' - ' . $booking['tujuan']); ?></td>
                         <td><?php echo date('d M Y', strtotime($booking['tanggal'])); ?></td>
                         <td>
-                            <button class="btn-edit" onclick="<?php echo $booking['type'] === 'ferry' ? 'viewBooking' : 'viewCargo'; ?>(<?php echo $booking['id']; ?>)">View</button>
+                            <button class="btn-edit"
+                                onclick="<?php echo $booking['type'] === 'ferry' ? 'viewBooking' : 'viewCargo'; ?>(<?php echo $booking['id']; ?>)">View</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -1154,13 +1166,15 @@ $all_bookings = mysqli_query($conn, $query);
                 .then(response => response.json())
                 .then(result => {
                     if (!result.success) {
-                        throw new Error(result.message);
+                        throw new Error(result.message || 'Failed to load cargo details');
                     }
                     const cargo = result.data;
                     modal.innerHTML = `
                 <div class="modal-content">
-                    <h2>Cargo Details #${cargoId}</h2>
+                    <h2 class="text-xl font-bold mb-4">Cargo Details #${cargoId}</h2>
+                    
                     <div class="booking-details">
+                        <h3 class="font-semibold mb-2">Shipment Information</h3>
                         <p><strong>Customer:</strong> ${cargo.customer || 'N/A'}</p>
                         <p><strong>Route:</strong> ${cargo.route || 'N/A'}</p>
                         <p><strong>Type:</strong> ${cargo.type || 'N/A'}</p>
@@ -1170,28 +1184,34 @@ $all_bookings = mysqli_query($conn, $query);
                         <p><strong>Total Price:</strong> Rp${cargo.total_harga || '0'}</p>
                         <p><strong>Barcode:</strong> ${cargo.barcode || 'N/A'}</p>
                     </div>
+                    
                     <div class="booking-details">
-                        <h3>Sender Details</h3>
+                        <h3 class="font-semibold mb-2">Sender Details</h3>
                         <p><strong>Name:</strong> ${cargo.pengirim.nama || 'N/A'}</p>
                         <p><strong>Address:</strong> ${cargo.pengirim.alamat || 'N/A'}</p>
                         <p><strong>City:</strong> ${cargo.pengirim.kota || 'N/A'}</p>
                         <p><strong>Postal Code:</strong> ${cargo.pengirim.kodepos || 'N/A'}</p>
                         <p><strong>Phone:</strong> ${cargo.pengirim.telepon || 'N/A'}</p>
                     </div>
+                    
                     <div class="booking-details">
-                        <h3>Recipient Details</h3>
+                        <h3 class="font-semibold mb-2">Recipient Details</h3>
                         <p><strong>Name:</strong> ${cargo.penerima.nama || 'N/A'}</p>
                         <p><strong>Address:</strong> ${cargo.penerima.alamat || 'N/A'}</p>
                         <p><strong>City:</strong> ${cargo.penerima.kota || 'N/A'}</p>
                         <p><strong>Postal Code:</strong> ${cargo.penerima.kodepos || 'N/A'}</p>
                         <p><strong>Phone:</strong> ${cargo.penerima.telepon || 'N/A'}</p>
                     </div>
+                    
                     ${cargo.catatan ? `
                     <div class="booking-details">
-                        <h3>Notes</h3>
+                        <h3 class="font-semibold mb-2">Notes</h3>
                         <p>${cargo.catatan}</p>
                     </div>` : ''}
-                    <button onclick="closeModal()" class="btn-delete">Close</button>
+                    
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="closeModal()" class="btn-delete">Close</button>
+                    </div>
                 </div>
             `;
                     document.body.appendChild(modal);
