@@ -382,7 +382,7 @@ $all_bookings = mysqli_query($conn, $query);
                         <td><?php echo htmlspecialchars($booking['asal'] . ' - ' . $booking['tujuan']); ?></td>
                         <td><?php echo date('d M Y', strtotime($booking['tanggal'])); ?></td>
                         <td>
-                            <button class="btn-edit" onclick="viewBooking(<?php echo $booking['id']; ?>)">View</button>
+                            <button class="btn-edit" onclick="<?php echo $booking['type'] === 'ferry' ? 'viewBooking' : 'viewCargo'; ?>(<?php echo $booking['id']; ?>)">View</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
