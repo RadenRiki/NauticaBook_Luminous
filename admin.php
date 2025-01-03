@@ -912,20 +912,17 @@ $all_bookings = mysqli_query($conn, $query);
         });
         // Booking Functions
         function viewBooking(bookingId) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'block';
-    
-    fetch(`get_booking_details.php?id=${bookingId}`)
-        .then(response => response.json())
-        .then(booking => {
-            console.log('Booking data:', booking); // For debugging
-            
-            if (!booking) {
-                throw new Error('No booking data received');
-            }
-
-            modal.innerHTML = `
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            fetch(`get_booking_details.php?id=${bookingId}`)
+                .then(response => response.json())
+                .then(booking => {
+                    console.log('Booking data:', booking); // For debugging
+                    if (!booking) {
+                        throw new Error('No booking data received');
+                    }
+                    modal.innerHTML = `
                 <div class="modal-content">
                     <h2>Booking Details #${bookingId}</h2>
                     <div class="booking-details">
@@ -948,13 +945,13 @@ $all_bookings = mysqli_query($conn, $query);
                     <button onclick="closeModal()" class="btn-delete">Close</button>
                 </div>
             `;
-            document.body.appendChild(modal);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to load booking details: ' + error.message);
-        });
-}
+                    document.body.appendChild(modal);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load booking details: ' + error.message);
+                });
+        }
 
         function closeModal() {
             const modal = document.querySelector('.modal');
@@ -1157,12 +1154,9 @@ $all_bookings = mysqli_query($conn, $query);
                 .then(response => response.json())
                 .then(result => {
                     if (!result.success) {
-                        throw new Error(result.message || 'Failed to load cargo details');
+                        throw new Error(result.message);
                     }
                     const cargo = result.data;
-                    if (!cargo) {
-                        throw new Error('No cargo data received');
-                    }
                     modal.innerHTML = `
                 <div class="modal-content">
                     <h2>Cargo Details #${cargoId}</h2>
@@ -1176,7 +1170,6 @@ $all_bookings = mysqli_query($conn, $query);
                         <p><strong>Total Price:</strong> Rp${cargo.total_harga || '0'}</p>
                         <p><strong>Barcode:</strong> ${cargo.barcode || 'N/A'}</p>
                     </div>
-                    ${cargo.pengirim ? `
                     <div class="booking-details">
                         <h3>Sender Details</h3>
                         <p><strong>Name:</strong> ${cargo.pengirim.nama || 'N/A'}</p>
@@ -1184,8 +1177,7 @@ $all_bookings = mysqli_query($conn, $query);
                         <p><strong>City:</strong> ${cargo.pengirim.kota || 'N/A'}</p>
                         <p><strong>Postal Code:</strong> ${cargo.pengirim.kodepos || 'N/A'}</p>
                         <p><strong>Phone:</strong> ${cargo.pengirim.telepon || 'N/A'}</p>
-                    </div>` : ''}
-                    ${cargo.penerima ? `
+                    </div>
                     <div class="booking-details">
                         <h3>Recipient Details</h3>
                         <p><strong>Name:</strong> ${cargo.penerima.nama || 'N/A'}</p>
@@ -1193,7 +1185,7 @@ $all_bookings = mysqli_query($conn, $query);
                         <p><strong>City:</strong> ${cargo.penerima.kota || 'N/A'}</p>
                         <p><strong>Postal Code:</strong> ${cargo.penerima.kodepos || 'N/A'}</p>
                         <p><strong>Phone:</strong> ${cargo.penerima.telepon || 'N/A'}</p>
-                    </div>` : ''}
+                    </div>
                     ${cargo.catatan ? `
                     <div class="booking-details">
                         <h3>Notes</h3>
