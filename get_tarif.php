@@ -19,15 +19,33 @@ try {
 
     $tarif = [];
     while ($row = $result->fetch_assoc()) {
+        // Konversi tipe_tiket sesuai format frontend
+        $tipeTicket = $row['tipe_tiket'];
+        switch($tipeTicket) {
+            case 'Motor Besar':
+                $tipeTicket = 'Motor Besar';
+                break;
+            case 'Motor Kecil':
+                $tipeTicket = 'Motor Kecil';
+                break;
+            case 'Pejalan Kaki':
+                $tipeTicket = 'Pejalan Kaki';
+                break;
+            case 'Sepeda':
+                $tipeTicket = 'Sepeda';
+                break;
+            case 'Mobil':
+                $tipeTicket = 'Mobil';
+                break;
+        }
+
         if ($row['kategori']) {
-            // Untuk tipe "Pejalan Kaki" yang memiliki kategori
-            if (!isset($tarif[$row['tipe_tiket']])) {
-                $tarif[$row['tipe_tiket']] = [];
+            if (!isset($tarif[$tipeTicket])) {
+                $tarif[$tipeTicket] = [];
             }
-            $tarif[$row['tipe_tiket']][$row['kategori']] = (float)$row['harga'];
+            $tarif[$tipeTicket][strtolower($row['kategori'])] = (float)$row['harga'];
         } else {
-            // Untuk kendaraan yang tidak memiliki kategori
-            $tarif[$row['tipe_tiket']] = (float)$row['harga'];
+            $tarif[$tipeTicket] = (float)$row['harga'];
         }
     }
 

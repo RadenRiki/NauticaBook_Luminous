@@ -25,7 +25,7 @@ $query = "SELECT
             (SELECT COALESCE(SUM(total_harga), 0) FROM passengers) +
             (SELECT COALESCE(SUM(tc.harga_per_kg * c.berat_kg), 0)
              FROM cargo c
-             JOIN tarif_cargo tc ON tc.rute = CONCAT(LOWER(c.asal), '-', LOWER(c.tujuan))
+             JOIN tarif_cargo tc ON tc.rute = CONCAT(LOWER(c.pelabuhanAsal), '-', LOWER(c.pelabuhanTujuan))
              AND tc.jenis_barang = c.jenis
              WHERE c.status = 'aktif') as total";
 $revenue_result = mysqli_query($conn, $query);
@@ -36,9 +36,12 @@ $query = "SELECT 'ferry' as type, p.id, p.user_id, p.asal, p.tujuan, p.tanggal, 
           FROM passengers p 
           JOIN users u ON p.user_id = u.id 
           UNION ALL
-          SELECT 'cargo' as type, c.id, c.user_id, c.asal, c.tujuan, c.tanggal, c.barcode, u.name as customer_name, 
+          SELECT 'cargo' as type, c.id, c.user_id, 
+                 c.pelabuhanAsal as asal,  
+                 c.pelabuhanTujuan as tujuan,  
+                 c.tanggal, c.barcode, u.name as customer_name, 
                  (SELECT harga_per_kg * c.berat_kg FROM tarif_cargo tc 
-                  WHERE tc.rute = CONCAT(LOWER(c.asal), '-', LOWER(c.tujuan)) 
+                  WHERE tc.rute = CONCAT(LOWER(c.pelabuhanAsal), '-', LOWER(c.pelabuhanTujuan)) 
                   AND tc.jenis_barang = c.jenis LIMIT 1) as total_harga
           FROM cargo c 
           JOIN users u ON c.user_id = u.id 
@@ -52,7 +55,10 @@ $query = "SELECT 'ferry' as booking_type, p.id, p.user_id, p.asal, p.tujuan, p.t
           FROM passengers p 
           JOIN users u ON p.user_id = u.id 
           UNION ALL 
-          SELECT 'cargo' as booking_type, c.id, c.user_id, c.asal, c.tujuan, c.tanggal, '-' as layanan, c.jenis as tipe, c.berat_kg as jumlah, c.status, u.name as customer_name
+          SELECT 'cargo' as booking_type, c.id, c.user_id, 
+                 c.pelabuhanAsal as asal,
+                 c.pelabuhanTujuan as tujuan,
+                 c.tanggal, '-' as layanan, c.jenis as tipe, c.berat_kg as jumlah, c.status, u.name as customer_name
           FROM cargo c
           JOIN users u ON c.user_id = u.id 
           ORDER BY tanggal DESC";
@@ -410,10 +416,19 @@ $all_bookings = mysqli_query($conn, $query);
                     <input type="date" id="filterDate" placeholder="Filter by date">
                     <select id="filterRoute">
                         <option value="">All Routes</option>
-                        <option value="merak-bakauheni">Merak - Bakauheni</option>
-                        <option value="bakauheni-merak">Bakauheni - Merak</option>
-                        <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
-                        <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                        <!-- Ferry Routes -->
+                        <option value="Merak - Bakauheni">Merak - Bakauheni</option>
+                        <option value="Bakauheni - Merak">Bakauheni - Merak</option>
+                        <option value="Ketapang - Gilimanuk">Ketapang - Gilimanuk</option>
+                        <option value="Gilimanuk - Ketapang">Gilimanuk - Ketapang</option>
+                        <!-- Cargo Routes -->
+                        <option value="Merak - Tanjung Priok">Merak - Tanjung Priok</option>
+                        <option value="Bakauheni - Tanjung Priok">Bakauheni - Tanjung Priok</option>
+                        <option value="Merak - Tanjung Perak">Merak - Tanjung Perak</option>
+                        <option value="Bakauheni - Tanjung Perak">Bakauheni - Tanjung Perak</option>
+                        <option value="Ketapang - Tanjung Perak">Ketapang - Tanjung Perak</option>
+                        <option value="Gilimanuk - Tanjung Perak">Gilimanuk - Tanjung Perak</option>
+                        <option value="Tanjung Priok - Tanjung Perak">Tanjung Priok - Tanjung Perak</option>
                     </select>
                     <select id="filterType">
                         <option value="">All Types</option>
@@ -459,7 +474,7 @@ $all_bookings = mysqli_query($conn, $query);
                         </td>
                         <td>
                             <button class="btn-edit"
-                                onclick="view<?php echo ucfirst($booking['booking_type']); ?>(<?php echo $booking['id']; ?>)">View</button>
+                                onclick="<?php echo $booking['booking_type'] === 'ferry' ? 'viewBooking' : 'viewCargo'; ?>(<?php echo $booking['id']; ?>)">View</button>
                             <button class="btn-delete"
                                 onclick="<?php echo $booking['booking_type'] == 'ferry' ? 'deleteBooking' : 'cancelCargo'; ?>(<?php echo $booking['id']; ?>)">Cancel</button>
                         </td>
@@ -537,10 +552,27 @@ $all_bookings = mysqli_query($conn, $query);
             <div class="filter-controls">
                 <select id="filterCargoRoute" onchange="filterCargoTariffs()">
                     <option value="">All Routes</option>
-                    <option value="merak-bakauheni">Merak - Bakauheni</option>
-                    <option value="bakauheni-merak">Bakauheni - Merak</option>
-                    <option value="ketapang-gilimanuk">Ketapang - Gilimanuk</option>
-                    <option value="gilimanuk-ketapang">Gilimanuk - Ketapang</option>
+                    <!-- Ferry Routes -->
+                    <option value="Merak - Bakauheni">Merak - Bakauheni</option>
+                    <option value="Bakauheni - Merak">Bakauheni - Merak</option>
+                    <option value="Ketapang - Gilimanuk">Ketapang - Gilimanuk</option>
+                    <option value="Gilimanuk - Ketapang">Gilimanuk - Ketapang</option>
+                    <!-- Cargo Routes -->
+                    <option value="Merak - Tanjung Priok">Merak - Tanjung Priok</option>
+                    <option value="Bakauheni - Tanjung Priok">Bakauheni - Tanjung Priok</option>
+                    <option value="Merak - Tanjung Perak">Merak - Tanjung Perak</option>
+                    <option value="Bakauheni - Tanjung Perak">Bakauheni - Tanjung Perak</option>
+                    <option value="Ketapang - Tanjung Perak">Ketapang - Tanjung Perak</option>
+                    <option value="Gilimanuk - Tanjung Perak">Gilimanuk - Tanjung Perak</option>
+                    <option value="Tanjung Priok - Tanjung Perak">Tanjung Priok - Tanjung Perak</option>
+                    <!-- Reverse Routes -->
+                    <option value="Tanjung Priok - Merak">Tanjung Priok - Merak</option>
+                    <option value="Tanjung Priok - Bakauheni">Tanjung Priok - Bakauheni</option>
+                    <option value="Tanjung Perak - Merak">Tanjung Perak - Merak</option>
+                    <option value="Tanjung Perak - Bakauheni">Tanjung Perak - Bakauheni</option>
+                    <option value="Tanjung Perak - Ketapang">Tanjung Perak - Ketapang</option>
+                    <option value="Tanjung Perak - Gilimanuk">Tanjung Perak - Gilimanuk</option>
+                    <option value="Tanjung Perak - Tanjung Priok">Tanjung Perak - Tanjung Priok</option>
                 </select>
                 <select id="filterCargoType" onchange="filterCargoTariffs()">
                     <option value="">All Types</option>
@@ -899,19 +931,33 @@ $all_bookings = mysqli_query($conn, $query);
             }
         }
         // Cargo Tariff Filter Function
+        // Cargo Tariff Filter Function
+        // Cargo Tariff Filter Function
         function filterCargoTariffs() {
-            const routeValue = document.getElementById('filterCargoRoute').value.toLowerCase();
+            const routeValue = document.getElementById('filterCargoRoute').value;
             const typeValue = document.getElementById('filterCargoType').value;
             const rows = document.querySelectorAll('#cargo-tariffs .data-table tbody tr');
             rows.forEach(row => {
-                const route = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const routeCell = row.querySelector('td:nth-child(1)').textContent;
+                // Ubah format route dari database ke format yang sesuai dengan dropdown
+                const routeParts = routeCell.split('-').map(part => {
+                    part = part.trim();
+                    // Handle kasus khusus untuk "Tanjung"
+                    if (part.includes('tanjung')) {
+                        return 'Tanjung ' + part.replace('tanjung', '').trim().charAt(0).toUpperCase() +
+                            part.replace('tanjung', '').trim().slice(1);
+                    }
+                    // Kapitalisasi normal untuk kata lain
+                    return part.charAt(0).toUpperCase() + part.slice(1);
+                });
+                const route = routeParts.join(' - ');
                 const type = row.querySelector('td:nth-child(2)').textContent;
                 const routeMatch = !routeValue || route === routeValue;
                 const typeMatch = !typeValue || type === typeValue;
                 row.style.display = (routeMatch && typeMatch) ? '' : 'none';
             });
         }
-        // Add event listeners
+        // Tambahkan event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const filterCargoRoute = document.getElementById('filterCargoRoute');
             const filterCargoType = document.getElementById('filterCargoType');
@@ -1002,22 +1048,44 @@ $all_bookings = mysqli_query($conn, $query);
 
         function applyFilters() {
             const rows = document.querySelectorAll('#bookings .data-table tbody tr');
-            const dateValue = filterDate.value;
-            const routeValue = filterRoute.value.toLowerCase();
+            const dateValue = document.getElementById('filterDate').value;
+            const routeValue = document.getElementById('filterRoute').value;
+            const typeValue = document.getElementById('filterType').value.toLowerCase();
             rows.forEach(row => {
-                const date = row.querySelector('td:nth-child(7)').textContent;
-                const route = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                const dateMatch = !dateValue || date.includes(dateValue);
-                const routeMatch = !routeValue || route.includes(routeValue);
-                if (dateMatch && routeMatch) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                const date = row.querySelector('td:nth-child(8)').textContent;
+                const route = row.querySelector('td:nth-child(4)').textContent.trim();
+                const type = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                // Konversi format tanggal dari '04 Jan 2025' ke '2025-01-04' untuk perbandingan
+                let rowDate = '';
+                if (date) {
+                    const parts = date.split(' ');
+                    const months = {
+                        'Jan': '01',
+                        'Feb': '02',
+                        'Mar': '03',
+                        'Apr': '04',
+                        'May': '05',
+                        'Jun': '06',
+                        'Jul': '07',
+                        'Aug': '08',
+                        'Sep': '09',
+                        'Oct': '10',
+                        'Nov': '11',
+                        'Dec': '12'
+                    };
+                    rowDate = `${parts[2]}-${months[parts[1]]}-${parts[0].padStart(2, '0')}`;
                 }
+                // Pencocokkan filter
+                const dateMatch = !dateValue || rowDate === dateValue;
+                const routeMatch = !routeValue || route === routeValue;
+                const typeMatch = !typeValue || type === typeValue;
+                row.style.display = (dateMatch && routeMatch && typeMatch) ? '' : 'none';
             });
         }
-        if (filterDate) filterDate.addEventListener('change', applyFilters);
-        if (filterRoute) filterRoute.addEventListener('change', applyFilters);
+        // Event listener tetap ada
+        document.getElementById('filterDate').addEventListener('change', applyFilters);
+        document.getElementById('filterRoute').addEventListener('change', applyFilters);
+        document.getElementById('filterType').addEventListener('change', applyFilters);
         // Ferry Route Management Functions
         function openAddRouteModal() {
             document.getElementById('routeModalTitle').textContent = 'Add New Route';

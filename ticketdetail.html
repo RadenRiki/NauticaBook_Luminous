@@ -67,6 +67,7 @@
             </ul>
         </div>
     </div>
+
     <footer class="footer">
         <div class="section__container footer__container">
             <div class="footer__col">
@@ -87,7 +88,7 @@
                 <h4>Tim Luminous</h4>
                 <p>Raden Riki Hilviastari Saputra (23523217)</p>
                 <p>Arvindra Ahmad Ramadhan (23523128)</p>
-                <p> Taqya Maritsa Hakim (23523108)</p>
+                <p>Taqya Maritsa Hakim (23523108)</p>
                 <p>Tazki Ulil Absar (23523208)</p>
             </div>
         </div>
@@ -97,7 +98,6 @@
         </div>
     </footer>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const bookingData = JSON.parse(sessionStorage.getItem('bookingData'));
@@ -106,26 +106,33 @@
                 window.location.href = 'home.html';
                 return;
             }
-        
+
             try {
-                // Ambil data tarif dari API
+                console.log('Booking Data:', bookingData); // Debug log
+
                 const rute = `${bookingData.pelabuhanAsal}-${bookingData.pelabuhanTujuan}`.toLowerCase();
-                const response = await fetch(`get_tarif.php?rute=${rute}&layanan=${bookingData.layanan}`);
+                const layanan = bookingData.layanan.toLowerCase();
+
+                console.log('Request URL:', `get_tarif.php?rute=${rute}&layanan=${layanan}`); // Debug log
+
+                const response = await fetch(`get_tarif.php?rute=${rute}&layanan=${layanan}`);
                 
                 if (!response.ok) {
-                    throw new Error('Gagal mengambil data tarif');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const tarifLayanan = await response.json();
+                console.log('Tarif Layanan:', tarifLayanan); // Debug log
                 
                 if (!tarifLayanan || Object.keys(tarifLayanan).length === 0) {
-                    alert('Tarif untuk rute ini tidak ditemukan.');
-                    return;
+                    throw new Error('Tarif untuk rute ini tidak ditemukan');
                 }
-        
+
                 // Perhitungan harga
                 let totalHarga = 0;
                 const priceDetails = [];
+                
+                console.log('Tipe Tiket:', bookingData.tipeTiket); // Debug log
                 
                 if (bookingData.tipeTiket === "Pejalan Kaki") {
                     // Hitung untuk setiap jenis penumpang
@@ -138,7 +145,11 @@
         
                     for (const [type, label] of Object.entries(kategori)) {
                         if (bookingData.jumlahPenumpang[type] > 0) {
-                            const harga = tarifLayanan["Pejalan Kaki"][type];
+                            const harga = tarifLayanan["Pejalan Kaki"][type.toLowerCase()];
+                            if (typeof harga === 'undefined') {
+                                console.error(`Tarif tidak ditemukan untuk ${type}`);
+                                continue;
+                            }
                             const subtotal = harga * bookingData.jumlahPenumpang[type];
                             totalHarga += subtotal;
                             
@@ -153,8 +164,13 @@
                 } else {
                     // Untuk kendaraan, harga flat per kendaraan
                     const hargaKendaraan = tarifLayanan[bookingData.tipeTiket];
-                    totalHarga = hargaKendaraan;
+                    if (typeof hargaKendaraan === 'undefined') {
+                        console.error('Tarif tidak ditemukan untuk:', bookingData.tipeTiket);
+                        console.log('Tarif yang tersedia:', tarifLayanan);
+                        throw new Error(`Tarif untuk ${bookingData.tipeTiket} tidak ditemukan`);
+                    }
                     
+                    totalHarga = hargaKendaraan;
                     priceDetails.push(`
                         <div class="price-details">
                             <span>${bookingData.tipeTiket}</span>
@@ -162,15 +178,15 @@
                         </div>
                     `);
                 }
-        
-                // Update UI seperti sebelumnya
+
+                // Update UI
                 document.getElementById("route").textContent = 
                     `${bookingData.pelabuhanAsal.toUpperCase()} → ${bookingData.pelabuhanTujuan.toUpperCase()}`;
                 
                 const totalPenumpang = bookingData.jumlahPenumpang.total;
                 document.getElementById("details").textContent = 
                     `${bookingData.layanan.toUpperCase()} · ${totalPenumpang} Penumpang`;
-        
+
                 let formatedDate = new Date(bookingData.tanggal).toLocaleDateString('id-ID', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -180,14 +196,20 @@
                 
                 document.getElementById("schedule").textContent =
                     `${formatedDate} | Jam Masuk: ${bookingData.jamMasuk} WIB`;
-        
+
                 document.getElementById("priceDetails").innerHTML = priceDetails.join('');
                 document.getElementById("totalPrice").textContent = `Rp${totalHarga.toLocaleString()}`;
-        
-                // Event listener untuk tombol pesan tetap sama
+
+                // Event listener untuk tombol pesan
                 document.getElementById('btnPesan').addEventListener('click', function () {
+                    if (!totalHarga || isNaN(totalHarga)) {
+                        alert('Terjadi kesalahan dalam perhitungan harga');
+                        return;
+                    }
+
                     console.log('Total Harga before storing:', totalHarga);
                     sessionStorage.setItem('totalPrice', totalHarga.toString());
+                    
                     const { dewasa, anak, bayi, lansia } = bookingData.jumlahPenumpang;
                     const penumpangData = [];
                 
@@ -208,12 +230,27 @@
                 
                     window.location.href = 'booking_form.html';
                 });
-        
+
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengambil data tarif');
+                alert(`Terjadi kesalahan: ${error.message}`);
             }
         });
-  </script>  
+
+        function openTab(event, tabName) {
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = "none";
+            }
+
+            var tabLinks = document.getElementsByClassName("tab-link");
+            for (var i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.classList.add("active");
+        }
+    </script>
 </body>
 </html>
