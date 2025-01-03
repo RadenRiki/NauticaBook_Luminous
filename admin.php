@@ -446,8 +446,10 @@ $all_bookings = mysqli_query($conn, $query);
                             <span class="status-badge"><?php echo $booking['status']; ?></span>
                         </td>
                         <td>
-                            <button class="btn-edit" onclick="view<?php echo ucfirst($booking['booking_type']); ?>(<?php echo $booking['id']; ?>)">View</button>
-                            <button class="btn-delete" onclick="<?php echo $booking['booking_type'] == 'ferry' ? 'deleteBooking' : 'cancelCargo'; ?>(<?php echo $booking['id']; ?>)">Cancel</button>
+                            <button class="btn-edit"
+                                onclick="view<?php echo ucfirst($booking['booking_type']); ?>(<?php echo $booking['id']; ?>)">View</button>
+                            <button class="btn-delete"
+                                onclick="<?php echo $booking['booking_type'] == 'ferry' ? 'deleteBooking' : 'cancelCargo'; ?>(<?php echo $booking['id']; ?>)">Cancel</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -504,7 +506,8 @@ $all_bookings = mysqli_query($conn, $query);
                         <td>Rp <?php echo number_format($tarif['harga']); ?></td>
                         <td>
                             <button class="btn-edit" onclick="editTarif(<?php echo $tarif['id']; ?>)">Edit</button>
-                            <button class="btn-delete" onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
+                            <button class="btn-delete"
+                                onclick="deleteTarif(<?php echo $tarif['id']; ?>)">Delete</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -560,8 +563,10 @@ $all_bookings = mysqli_query($conn, $query);
                         <td><?php echo htmlspecialchars($tarif['jenis_barang']); ?></td>
                         <td>Rp <?php echo number_format($tarif['harga_per_kg']); ?></td>
                         <td>
-                            <button class="btn-edit" onclick="editCargoTariff(<?php echo $tarif['id']; ?>)">Edit</button>
-                            <button class="btn-delete" onclick="deleteCargoTariff(<?php echo $tarif['id']; ?>)">Delete</button>
+                            <button class="btn-edit"
+                                onclick="editCargoTariff(<?php echo $tarif['id']; ?>)">Edit</button>
+                            <button class="btn-delete"
+                                onclick="deleteCargoTariff(<?php echo $tarif['id']; ?>)">Delete</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -761,6 +766,7 @@ $all_bookings = mysqli_query($conn, $query);
     </div>
 
     <script>
+        // Tab Management
         function showTab(tabId) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
@@ -773,16 +779,13 @@ $all_bookings = mysqli_query($conn, $query);
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
-
-        // Fungsi untuk switch tab ferry/cargo
+        // Route Tab Switching
         function switchRouteTab(tabName) {
             // Sembunyikan semua konten
             document.getElementById('ferryRoutes').style.display = 'none';
             document.getElementById('cargoTariffs').style.display = 'none';
-            
             // Tampilkan tab yang dipilih
             document.getElementById(tabName + 'Routes').style.display = 'block';
-            
             // Update state tombol tab
             const buttons = document.querySelectorAll('.filter-controls .tab-btn');
             buttons.forEach(btn => {
@@ -793,8 +796,7 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             });
         }
-
-        // Fungsi untuk modal tarif cargo
+        // Cargo Tariff Modal Functions
         function openAddCargoTariffModal() {
             document.getElementById('cargoTariffModalTitle').textContent = 'Add New Cargo Tariff';
             document.getElementById('cargoTariffFormAction').value = 'add_tariff';
@@ -809,93 +811,125 @@ $all_bookings = mysqli_query($conn, $query);
 
         function editCargoTariff(id) {
             fetch(`get_cargo_tariff.php?id=${id}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(tariff => {
-                    document.getElementById('cargoTariffModalTitle').textContent = 'Edit Cargo Tariff';
-                    document.getElementById('cargoTariffFormAction').value = 'edit_tariff';
-                    document.getElementById('cargoTariffId').value = id;
-                    document.querySelector('select[name="rute"]').value = tariff.rute;
-                    document.querySelector('select[name="jenis_barang"]').value = tariff.jenis_barang;
-                    document.querySelector('input[name="harga_per_kg"]').value = tariff.harga_per_kg;
-                    document.getElementById('cargoTariffModal').style.display = 'block';
+                    if (tariff.error) {
+                        throw new Error(tariff.error);
+                    }
+                    // Pastikan semua elemen ada sebelum mencoba mengakses
+                    const modalTitle = document.getElementById('cargoTariffModalTitle');
+                    const formAction = document.getElementById('cargoTariffFormAction');
+                    const tariffId = document.getElementById('cargoTariffId');
+                    const form = document.getElementById('cargoTariffForm');
+                    if (!modalTitle || !formAction || !tariffId || !form) {
+                        throw new Error('Required form elements not found');
+                    }
+                    modalTitle.textContent = 'Edit Cargo Tariff';
+                    formAction.value = 'edit_tariff';
+                    tariffId.value = id;
+                    // Set form values dengan error handling
+                    const ruteSelect = form.querySelector('select[name="rute"]');
+                    const jenisSelect = form.querySelector('select[name="jenis_barang"]');
+                    const hargaInput = form.querySelector('input[name="harga_per_kg"]');
+                    if (!ruteSelect || !jenisSelect || !hargaInput) {
+                        throw new Error('Form fields not found');
+                    }
+                    ruteSelect.value = tariff.rute;
+                    jenisSelect.value = tariff.jenis_barang;
+                    hargaInput.value = tariff.harga_per_kg;
+                    // Tampilkan modal
+                    const modal = document.getElementById('cargoTariffModal');
+                    if (!modal) {
+                        throw new Error('Modal element not found');
+                    }
+                    modal.style.display = 'block';
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to load tariff details');
+                    alert('Failed to load tariff details: ' + error.message);
                 });
         }
 
         function deleteCargoTariff(id) {
-            if (confirm('Are you sure you want to delete this tariff?')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'cargo_tariff_handlers.php';
-                
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'delete_tariff';
-                
-                const idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'tariff_id';
-                idInput.value = id;
-                
-                form.appendChild(actionInput);
-                form.appendChild(idInput);
-                document.body.appendChild(form);
-                form.submit();
+            if (confirm('Are you sure you want to delete this tariff? This action cannot be undone.')) {
+                const formData = new FormData();
+                formData.append('action', 'delete_tariff');
+                formData.append('tariff_id', id);
+                fetch('cargo_tariff_handlers.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        try {
+                            // Coba parse sebagai JSON
+                            const jsonResult = JSON.parse(result);
+                            if (jsonResult.success) {
+                                alert('Tariff deleted successfully');
+                                location.reload();
+                            } else {
+                                throw new Error(jsonResult.message || 'Failed to delete tariff');
+                            }
+                        } catch (e) {
+                            // Jika bukan JSON, reload halaman
+                            location.reload();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to delete tariff: ' + error.message);
+                    });
             }
         }
-
-        // Fungsi filter untuk cargo tariff
+        // Cargo Tariff Filter Function
         function filterCargoTariffs() {
             const routeValue = document.getElementById('filterCargoRoute').value.toLowerCase();
             const typeValue = document.getElementById('filterCargoType').value;
             const rows = document.querySelectorAll('#cargoTariffs .data-table tbody tr');
-            
             rows.forEach(row => {
                 const route = row.cells[0].textContent.toLowerCase();
                 const type = row.cells[1].textContent;
                 const routeMatch = !routeValue || route.includes(routeValue);
                 const typeMatch = !typeValue || type === typeValue;
-                
                 row.style.display = (routeMatch && typeMatch) ? '' : 'none';
             });
         }
-
+        // Booking Functions
         function viewBooking(bookingId) {
-            // Create modal for booking details
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'block';
-            // Fetch booking details
             fetch(`get_booking_details.php?id=${bookingId}`)
                 .then(response => response.json())
                 .then(booking => {
                     modal.innerHTML = `
-                        <div class="modal-content">
-                            <h2>Booking Details #${bookingId}</h2>
-                            <div class="booking-details">
-                                <p><strong>Customer:</strong> ${booking.customer_name}</p>
-                                <p><strong>Route:</strong> ${booking.asal} - ${booking.tujuan}</p>
-                                <p><strong>Date:</strong> ${booking.tanggal}</p>
-                                <p><strong>Service:</strong> ${booking.layanan}</p>
-                                <p><strong>Type:</strong> ${booking.tipe}</p>
-                                <p><strong>Passengers:</strong> ${booking.jumlah_penumpang}</p>
-                                <p><strong>Time:</strong> ${booking.jam}</p>
-                                <p><strong>Barcode:</strong> ${booking.barcode}</p>
-                                <p><strong>Total Price:</strong> Rp ${Number(booking.total_harga).toLocaleString()}</p>
-                            </div>
-                            <div class="booking-details">
-                                <h3>Booking Contact</h3>
-                                <p><strong>Name:</strong> ${booking.nama_pemesan}</p>
-                                <p><strong>Email:</strong> ${booking.email_pemesan}</p>
-                                <p><strong>Phone:</strong> ${booking.nomor_hp}</p>
-                            </div>
-                            <button onclick="closeModal()" class="btn-delete">Close</button>
-                        </div>
-                    `;
+                <div class="modal-content">
+                    <h2>Booking Details #${bookingId}</h2>
+                    <div class="booking-details">
+                        <p><strong>Customer:</strong> ${booking.customer_name}</p>
+                        <p><strong>Route:</strong> ${booking.asal} - ${booking.tujuan}</p>
+                        <p><strong>Date:</strong> ${booking.tanggal}</p>
+                        <p><strong>Service:</strong> ${booking.layanan}</p>
+                        <p><strong>Type:</strong> ${booking.tipe}</p>
+                        <p><strong>Passengers:</strong> ${booking.jumlah_penumpang}</p>
+                        <p><strong>Time:</strong> ${booking.jam}</p>
+                        <p><strong>Barcode:</strong> ${booking.barcode}</p>
+                        <p><strong>Total Price:</strong> Rp ${Number(booking.total_harga).toLocaleString()}</p>
+                    </div>
+                    <div class="booking-details">
+                        <h3>Booking Contact</h3>
+                        <p><strong>Name:</strong> ${booking.nama_pemesan}</p>
+                        <p><strong>Email:</strong> ${booking.email_pemesan}</p>
+                        <p><strong>Phone:</strong> ${booking.nomor_hp}</p>
+                    </div>
+                    <button onclick="closeModal()" class="btn-delete">Close</button>
+                </div>
+            `;
                     document.body.appendChild(modal);
                 })
                 .catch(error => {
@@ -935,8 +969,7 @@ $all_bookings = mysqli_query($conn, $query);
                     });
             }
         }
-
-        // Filter functionality for bookings
+        // Booking Filter Functions
         const filterDate = document.getElementById('filterDate');
         const filterRoute = document.getElementById('filterRoute');
 
@@ -956,11 +989,9 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             });
         }
-
         if (filterDate) filterDate.addEventListener('change', applyFilters);
         if (filterRoute) filterRoute.addEventListener('change', applyFilters);
-
-        // Route Management Functions
+        // Ferry Route Management Functions
         function openAddRouteModal() {
             document.getElementById('routeModalTitle').textContent = 'Add New Route';
             document.getElementById('routeFormAction').value = 'add_route';
@@ -1033,8 +1064,7 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             });
         }
-
-        // Form validation listeners
+        // Form Validation Listeners
         document.getElementById('routeForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const harga = this.querySelector('input[name="harga"]').value;
@@ -1044,7 +1074,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         document.getElementById('cargoTariffForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const harga = this.querySelector('input[name="harga_per_kg"]').value;
@@ -1054,7 +1083,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const newPass = this.querySelector('input[name="new_password"]').value;
@@ -1065,7 +1093,6 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
         document.getElementById('profileForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = this.querySelector('input[name="email"]').value;
@@ -1080,8 +1107,7 @@ $all_bookings = mysqli_query($conn, $query);
             }
             this.submit();
         });
-
-        // Modal event listeners
+        // Modal Event Listeners
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 closeModal();
@@ -1093,7 +1119,6 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             }
         };
-
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
@@ -1105,7 +1130,7 @@ $all_bookings = mysqli_query($conn, $query);
                 }
             }
         });
-
+        // Cargo View Functions
         function viewCargo(cargoId) {
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -1179,10 +1204,14 @@ $all_bookings = mysqli_query($conn, $query);
                         } else {
                             alert('Failed to cancel cargo shipment: ' + data.message);
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to cancel cargo shipment');
                     });
             }
         }
-
+        // Cargo Filter Functions
         const filterCargoDate = document.getElementById('filterCargoDate');
         const filterCargoRoute = document.getElementById('filterCargoRoute');
 
@@ -1198,7 +1227,6 @@ $all_bookings = mysqli_query($conn, $query);
                 row.style.display = (dateMatch && routeMatch) ? '' : 'none';
             });
         }
-        
         if (filterCargoDate) filterCargoDate.addEventListener('change', applyCargoFilters);
         if (filterCargoRoute) filterCargoRoute.addEventListener('change', applyCargoFilters);
     </script>

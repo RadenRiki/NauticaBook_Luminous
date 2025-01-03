@@ -1,11 +1,9 @@
 <?php
 session_start();
 require_once 'koneksi.php';
-header('Content-Type: application/json');
 
 if (!isset($_SESSION['admin_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    die('Unauthorized');
 }
 
 $action = $_POST['action'] ?? '';
@@ -24,7 +22,7 @@ switch ($action) {
         mysqli_stmt_store_result($check_stmt);
         
         if (mysqli_stmt_num_rows($check_stmt) > 0) {
-            echo json_encode(['success' => false, 'message' => 'Tariff already exists for this route and cargo type']);
+            header('Location: admin.php?tab=cargo-tariffs&error=tariff_exists');
             exit;
         }
         
@@ -33,9 +31,9 @@ switch ($action) {
         mysqli_stmt_bind_param($stmt, "ssd", $rute, $jenis_barang, $harga_per_kg);
         
         if (mysqli_stmt_execute($stmt)) {
-            echo json_encode(['success' => true, 'message' => 'Tariff added successfully']);
+            header('Location: admin.php?tab=cargo-tariffs&msg=tariff_added');
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to add tariff']);
+            header('Location: admin.php?tab=cargo-tariffs&error=add_failed');
         }
         break;
         
@@ -53,7 +51,7 @@ switch ($action) {
         mysqli_stmt_store_result($check_stmt);
         
         if (mysqli_stmt_num_rows($check_stmt) === 0) {
-            echo json_encode(['success' => false, 'message' => 'Tariff not found or inactive']);
+            header('Location: admin.php?tab=cargo-tariffs&error=tariff_not_found');
             exit;
         }
         
@@ -62,9 +60,9 @@ switch ($action) {
         mysqli_stmt_bind_param($stmt, "ssdi", $rute, $jenis_barang, $harga_per_kg, $tariff_id);
         
         if (mysqli_stmt_execute($stmt)) {
-            echo json_encode(['success' => true, 'message' => 'Tariff updated successfully']);
+            header('Location: admin.php?tab=cargo-tariffs&msg=tariff_updated');
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to update tariff']);
+            header('Location: admin.php?tab=cargo-tariffs&error=update_failed');
         }
         break;
         
@@ -77,18 +75,14 @@ switch ($action) {
         mysqli_stmt_bind_param($stmt, "i", $tariff_id);
         
         if (mysqli_stmt_execute($stmt)) {
-            if (mysqli_affected_rows($conn) > 0) {
-                echo json_encode(['success' => true, 'message' => 'Tariff deleted successfully']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Tariff not found']);
-            }
+            header('Location: admin.php?tab=cargo-tariffs&msg=tariff_deleted');
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to delete tariff']);
+            header('Location: admin.php?tab=cargo-tariffs&error=delete_failed');
         }
         break;
         
     default:
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        header('Location: admin.php');
         break;
 }
 
