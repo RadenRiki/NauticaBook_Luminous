@@ -890,53 +890,71 @@ $all_bookings = mysqli_query($conn, $query);
         function filterCargoTariffs() {
             const routeValue = document.getElementById('filterCargoRoute').value.toLowerCase();
             const typeValue = document.getElementById('filterCargoType').value;
-            const rows = document.querySelectorAll('#cargoTariffs .data-table tbody tr');
+            const rows = document.querySelectorAll('#cargo-tariffs .data-table tbody tr');
             rows.forEach(row => {
-                const route = row.cells[0].textContent.toLowerCase();
-                const type = row.cells[1].textContent;
-                const routeMatch = !routeValue || route.includes(routeValue);
+                const route = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const type = row.querySelector('td:nth-child(2)').textContent;
+                const routeMatch = !routeValue || route === routeValue;
                 const typeMatch = !typeValue || type === typeValue;
                 row.style.display = (routeMatch && typeMatch) ? '' : 'none';
             });
         }
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterCargoRoute = document.getElementById('filterCargoRoute');
+            const filterCargoType = document.getElementById('filterCargoType');
+            if (filterCargoRoute) {
+                filterCargoRoute.addEventListener('change', filterCargoTariffs);
+            }
+            if (filterCargoType) {
+                filterCargoType.addEventListener('change', filterCargoTariffs);
+            }
+        });
         // Booking Functions
         function viewBooking(bookingId) {
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'block';
-            fetch(`get_booking_details.php?id=${bookingId}`)
-                .then(response => response.json())
-                .then(booking => {
-                    modal.innerHTML = `
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    
+    fetch(`get_booking_details.php?id=${bookingId}`)
+        .then(response => response.json())
+        .then(booking => {
+            console.log('Booking data:', booking); // For debugging
+            
+            if (!booking) {
+                throw new Error('No booking data received');
+            }
+
+            modal.innerHTML = `
                 <div class="modal-content">
                     <h2>Booking Details #${bookingId}</h2>
                     <div class="booking-details">
-                        <p><strong>Customer:</strong> ${booking.customer_name}</p>
-                        <p><strong>Route:</strong> ${booking.asal} - ${booking.tujuan}</p>
-                        <p><strong>Date:</strong> ${booking.tanggal}</p>
-                        <p><strong>Service:</strong> ${booking.layanan}</p>
-                        <p><strong>Type:</strong> ${booking.tipe}</p>
-                        <p><strong>Passengers:</strong> ${booking.jumlah_penumpang}</p>
-                        <p><strong>Time:</strong> ${booking.jam}</p>
-                        <p><strong>Barcode:</strong> ${booking.barcode}</p>
-                        <p><strong>Total Price:</strong> Rp ${Number(booking.total_harga).toLocaleString()}</p>
+                        <p><strong>Customer:</strong> ${booking.name || booking.customer_name || 'N/A'}</p>
+                        <p><strong>Route:</strong> ${booking.asal || 'N/A'} - ${booking.tujuan || 'N/A'}</p>
+                        <p><strong>Date:</strong> ${booking.tanggal ? new Date(booking.tanggal).toLocaleDateString() : 'N/A'}</p>
+                        <p><strong>Service:</strong> ${booking.layanan || 'N/A'}</p>
+                        <p><strong>Type:</strong> ${booking.tipe || 'N/A'}</p>
+                        <p><strong>Passengers:</strong> ${booking.jumlah_penumpang || 'N/A'}</p>
+                        <p><strong>Time:</strong> ${booking.jam || 'N/A'}</p>
+                        <p><strong>Barcode:</strong> ${booking.barcode || 'N/A'}</p>
+                        <p><strong>Total Price:</strong> Rp ${booking.total_harga ? Number(booking.total_harga).toLocaleString() : 'N/A'}</p>
                     </div>
                     <div class="booking-details">
                         <h3>Booking Contact</h3>
-                        <p><strong>Name:</strong> ${booking.nama_pemesan}</p>
-                        <p><strong>Email:</strong> ${booking.email_pemesan}</p>
-                        <p><strong>Phone:</strong> ${booking.nomor_hp}</p>
+                        <p><strong>Name:</strong> ${booking.nama_pemesan || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${booking.email_pemesan || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${booking.nomor_hp || 'N/A'}</p>
                     </div>
                     <button onclick="closeModal()" class="btn-delete">Close</button>
                 </div>
             `;
-                    document.body.appendChild(modal);
-                })
-                .catch(error => {
-                    console.error('Error fetching booking details:', error);
-                    alert('Failed to load booking details');
-                });
-        }
+            document.body.appendChild(modal);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to load booking details: ' + error.message);
+        });
+}
 
         function closeModal() {
             const modal = document.querySelector('.modal');
@@ -1142,35 +1160,40 @@ $all_bookings = mysqli_query($conn, $query);
                         throw new Error(result.message || 'Failed to load cargo details');
                     }
                     const cargo = result.data;
+                    if (!cargo) {
+                        throw new Error('No cargo data received');
+                    }
                     modal.innerHTML = `
                 <div class="modal-content">
                     <h2>Cargo Details #${cargoId}</h2>
                     <div class="booking-details">
-                        <p><strong>Customer:</strong> ${cargo.customer}</p>
-                        <p><strong>Route:</strong> ${cargo.route}</p>
-                        <p><strong>Type:</strong> ${cargo.type}</p>
-                        <p><strong>Weight:</strong> ${cargo.weight}</p>
-                        <p><strong>Date:</strong> ${cargo.date}</p>
-                        <p><strong>Status:</strong> ${cargo.status}</p>
-                        <p><strong>Total Price:</strong> Rp${cargo.total_harga}</p>
-                        <p><strong>Barcode:</strong> ${cargo.barcode}</p>
+                        <p><strong>Customer:</strong> ${cargo.customer || 'N/A'}</p>
+                        <p><strong>Route:</strong> ${cargo.route || 'N/A'}</p>
+                        <p><strong>Type:</strong> ${cargo.type || 'N/A'}</p>
+                        <p><strong>Weight:</strong> ${cargo.weight || 'N/A'}</p>
+                        <p><strong>Date:</strong> ${cargo.date || 'N/A'}</p>
+                        <p><strong>Status:</strong> ${cargo.status || 'N/A'}</p>
+                        <p><strong>Total Price:</strong> Rp${cargo.total_harga || '0'}</p>
+                        <p><strong>Barcode:</strong> ${cargo.barcode || 'N/A'}</p>
                     </div>
+                    ${cargo.pengirim ? `
                     <div class="booking-details">
                         <h3>Sender Details</h3>
-                        <p><strong>Name:</strong> ${cargo.pengirim.nama}</p>
-                        <p><strong>Address:</strong> ${cargo.pengirim.alamat}</p>
-                        <p><strong>City:</strong> ${cargo.pengirim.kota}</p>
-                        <p><strong>Postal Code:</strong> ${cargo.pengirim.kodepos}</p>
-                        <p><strong>Phone:</strong> ${cargo.pengirim.telepon}</p>
-                    </div>
+                        <p><strong>Name:</strong> ${cargo.pengirim.nama || 'N/A'}</p>
+                        <p><strong>Address:</strong> ${cargo.pengirim.alamat || 'N/A'}</p>
+                        <p><strong>City:</strong> ${cargo.pengirim.kota || 'N/A'}</p>
+                        <p><strong>Postal Code:</strong> ${cargo.pengirim.kodepos || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${cargo.pengirim.telepon || 'N/A'}</p>
+                    </div>` : ''}
+                    ${cargo.penerima ? `
                     <div class="booking-details">
                         <h3>Recipient Details</h3>
-                        <p><strong>Name:</strong> ${cargo.penerima.nama}</p>
-                        <p><strong>Address:</strong> ${cargo.penerima.alamat}</p>
-                        <p><strong>City:</strong> ${cargo.penerima.kota}</p>
-                        <p><strong>Postal Code:</strong> ${cargo.penerima.kodepos}</p>
-                        <p><strong>Phone:</strong> ${cargo.penerima.telepon}</p>
-                    </div>
+                        <p><strong>Name:</strong> ${cargo.penerima.nama || 'N/A'}</p>
+                        <p><strong>Address:</strong> ${cargo.penerima.alamat || 'N/A'}</p>
+                        <p><strong>City:</strong> ${cargo.penerima.kota || 'N/A'}</p>
+                        <p><strong>Postal Code:</strong> ${cargo.penerima.kodepos || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${cargo.penerima.telepon || 'N/A'}</p>
+                    </div>` : ''}
                     ${cargo.catatan ? `
                     <div class="booking-details">
                         <h3>Notes</h3>
@@ -1183,7 +1206,7 @@ $all_bookings = mysqli_query($conn, $query);
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to load cargo details');
+                    alert('Failed to load cargo details: ' + error.message);
                 });
         }
 
