@@ -517,8 +517,20 @@
                             beratBarang: parseFloat(beratValue),
                             tanggalCargo: document.getElementById('tanggalCargo').value
                         };
-                        sessionStorage.setItem('cargoData', JSON.stringify(cargoData));
-                        window.location.href = 'cargodetail.html';
+                        try {
+                            // Simpan ke sessionStorage
+                            sessionStorage.setItem('cargoData', JSON.stringify(cargoData));
+                            
+                            // Log data untuk debugging
+                            console.log('Data yang disimpan:', cargoData);
+                            console.log('Data dari sessionStorage:', JSON.parse(sessionStorage.getItem('cargoData')));
+                            
+                            // Redirect setelah memastikan data tersimpan
+                            window.location.href = 'cargodetail.html';
+                        } catch (error) {
+                            console.error('Error menyimpan data:', error);
+                            alert('Terjadi kesalahan saat menyimpan data');
+                        }                        
                     });
                 </script>
             </section>

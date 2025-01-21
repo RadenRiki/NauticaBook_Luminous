@@ -63,6 +63,7 @@ function CargoPaymentSystem() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Inside handlePayment function
   const handlePayment = async () => {
     try {
       setError(null);
@@ -95,14 +96,23 @@ function CargoPaymentSystem() {
       const tanggal = new Date(cargoBookingData.cargoDetails.tanggalPengiriman);
       const formattedDate = tanggal.toISOString().split('T')[0];
 
+      // Log the date transformation for debugging
+      console.log('Original date:', cargoBookingData.cargoDetails.tanggalPengiriman);
+      console.log('Formatted date:', formattedDate);
+
       // Prepare cargo data matching database structure
       const cargoData = {
         user_id: sessionData.user_id,
+        // Data pelabuhan
+        pelabuhanAsal: cargoBookingData.cargoDetails.pelabuhanAsal,
+        pelabuhanTujuan: cargoBookingData.cargoDetails.pelabuhanTujuan,
+        // Data lokasi pengirim/penerima
         asal: cargoBookingData.pengirim.kota,
         tujuan: cargoBookingData.penerima.kota,
+        // Data cargo lainnya
         jenis: cargoBookingData.cargoDetails.jenisBarang,
         berat_kg: parseFloat(cargoBookingData.cargoDetails.beratBarang),
-        tanggal: cargoBookingData.cargoDetails.tanggalPengiriman,
+        tanggal: formattedDate, // Use the formatted date
         nama_pengirim: cargoBookingData.pengirim.nama,
         alamat_pengirim: cargoBookingData.pengirim.alamat,
         kota_pengirim: cargoBookingData.pengirim.kota,
@@ -115,7 +125,7 @@ function CargoPaymentSystem() {
         telepon_penerima: cargoBookingData.penerima.telepon,
         catatan: cargoBookingData.catatan || '',
         status: 'aktif'
-    };
+      };
 
       console.log('Sending cargo data:', cargoData);
 
@@ -142,6 +152,7 @@ function CargoPaymentSystem() {
       if (result.success) {
         // Clear session storage before redirecting
         sessionStorage.removeItem('cargoBookingData');
+        sessionStorage.removeItem('cargoData');
         sessionStorage.removeItem('totalPrice');
         window.location.href = 'payment_success.html';
       } else {
