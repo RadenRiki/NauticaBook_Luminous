@@ -1,5 +1,5 @@
 /** 
- * Cargo Payment System Component
+ * Fixed Cargo Payment System Component
  */
 const { useState, useEffect } = React;
 
@@ -10,48 +10,46 @@ function CargoPaymentSystem() {
   const [virtualAccount, setVirtualAccount] = useState('');
   const [countdown, setCountdown] = useState(3600); // 1 hour in seconds
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Debug logging for sessionStorage
-    console.log('Checking sessionStorage data...');
-    console.log('cargoBookingData:', sessionStorage.getItem('cargoBookingData'));
-    console.log('totalPrice:', sessionStorage.getItem('totalPrice'));
-
-    // Get cargo booking data and total price from sessionStorage
-    const cargoBookingData = JSON.parse(sessionStorage.getItem('cargoBookingData'));
-    const totalPriceStr = sessionStorage.getItem('totalPrice');
-    
-    // Debug logging for parsed data
-    console.log('Parsed cargoBookingData:', cargoBookingData);
-    
-    if (cargoBookingData && totalPriceStr) {
-      setCargoDetails(cargoBookingData);
-      setTotalPrice(parseInt(totalPriceStr));
-      console.log('State updated with cargoDetails and totalPrice');
-    } else {
-      console.log('Warning: Missing cargoBookingData or totalPrice in sessionStorage');
-    }
-
-    // Generate virtual account number
-    const va = '88' + Math.random().toString().slice(2, 14);
-    setVirtualAccount(va);
-    console.log('Generated virtual account:', va);
-
-    // Set countdown timer (1 hour)
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
+    try {
+      // Get cargo booking data and total price from sessionStorage
+      const cargoBookingData = JSON.parse(sessionStorage.getItem('cargoBookingData'));
+      const totalPriceStr = sessionStorage.getItem('totalPrice');
+      
+      console.log('Retrieved data:', {
+        cargoBookingData,
+        totalPrice: totalPriceStr
       });
-    }, 1000);
+      
+      if (cargoBookingData && totalPriceStr) {
+        setCargoDetails(cargoBookingData);
+        setTotalPrice(parseInt(totalPriceStr));
+      }
 
-    return () => clearInterval(timer);
+      // Generate virtual account number
+      const va = '88' + Math.random().toString().slice(2, 14);
+      setVirtualAccount(va);
+
+      // Set countdown timer
+      const timer = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 0) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } catch (err) {
+      console.error('Error in useEffect:', err);
+      setError('Terjadi kesalahan saat memuat data');
+    }
   }, []);
 
-  // Format seconds to HH:MM:SS
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -65,16 +63,21 @@ function CargoPaymentSystem() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Handle payment confirmation
   const handlePayment = async () => {
     try {
-      // Log data sebelum dikirim
-      console.log('Session check request...');
-      const response = await fetch('check_session.php');
-      console.log('Session response:', await response.clone().text());
-      
-      const sessionData = await response.json();
-      console.log('Session data:', sessionData);
+      setError(null);
+
+      // Check session first
+      const sessionResponse = await fetch('check_session.php');
+      const sessionText = await sessionResponse.text();
+      console.log('Session response:', sessionText);
+
+      let sessionData;
+      try {
+        sessionData = JSON.parse(sessionText);
+      } catch (e) {
+        throw new Error('Sesi tidak valid, silakan login ulang');
+      }
 
       if (!sessionData.user_id) {
         alert('Silakan login terlebih dahulu');
@@ -82,31 +85,41 @@ function CargoPaymentSystem() {
         return;
       }
 
-      // Get cargo booking data from sessionStorage
+      // Get cargo booking data
       const cargoBookingData = JSON.parse(sessionStorage.getItem('cargoBookingData'));
-      console.log('Retrieved cargoBookingData for payment:', cargoBookingData);
-      
-      // Debug original date
-      console.log('Original date:', cargoBookingData.cargoDetails.tanggalPengiriman);
+      if (!cargoBookingData) {
+        throw new Error('Data cargo tidak ditemukan');
+      }
 
-      // Prepare cargo data for saving
+      // Format date properly
+      const tanggal = new Date(cargoBookingData.cargoDetails.tanggalPengiriman);
+      const formattedDate = tanggal.toISOString().split('T')[0];
+
+      // Prepare cargo data matching database structure
       const cargoData = {
         user_id: sessionData.user_id,
         asal: cargoBookingData.pengirim.kota,
         tujuan: cargoBookingData.penerima.kota,
         jenis: cargoBookingData.cargoDetails.jenisBarang,
         berat_kg: parseFloat(cargoBookingData.cargoDetails.beratBarang),
-        tanggal: new Date(cargoBookingData.cargoDetails.tanggalPengiriman).toISOString().split('T')[0], // Format ke YYYY-MM-DD
-        pengirim: cargoBookingData.pengirim,
-        penerima: cargoBookingData.penerima,
-        catatan: cargoBookingData.catatan || ''
-      };
+        tanggal: cargoBookingData.cargoDetails.tanggalPengiriman,
+        nama_pengirim: cargoBookingData.pengirim.nama,
+        alamat_pengirim: cargoBookingData.pengirim.alamat,
+        kota_pengirim: cargoBookingData.pengirim.kota,
+        kodepos_pengirim: cargoBookingData.pengirim.kodePos,
+        telepon_pengirim: cargoBookingData.pengirim.telepon,
+        nama_penerima: cargoBookingData.penerima.nama,
+        alamat_penerima: cargoBookingData.penerima.alamat,
+        kota_penerima: cargoBookingData.penerima.kota,
+        kodepos_penerima: cargoBookingData.penerima.kodePos,
+        telepon_penerima: cargoBookingData.penerima.telepon,
+        catatan: cargoBookingData.catatan || '',
+        status: 'aktif'
+    };
 
-      // Debug logs
-      console.log('Formatted date:', cargoData.tanggal);
-      console.log('Final cargo data structure:', cargoData);
+      console.log('Sending cargo data:', cargoData);
 
-      // Send to save_cargo.php
+      // Save cargo data
       const saveResponse = await fetch('save_cargo.php', {
         method: 'POST',
         headers: {
@@ -115,25 +128,29 @@ function CargoPaymentSystem() {
         body: JSON.stringify(cargoData)
       });
 
-      // Log response dari save_cargo.php
-      console.log('Save response:', await saveResponse.clone().text());
+      const saveText = await saveResponse.text();
+      console.log('Save response:', saveText);
 
-      if (!saveResponse.ok) {
-        throw new Error('Gagal menyimpan data cargo');
+      let result;
+      try {
+        result = JSON.parse(saveText);
+      } catch (e) {
+        console.error('Error parsing save response:', e, saveText);
+        throw new Error('Gagal memproses respon server');
       }
 
-      const result = await saveResponse.json();
-      console.log('Parsed save response:', result);
-      
       if (result.success) {
+        // Clear session storage before redirecting
+        sessionStorage.removeItem('cargoBookingData');
+        sessionStorage.removeItem('totalPrice');
         window.location.href = 'payment_success.html';
       } else {
         throw new Error(result.error || 'Gagal menyimpan data cargo');
       }
-      
     } catch (error) {
-      console.error('Detailed error:', error);
-      alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
+      console.error('Payment error:', error);
+      setError(error.message);
+      alert('Terjadi kesalahan: ' + error.message);
     }
   };
 
@@ -141,6 +158,12 @@ function CargoPaymentSystem() {
     <div className="w-full max-w-3xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
         <h2 className="text-2xl font-bold mb-4">Detail Pembayaran Cargo</h2>
+        
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4">
+            {error}
+          </div>
+        )}
         
         {cargoDetails && (
           <div className="mb-6">
@@ -167,7 +190,7 @@ function CargoPaymentSystem() {
         </div>
 
         <div className="space-y-4">
-          {/* BANK TRANSFER OPTION */}
+          {/* Bank Transfer Option */}
           <div
             className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => setPaymentMethod('bank')}
@@ -232,7 +255,7 @@ function CargoPaymentSystem() {
             )}
           </div>
 
-          {/* MINIMARKET OPTION */}
+          {/* Minimarket Option */}
           <div
             className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => setPaymentMethod('minimarket')}
@@ -249,11 +272,11 @@ function CargoPaymentSystem() {
           </div>
         </div>
 
-        {/* CONFIRMATION BUTTON */}
+        {/* Confirmation Button */}
         {paymentMethod && (
           <button
             onClick={handlePayment}
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Konfirmasi Pembayaran
           </button>
