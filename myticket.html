@@ -365,18 +365,19 @@
 
         container.style.display = 'block';
         container.innerHTML = cargos.map(cargo => `
-          <div class="ticket-card">
-            <div class="ticket-header">
-              <h3>${cargo.asal} → ${cargo.tujuan}</h3>
-              <span class="ticket-status">Aktif</span>
-            </div>
-            <div class="ticket-details">
-              <p>Tanggal Pengiriman: ${new Date(cargo.tanggal).toLocaleDateString('id-ID')}</p>
-              <p>Jenis Barang: ${cargo.jenis}</p>
-              <p>Berat: ${cargo.berat_kg} Kg</p>
-              <p>Pengirim: ${cargo.nama_pengirim}</p>
-              <p>Penerima: ${cargo.nama_penerima}</p>
-            </div>
+  <div class="ticket-card">
+    <div class="ticket-header">
+      <h3>${cargo.pelabuhanAsal} → ${cargo.pelabuhanTujuan}</h3>
+      <span class="ticket-status">Aktif</span>
+    </div>
+    <div class="ticket-details">
+      <p>Tanggal Pengiriman: ${new Date(cargo.tanggal).toLocaleDateString('id-ID')}</p>
+      <p>Jenis Barang: ${cargo.jenis}</p>
+      <p>Berat: ${cargo.berat_kg} Kg</p>
+      <p>Pengirim: ${cargo.nama_pengirim}</p>
+      <p>Penerima: ${cargo.nama_penerima}</p>
+    </div>
+
             
             <button class="detail-btn" onclick="toggleTicketDetail(this)">
               Lihat Detail

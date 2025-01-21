@@ -21,13 +21,8 @@ $cargo_result = mysqli_query($conn, $query);
 $total_cargo = mysqli_fetch_assoc($cargo_result)['total'];
 
 // Update query Total Revenue
-$query = "SELECT 
-            (SELECT COALESCE(SUM(total_harga), 0) FROM passengers) +
-            (SELECT COALESCE(SUM(tc.harga_per_kg * c.berat_kg), 0)
-             FROM cargo c
-             JOIN tarif_cargo tc ON tc.rute = CONCAT(LOWER(c.pelabuhanAsal), '-', LOWER(c.pelabuhanTujuan))
-             AND tc.jenis_barang = c.jenis
-             WHERE c.status = 'aktif') as total";
+// Update query Total Revenue - Hanya menghitung dari passengers
+$query = "SELECT COALESCE(SUM(total_harga), 0) as total FROM passengers";
 $revenue_result = mysqli_query($conn, $query);
 $total_revenue = mysqli_fetch_assoc($revenue_result)['total'] ?? 0;
 

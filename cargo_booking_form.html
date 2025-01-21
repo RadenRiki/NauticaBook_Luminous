@@ -289,6 +289,19 @@
                 sessionStorage.setItem('cargoBookingData', JSON.stringify(bookingData));
 
                 // Redirect ke halaman pembayaran
+                // Simpan ke sessionStorage
+                try {
+                    sessionStorage.setItem('cargoBookingData', JSON.stringify(bookingData));
+                    
+                    // Log data untuk debugging
+                    console.log('Cargo Booking Data:', JSON.parse(sessionStorage.getItem('cargoBookingData')));
+                    
+                    // Redirect ke halaman pembayaran
+                    window.location.href = 'payverification.html';
+                } catch (error) {
+                    console.error('Error menyimpan booking data:', error);
+                    alert('Terjadi kesalahan saat menyimpan data pemesanan');
+                }
                 window.location.href = 'payverification.html';
             });
         });
